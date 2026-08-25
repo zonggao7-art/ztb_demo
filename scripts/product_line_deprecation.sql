@@ -1,0 +1,31 @@
+-- ============================================================
+-- 产品查询功能线砍除 — Phase 2 数据库迁移脚本
+-- 日期：2026-08-10
+-- 说明：产品查询功能线已正式下线，product_info 表保留为回滚资产
+-- ============================================================
+
+-- Step 8: 标记 product_info 表为 deprecated（保留数据，仅添加注释）
+ALTER TABLE `ztb_clean`.`product_info` COMMENT = '[DEPRECATED 2026-08-10] 产品查询功能线已下线，表数据保留为回滚资产。如需恢复功能，请参考 docs/vague_query_improvement_feasibility_report.md §3.4';
+
+-- ============================================================
+-- Step 7: Milvus mysql_price_semantic 集合重建指引
+-- ============================================================
+-- 说明：由于 _HARDCODED_SCHEMA 已移除 product_info，下次自动 bootstrap
+-- 重建时将不再包含 product_info 的向量数据。
+--
+-- 当前集合的兼容性：
+--   - _is_mysql_semantic_collection_ready() 判定条件为 row_count >= expected
+--   - 移除 product_info 后 expected 值下降，而现存向量数 ≥ expected
+--   - 因此集合判定为"就绪"，不会自动触发重建
+--
+-- 如需立即清除残留 product 向量，可选择以下任一方式：
+--   方式 A（推荐）：手动删除 Milvus 集合，启动应用后自动重建
+--     > 通过 Milvus Attu 或 CLI 删除 mysql_price_semantic 集合
+--     > 重启应用，后台 bootstrap 线程将自动重建（仅含 company/penalty/bid 数据）
+--
+--   方式 B：调用 Python 强制重建
+--     > python -c "from agent.nodes.price_inquiry import _rebuild_mysql_semantic_collection; _rebuild_mysql_semantic_collection()"
+--
+-- 注：即使不立即重建，系统行为也已正确（_semantic_recall_candidates
+-- 仅检索传入方表，product_info 不再传入，残留向量不会被命中）。
+-- ============================================================

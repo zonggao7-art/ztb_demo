@@ -1,0 +1,82 @@
+# ===== 密钥与环境变量 — 绝对不能提交 =====
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.secret
+
+# ===== Python 字节码与构建产物 =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+.venv/
+venv/
+ENV/
+
+# ===== IDE / 编辑器 =====
+.idea/
+.vscode/
+.qoder/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ===== 系统垃圾文件 =====
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
+
+# ===== 本地运行时状态 =====
+.cloud_sync_watermark.json
+*.pid
+*.log
+logs/
+
+# ===== 测试 / Lint 缓存 =====
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.cache/
+
+# ===== 数据资产 — 团队成员各自获取，不入仓 =====
+DATA/
+raw_pdfs/
+new_pdfs/
+raw_policy/
+raw_tables/
+cloud_sync/
+*.jsonl
+
+# ===== 本地备份 =====
+backup.sql
+*.sql.bak
+*.dump
+
+# ===== MySQL 容器数据（保留 docker-compose.yml 和 init/01-schema.sql） =====
+docker/mysql/mysql_data/
+docker/mysql/*.log
+
+# ===== Milvus 容器数据（保留 docker-compose.yml 和启动脚本） =====
+milvus/volumes/
+milvus/*.log
+milvus/etcd-data/
+
+# ===== 测试报告产物（运行后重新生成） =====
+test_report/
