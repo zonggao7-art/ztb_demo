@@ -80,3 +80,5 @@ milvus/etcd-data/
 
 # ===== 测试报告产物（运行后重新生成） =====
 test_report/
+# ===== Milvus v2.6 POC 栈运行时数据（不入仓） =====
+milvus/volumes-v26/

@@ -79,6 +79,7 @@ class Settings:
     milvus_sparse_index_type: str = "SPARSE_INVERTED_INDEX"
     bm25_k1: float = 1.2
     bm25_b: float = 0.75
+    bm25_analyzer_type: str = "chinese"
 
     @property
     def resolved_milvus_uri(self) -> str:

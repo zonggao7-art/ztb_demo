@@ -103,6 +103,9 @@ class MilvusStoreManager:
         }
         if self._settings.enable_bm25:
             text_options["enable_analyzer"] = True
+            text_options["analyzer_params"] = {
+                "type": self._settings.bm25_analyzer_type,
+            }
         schema.add_field(**text_options)
         schema.add_field(
             field_name=self._contract.dense_field,
