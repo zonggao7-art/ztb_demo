@@ -57,14 +57,40 @@ class Settings:
     milvus_port: str = field(
         default_factory=lambda: os.getenv("MILVUS_PORT", "19530")
     )
-    collection_name: str = "public_kb"
+    milvus_uri: str = field(
+        default_factory=lambda: os.getenv("MILVUS_URI", "")
+    )
+    milvus_token: str = field(
+        default_factory=lambda: os.getenv("MILVUS_TOKEN", "")
+    )
+    milvus_timeout: int = field(
+        default_factory=lambda: int(os.getenv("MILVUS_TIMEOUT", "30"))
+    )
+    collection_name: str = field(
+        default_factory=lambda: os.getenv("MILVUS_COLLECTION", "public_kb")
+    )
+    collection_schema_version: str = "public_kb_v2"
+    enable_bm25: bool = field(
+        default_factory=lambda: os.getenv("ENABLE_MILVUS_BM25", "false").lower()
+        in {"1", "true", "yes"}
+    )
+    milvus_experiment_prefix: str = "public_kb_hybrid_poc_"
+    milvus_dense_index_type: str = "IVF_FLAT"
+    milvus_sparse_index_type: str = "SPARSE_INVERTED_INDEX"
+    bm25_k1: float = 1.2
+    bm25_b: float = 0.75
+
+    @property
+    def resolved_milvus_uri(self) -> str:
+        """返回显式 URI；未配置时兼容现有 host/port。"""
+        return self.milvus_uri or f"http://{self.milvus_host}:{self.milvus_port}"
 
     # ============================================================
     # Embedding 模型
     # ============================================================
     embedding_model: str = field(
         default_factory=lambda: os.getenv(
-            "EMBEDDING_MODEL", "BAAI/bge-large-zh-v1.5"
+            "EMBEDDING_MODEL", "BAAI/bge-m3"
         )
     )
     embedding_api_key: str = field(
@@ -135,6 +161,11 @@ class Settings:
     nprobe: int = 32               # IVF 检索探测单元数（显式控制精度）
     rrf_k: int = 60                # RRF 融合参数 k
     reranker_model: str = "BAAI/bge-reranker-v2-m3"  # Cross-Encoder 重排序模型
+    strict_hybrid_validation: bool = field(
+        default_factory=lambda: os.getenv(
+            "STRICT_HYBRID_VALIDATION", "false"
+        ).lower() in {"1", "true", "yes"}
+    )
 
     # ============================================================
     # 超时与重试参数（任务2）
