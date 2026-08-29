@@ -23,7 +23,7 @@ from public_kb.chunk_ids import (  # noqa: E402
     compute_text_hash,
     normalize_chunk_text,
 )
-from public_kb.citations import (  # noqa: E402
+from public_kb.generation.citations import (  # noqa: E402
     Citation,
     CitationValidator,
     build_citations,
@@ -31,13 +31,14 @@ from public_kb.citations import (  # noqa: E402
     parse_citation_markers,
 )
 from public_kb.config import CitationRuleConfig, Settings  # noqa: E402
-from public_kb.qa_chain import (  # noqa: E402
-    _dense_only_retrieve,
-    _entity_to_doc,
-    _hybrid_search_with_full_fields,
-    _search_with_full_fields,
-    build_qa_chain,
+from public_kb.generation.chain import build_chain as build_qa_chain  # noqa: E402
+from public_kb.retrieval.entities import entity_to_doc as _entity_to_doc  # noqa: E402
+from public_kb.retrieval.fallback import dense_only_retrieve as _dense_only_retrieve  # noqa: E402
+from public_kb.retrieval.milvus_search import (  # noqa: E402
+    hybrid_search_with_full_fields as _hybrid_search_with_full_fields,
+    search_with_full_fields as _search_with_full_fields,
 )
+from public_kb.retrieval.reranker import SiliconFlowReranker  # noqa: E402
 
 
 def _doc(text="第三十七条 评标由招标人依法组建的评标委员会负责。",
@@ -435,6 +436,7 @@ def test_full_chain_returns_citations_and_validation():
     chain = build_qa_chain(
         vector_store=None, llm=llm, settings=settings,
         collection=collection, embeddings=_MockEmbeddings(),
+        reranker_class=SiliconFlowReranker,
     )
     result = chain.invoke("评标委员会由哪些人组成？")
 
@@ -460,6 +462,7 @@ def test_full_chain_refusal_report():
     chain = build_qa_chain(
         vector_store=None, llm=llm, settings=settings,
         collection=collection, embeddings=_MockEmbeddings(),
+        reranker_class=SiliconFlowReranker,
     )
     result = chain.invoke("知识库外的问题？")
     assert result["citations"] == []

@@ -13,12 +13,10 @@ from langchain_core.language_models.fake_chat_models import FakeListChatModel
 
 from public_kb.config import Settings
 from public_kb.contracts import RerankerStatus
-from public_kb.qa_chain import (
-    HybridRetrievalError,
-    _SiliconFlowReranker,
-    _dense_only_retrieve,
-    build_qa_chain,
-)
+from public_kb.generation.chain import build_chain as build_qa_chain
+from public_kb.retrieval.fallback import dense_only_retrieve as _dense_only_retrieve
+from public_kb.retrieval.reranker import SiliconFlowReranker as _SiliconFlowReranker
+from public_kb.retrieval.retriever import HybridRetrievalError
 
 
 class FakeEmbeddings:
@@ -197,15 +195,15 @@ class DenseFallbackTests(unittest.TestCase):
 class QaChainOfflineTests(unittest.TestCase):
     def _invoke(self, collection: FakeCollection, embeddings: FakeEmbeddings, reranker):
         llm = FakeListChatModel(responses=["公开招标是法定招标方式之一【来源1】"])
-        with patch("public_kb.qa_chain._SiliconFlowReranker", return_value=reranker):
-            chain = build_qa_chain(
-                vector_store=FakeVectorStore(),
-                llm=llm,
-                settings=_settings(),
-                collection=collection,
-                embeddings=embeddings,
-            )
-            return chain.invoke("招标方式有哪些？")
+        chain = build_qa_chain(
+            vector_store=FakeVectorStore(),
+            llm=llm,
+            settings=_settings(),
+            collection=collection,
+            embeddings=embeddings,
+            reranker_class=lambda *args, **kwargs: reranker,
+        )
+        return chain.invoke("招标方式有哪些？")
 
     def test_hybrid_rerank_reports_real_mode_and_bm25_request(self) -> None:
         collection = FakeCollection()
@@ -247,6 +245,7 @@ class QaChainOfflineTests(unittest.TestCase):
             settings=_settings(strict_hybrid_validation=True),
             collection=FakeCollection(fail_hybrid=True),
             embeddings=FakeEmbeddings(),
+            reranker_class=_SiliconFlowReranker,
         )
 
         with self.assertRaises(HybridRetrievalError):
@@ -255,19 +254,16 @@ class QaChainOfflineTests(unittest.TestCase):
     def test_schema_capability_is_cached_per_chain(self) -> None:
         collection = FakeCollection()
         llm = FakeListChatModel(responses=["回答【来源1】", "回答【来源1】"])
-        with patch(
-            "public_kb.qa_chain._SiliconFlowReranker",
-            return_value=SuccessfulReranker(),
-        ):
-            chain = build_qa_chain(
-                vector_store=FakeVectorStore(),
-                llm=llm,
-                settings=_settings(),
-                collection=collection,
-                embeddings=FakeEmbeddings(),
-            )
-            chain.invoke("问题一")
-            chain.invoke("问题二")
+        chain = build_qa_chain(
+            vector_store=FakeVectorStore(),
+            llm=llm,
+            settings=_settings(),
+            collection=collection,
+            embeddings=FakeEmbeddings(),
+            reranker_class=lambda *args, **kwargs: SuccessfulReranker(),
+        )
+        chain.invoke("问题一")
+        chain.invoke("问题二")
 
         self.assertEqual(collection.describe_calls, 1)
 

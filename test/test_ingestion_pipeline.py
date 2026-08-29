@@ -6,9 +6,9 @@ from typing import Any, Dict, List, Sequence
 
 from langchain_core.documents import Document
 
-from public_kb.csv_loader import CsvLoader
 from public_kb.ingestion.models import SourceResult
 from public_kb.ingestion.pipeline import IngestionPipeline
+from public_kb.ingestion.sources.csv_loader import CsvLoader
 from public_kb.ingestion.sinks.markdown_sink import MarkdownSink
 from public_kb.ingestion.sinks.milvus_sink import MilvusSink
 from public_kb.ingestion.sources.csv_source import CsvSource

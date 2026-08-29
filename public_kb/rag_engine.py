@@ -17,10 +17,11 @@ from .ingestion.sinks.milvus_sink import MilvusSink
 from .ingestion.sources.document_source import DocumentSource
 from .ingestion.sources.pdf_source import PdfSource
 from .ingestion.transforms import SemanticChunker, TextCleaner
+from .generation.chain import build_chain
+from .retrieval.reranker import SiliconFlowReranker
 from .services.llm import create_llm
 from .services.milvus_store import MilvusStoreManager
 from .services.mineru_parser import MinerUParser
-from .qa_chain import build_qa_chain
 
 
 logger = logging.getLogger(__name__)
@@ -159,10 +160,11 @@ class PublicKnowledgeRAG:
             collection = None
             logger.info("MilvusClient 不可用，问答链将使用纯稠密检索")
 
-        self._qa_chain = build_qa_chain(
+        self._qa_chain = build_chain(
             vector_store=self._store_manager.store,
             llm=self._llm,
             settings=self._settings,
             collection=collection,
             embeddings=self._embeddings,
+            reranker_class=SiliconFlowReranker,
         )

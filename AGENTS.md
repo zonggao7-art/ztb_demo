@@ -56,7 +56,11 @@ The system has two independent packages connected by a thin contract:
 ### `public_kb/` — RAG engine
 
 - **`rag_engine.py`**: `PublicKnowledgeRAG` class — the public entry point. Methods: `init_knowledge_base(pdf_dir)`, `query(question)`, `clear_kb()`, `add_pdf(path)`. Uses lazy singleton pattern; the knowledge base is read-only after initialization.
-- Pipeline: PDF → `MinerUParser` (MinerU API → Markdown) → `TextCleaner` → `SemanticChunker` (heading-aware, 2000 chars/chunk, 100 char overlap) → `create_embeddings()` (BGE-m3, 1024 dims) → `MilvusStoreManager` → `build_qa_chain()` (LCEL hybrid retrieval chain).
+- Pipeline: PDF → `MinerUParser` (MinerU API → Markdown) → `TextCleaner` → `SemanticChunker` (heading-aware, 2000 chars/chunk, 100 char overlap) → `create_embeddings()` (BGE-m3, 1024 dims) → `MilvusStoreManager` → `build_chain()` (LCEL hybrid retrieval chain).
+- **`services/`**: Embedding, LLM, Milvus storage, and MinerU parsing implementations.
+- **`ingestion/`**: Source, transform, sink, pipeline, and CSV CLI implementations.
+- **`retrieval/`**: Milvus dense/sparse search, RRF fusion, adaptive thresholds, fallback, and reranking.
+- **`generation/`**: Prompt construction, context formatting, LCEL chain assembly, and citation utilities.
 - **`config.py`**: `Settings` dataclass — single source of truth for all parameters. Loads from `.env` automatically. All modules share this config.
 - Hybrid retrieval: dense (BGE-m3) + sparse → RRF fusion (k=60) → BGE-reranker-v2-m3 Cross-Encoder rerank → top-K (5). Adaptive similarity threshold with 0.45 floor.
 

@@ -9,7 +9,7 @@ from langchain_core.documents import Document
 
 from public_kb.config import Settings
 from public_kb.contracts import ConfigurationContractError, IngestionContractError
-from public_kb.milvus_store import MilvusStoreManager
+from public_kb.services.milvus_store import MilvusStoreManager
 
 
 class FakeSchema:

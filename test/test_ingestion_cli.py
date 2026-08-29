@@ -10,7 +10,6 @@ import pytest
 from langchain_core.documents import Document
 
 import public_kb.ingestion.cli as cli
-import public_kb.process_csv as process_csv
 from public_kb.ingestion.models import IngestionResult, SourceResult, StageResult
 
 
@@ -317,11 +316,3 @@ def test_batch_csv_ingestion_uses_initialize_only_for_first_import(
 
     assert calls == ["initialize", "append"]
     assert all(stats["imported"] for stats in result.group_stats)
-
-
-def test_legacy_process_csv_entry_forwards_to_consolidated_cli() -> None:
-    assert process_csv.main is cli.main
-    assert process_csv.scan_csv_files is cli.scan_csv_files
-    assert process_csv.run_batch_csv_ingestion is cli.run_batch_csv_ingestion
-    assert process_csv.validate_markdown_output is cli.validate_markdown_output
-    assert process_csv.DEFAULT_OUTPUT_DIR == cli.DEFAULT_MARKDOWN_OUTPUT_DIR

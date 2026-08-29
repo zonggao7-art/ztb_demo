@@ -150,10 +150,14 @@ python test/explain_sql.py --db ztb_clean --sql "<SQL>"
 │       ├── doc_qa.py       # 文档问答
 │       └── fallback.py     # 兜底
 ├── public_kb/              # RAG 引擎
-│   ├── rag_engine.py       # PublicKnowledgeRAG
-│   ├── chunker.py          # 语义切片
-│   ├── mineru_parser.py    # PDF 解析
-│   └── milvus_store.py     # Milvus 入库/检索
+│   ├── rag_engine.py       # PublicKnowledgeRAG 统一门面
+│   ├── config.py           # 全局配置
+│   ├── contracts.py        # 输入输出 / Milvus / 检索契约
+│   ├── chunk_ids.py        # chunk_id 与 chunk_uid
+│   ├── services/           # Embedding、LLM、Milvus、PDF 解析
+│   ├── ingestion/          # Source / Transform / Sink / Pipeline / CLI
+│   ├── retrieval/          # 混合检索、RRF、Reranker、降级
+│   └── generation/         # Prompt、上下文、问答链、引用
 ├── scripts/                # 评估、报告、运维脚本
 ├── test/                   # 单元测试 + 诊断脚本
 ├── docker/

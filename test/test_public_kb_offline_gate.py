@@ -8,7 +8,7 @@ from unittest.mock import patch
 
 from public_kb.config import Settings
 from public_kb.contracts import ConfigurationContractError, MilvusCollectionContract
-from public_kb.milvus_store import MilvusStoreManager
+from public_kb.services.milvus_store import MilvusStoreManager
 
 
 class SettingsOfflineGateTests(unittest.TestCase):

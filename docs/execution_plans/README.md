@@ -10,7 +10,7 @@
 | [milvus_upgrade_poc_execution_plan.md](milvus_upgrade_poc_execution_plan.md) | Milvus 2.5+/2.6 小批量数据写入与混合检索验证方案 | POC 8/8 已通过 |
 | [code_optimization_execution_plan_hybrid_retrieval.md](code_optimization_execution_plan_hybrid_retrieval.md) | 混合检索代码优化执行方案 | 已被 POC 结果和后续工程化审查部分覆盖 |
 | [pipeline_refactor_execution_plan.md](pipeline_refactor_execution_plan.md) | `public_kb` 在线检索、生成层、离线入库 Pipeline 的分阶段重构方案 | 已完成，待全量入库 |
-| [public_kb_directory_consolidation_plan_20260829.md](public_kb_directory_consolidation_plan_20260829.md) | `public_kb` 目录结构收敛、兼容层治理与回归验证方案 | 阶段 6B 安全废弃完成；待协程分支合并后物理删除 |
+| [public_kb_directory_consolidation_plan_20260829.md](public_kb_directory_consolidation_plan_20260829.md) | `public_kb` 目录结构收敛、兼容层治理与回归验证方案 | 已完成；旧兼容壳已物理删除 |
 
 ## 文档放置规则
 
