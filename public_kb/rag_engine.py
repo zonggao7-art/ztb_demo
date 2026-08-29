@@ -30,6 +30,9 @@ from .llm_factory import create_llm
 from .milvus_store import MilvusStoreManager
 from .mineru_parser import MinerUParser
 from .ingestion.sources.pdf_source import PdfSource
+from .ingestion.pipeline import IngestionPipeline
+from .ingestion.sinks.milvus_sink import MilvusSink
+from .ingestion.sources.document_source import DocumentSource
 from .qa_chain import build_qa_chain
 from .text_cleaner import TextCleaner
 
@@ -121,9 +124,21 @@ class PublicKnowledgeRAG:
                 f"所有 PDF 处理均失败，无法初始化知识库。失败清单: {failed}"
             )
 
-        # 入库
+        # 入库：通过统一 Ingestion Pipeline 执行契约校验与向量化写入
         logger.info("开始向量化并入库 %d 个文档块...", len(all_docs))
-        self._store_manager.initialize_collection(all_docs)
+        ingestion_result = IngestionPipeline([
+            MilvusSink(self._store_manager, mode="initialize"),
+        ]).run(
+            DocumentSource(
+                all_docs,
+                source_name="pdf_directory",
+            )
+        )
+        logger.info(
+            "PDF 初始化入库完成: chunks=%d, inserted=%d",
+            ingestion_result.chunk_count,
+            ingestion_result.inserted_count,
+        )
 
         # 构建问答链
         self._build_qa_chain()
@@ -234,14 +249,21 @@ class PublicKnowledgeRAG:
             return 0
 
         # 增量入库（不 drop 旧集合）
-        self._store_manager.add_documents(docs)
+        ingestion_result = IngestionPipeline([
+            MilvusSink(self._store_manager, mode="append"),
+        ]).run(
+            DocumentSource(
+                docs,
+                source_name=str(pdf_file),
+            )
+        )
 
         # 若 QA 链未初始化，则构建
         if self._qa_chain is None:
             self._build_qa_chain()
 
         logger.info("增量导入完成: %s → %d 块", pdf_file.name, len(docs))
-        return len(docs)
+        return ingestion_result.chunk_count
 
     # ==========================================================
     #  内部方法

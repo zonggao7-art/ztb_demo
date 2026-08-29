@@ -23,7 +23,7 @@ class IngestionPipeline:
 
     def run(self, source: Source) -> IngestionResult:
         """Load, validate, and write source documents."""
-        source_name = type(source).__name__
+        source_name = str(getattr(source, "name", type(source).__name__))
         started_at = time.perf_counter()
 
         source_result = source.load()

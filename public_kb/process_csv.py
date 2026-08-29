@@ -37,7 +37,12 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT_ROOT))
 
 from public_kb import PublicKnowledgeRAG, Settings
-from public_kb.csv_loader import CsvLoader, save_chunks_to_markdown
+from public_kb.csv_loader import CsvLoader
+from public_kb.ingestion.pipeline import IngestionPipeline
+from public_kb.ingestion.sinks.markdown_sink import MarkdownSink
+from public_kb.ingestion.sinks.milvus_sink import MilvusSink
+from public_kb.ingestion.sources.csv_source import CsvSource
+from public_kb.ingestion.sources.document_source import DocumentSource
 
 logger = logging.getLogger("public_kb.process_csv")
 
@@ -127,8 +132,9 @@ def process_group(
     for file_path in files:
         file_name = os.path.basename(file_path)
         try:
-            # Phase 2-4: 加载 + 清洗 + 切片
-            docs, rows = loader.load_file(file_path)
+            # Phase 2-4: CSV Source 加载 + 清洗 + 切片
+            source_result = CsvSource(file_path, loader=loader).load()
+            docs, rows = source_result.documents, source_result.records
 
             if not docs:
                 logger.warning("  → %s 无有效内容，跳过", file_name)
@@ -141,8 +147,11 @@ def process_group(
             stats["total_rows"] += len(rows)
             stats["total_chunks"] += len(docs)
 
-            # Phase 5: 中间存储（Markdown）
-            save_chunks_to_markdown(docs, output_dir, file_name, rows)
+            # Phase 5: 可选中间预览（Markdown）
+            MarkdownSink(output_dir, source_file=file_name).write(
+                docs,
+                records=rows,
+            )
 
         except Exception as e:
             logger.error("✗ %s 处理失败: %s", file_name, e)
@@ -162,9 +171,21 @@ def process_group(
     if not skip_import and all_docs:
         logger.info("开始入库组 %s（%d 个文档块）...", group_label, len(all_docs))
         try:
-            rag._store_manager.add_documents(all_docs)
+            ingestion_result = IngestionPipeline([
+                MilvusSink(rag._store_manager, mode="append"),
+            ]).run(
+                DocumentSource(
+                    all_docs,
+                    source_name=f"csv_group_{group_label}",
+                )
+            )
             stats["imported"] = True
-            logger.info("组 %s 入库完成", group_label)
+            logger.info(
+                "组 %s 入库完成: chunks=%d, inserted=%d",
+                group_label,
+                ingestion_result.chunk_count,
+                ingestion_result.inserted_count,
+            )
         except Exception as e:
             logger.error("组 %s 入库失败: %s", group_label, e)
             stats["imported"] = False
