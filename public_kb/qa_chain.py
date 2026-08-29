@@ -43,6 +43,7 @@ from .generation.prompts import (
     USER_TEMPLATE,
     build_prompt,
 )
+from .generation.context import build_sources, format_docs
 
 
 # Historical callers and tests patch this private symbol in qa_chain. Keep the
@@ -56,55 +57,10 @@ _hybrid_search_with_full_fields = hybrid_search_with_full_fields
 _adaptive_threshold = adaptive_threshold
 _dense_only_retrieve = dense_only_retrieve
 _build_prompt = build_prompt
+_format_docs = format_docs
+_build_sources = build_sources
 
 logger = logging.getLogger(__name__)
-
-
-# ============================================================
-#  格式化工具函数
-# ============================================================
-
-def _format_docs(docs_with_scores: List[Tuple[Document, float]]) -> str:
-    """将检索到的文档列表格式化为拼接上下文字符串。
-
-    Args:
-        docs_with_scores: (Document, similarity_score) 列表。
-
-    Returns:
-        带来源标注的拼接文本。
-    """
-    parts: List[str] = []
-    for i, (doc, score) in enumerate(docs_with_scores, 1):
-        doc_name = doc.metadata.get("doc_name", "未知文档")
-        chapter = doc.metadata.get("chapter", "未知章节")
-        parts.append(
-            f"[来源{i}] 文档: {doc_name} | 章节: {chapter} | 相关度: {score:.2%}\n"
-            f"{doc.page_content}"
-        )
-    return "\n\n---\n\n".join(parts)
-
-
-def _build_sources(
-    docs_with_scores: List[Tuple[Document, float]],
-) -> List[Dict[str, Any]]:
-    """从检索结果构建引用来源列表（legacy 视图，保持向后兼容）。
-
-    Args:
-        docs_with_scores: (Document, similarity_score) 列表。
-
-    Returns:
-        结构化来源信息列表。
-    """
-    return [
-        {
-            "doc": doc.metadata.get("doc_name", "未知文档"),
-            "chapter": doc.metadata.get("chapter", "未知章节"),
-            "chunk_index": doc.metadata.get("chunk_index", -1),
-            "content_snippet": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content,
-            "score": round(score, 4),
-        }
-        for doc, score in docs_with_scores
-    ]
 
 
 class _RetrievalTrace:
