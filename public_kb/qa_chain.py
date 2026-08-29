@@ -22,7 +22,7 @@ from .retrieval.milvus_search import (
     hybrid_search_with_full_fields,
     search_with_full_fields,
 )
-from .retrieval.reranker.siliconflow import SiliconFlowReranker
+from .retrieval.reranker import SiliconFlowReranker
 from .retrieval.strategies import adaptive_threshold
 from .retrieval.retriever import HybridRetrievalError
 

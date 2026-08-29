@@ -1,17 +1,32 @@
-"""SiliconFlow reranker HTTP client."""
+"""Reranker protocol and SiliconFlow HTTP client."""
 
 from __future__ import annotations
 
 import logging
 import time
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Protocol
 
 import requests
 
-from public_kb.contracts import RerankerStatus
+from ..contracts import RerankerStatus
 
 
 logger = logging.getLogger(__name__)
+
+
+class Reranker(Protocol):
+    """Protocol implemented by reranker clients used by retrieval."""
+
+    last_status: RerankerStatus
+
+    def rerank(
+        self,
+        query: str,
+        documents: List[str],
+        top_k: int = 3,
+    ) -> List[Dict[str, Any]]:
+        """Return API results sorted by descending relevance score."""
+        ...
 
 
 class SiliconFlowReranker:

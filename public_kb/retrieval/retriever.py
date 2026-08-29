@@ -20,7 +20,7 @@ from ..contracts import (
 from .entities import entity_to_doc, normalize_hit_entity
 from .fallback import dense_only_retrieve
 from .milvus_search import hybrid_search_with_full_fields
-from .reranker.protocol import Reranker
+from .reranker import Reranker
 from .strategies import adaptive_threshold
 
 

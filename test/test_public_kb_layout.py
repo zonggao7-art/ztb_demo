@@ -35,7 +35,9 @@ from public_kb.qa_chain import (
 from public_kb.rag_engine import PublicKnowledgeRAG
 from public_kb.retrieval.fallback import dense_only_retrieve
 from public_kb.retrieval.retriever import HybridRetriever
-from public_kb.retrieval.reranker.siliconflow import SiliconFlowReranker
+from public_kb.citations import CitationValidator as legacy_citation_validator
+from public_kb.generation.citations import CitationValidator
+from public_kb.retrieval.reranker import Reranker, SiliconFlowReranker
 from public_kb.services.embeddings import _SafeEmbeddings, create_embeddings
 from public_kb.services.llm import create_llm
 from public_kb.services.milvus_store import MilvusStoreManager
@@ -97,6 +99,49 @@ def test_shared_services_preserve_legacy_import_aliases():
     assert legacy_create_llm is create_llm
     assert legacy_milvus_store_manager is MilvusStoreManager
     assert legacy_mineru_parser is MinerUParser
+
+
+def test_generation_citations_preserves_legacy_import_alias():
+    assert CitationValidator is legacy_citation_validator
+
+
+def test_retrieval_reranker_contract_and_client_are_consolidated():
+    assert Reranker is not None
+    assert SiliconFlowReranker is not None
+    assert not (PUBLIC_KB_ROOT / "retrieval" / "reranker" / "protocol.py").exists()
+    assert not (PUBLIC_KB_ROOT / "retrieval" / "reranker" / "siliconflow.py").exists()
+
+
+def test_generation_and_retrieval_do_not_import_legacy_citation_reranker_paths():
+    scanned_paths = [
+        PUBLIC_KB_ROOT / "rag_engine.py",
+        PUBLIC_KB_ROOT / "generation",
+        PUBLIC_KB_ROOT / "ingestion",
+        PUBLIC_KB_ROOT / "retrieval",
+        PUBLIC_KB_ROOT / "services",
+    ]
+    python_paths = []
+    for path in scanned_paths:
+        if path.is_file():
+            python_paths.append(path)
+        elif path.is_dir():
+            python_paths.extend(path.rglob("*.py"))
+
+    for path in python_paths:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ImportFrom):
+                continue
+            module = node.module or ""
+            if node.level == 0:
+                assert module != "public_kb.citations", str(path)
+                assert not module.startswith("public_kb.citations."), str(path)
+                assert module != "public_kb.retrieval.reranker.protocol", str(path)
+                assert module != "public_kb.retrieval.reranker.siliconflow", str(path)
+            if node.level > 0:
+                assert module not in {"reranker.protocol", "reranker.siliconflow"}, str(path)
+                if path.parent == PUBLIC_KB_ROOT / "generation":
+                    assert not (node.level >= 2 and module == "citations"), str(path)
 
 
 def test_internal_pipelines_do_not_import_legacy_service_paths():

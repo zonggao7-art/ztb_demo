@@ -27,7 +27,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT_ROOT))
 
 from public_kb import PublicKnowledgeRAG
-from public_kb.citations import format_citations
+from public_kb.generation.citations import format_citations
 
 # 配置日志输出
 logging.basicConfig(

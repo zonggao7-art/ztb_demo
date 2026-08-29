@@ -10,10 +10,10 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_milvus import Milvus as MilvusVectorStore
 
-from ..citations import CitationValidator, build_citations
+from .citations import CitationValidator, build_citations
 from ..config import Settings
 from ..contracts import validate_question
-from ..retrieval.reranker.protocol import Reranker
+from ..retrieval.reranker import Reranker
 from ..retrieval.retriever import HybridRetriever, RetrievalResult
 from .context import build_sources, format_docs
 from .prompts import build_prompt
