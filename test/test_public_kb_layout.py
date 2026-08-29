@@ -1,0 +1,95 @@
+"""Structural guards for public_kb before and during directory consolidation."""
+
+from __future__ import annotations
+
+import ast
+import inspect
+from pathlib import Path
+
+import public_kb
+import public_kb.chunker as legacy_chunker
+import public_kb.ingestion.transforms.chunker as ingestion_chunker
+import public_kb.ingestion.transforms.cleaner as ingestion_cleaner
+import public_kb.text_cleaner as legacy_cleaner
+from agent.nodes.knowledge_qa import node_knowledge_qa
+from public_kb.contracts import RetrievalDiagnostics, validate_ingestion_documents
+from public_kb.csv_loader import CsvLoader
+from public_kb.ingestion.models import IngestionResult, SourceResult, StageResult
+from public_kb.ingestion.pipeline import IngestionPipeline
+from public_kb.qa_chain import (
+    _SiliconFlowReranker,
+    _dense_only_retrieve,
+    build_qa_chain,
+)
+from public_kb.rag_engine import PublicKnowledgeRAG
+from public_kb.retrieval.fallback import dense_only_retrieve
+from public_kb.retrieval.retriever import HybridRetriever
+from public_kb.retrieval.reranker.siliconflow import SiliconFlowReranker
+
+
+PUBLIC_KB_ROOT = Path(public_kb.__file__).resolve().parent
+
+
+def test_stable_public_entries_import_without_initializing_services():
+    assert public_kb.PublicKnowledgeRAG is PublicKnowledgeRAG
+    assert callable(build_qa_chain)
+    assert callable(node_knowledge_qa)
+    assert not inspect.iscoroutinefunction(PublicKnowledgeRAG.query)
+    assert not inspect.iscoroutinefunction(HybridRetriever.retrieve)
+
+
+def test_qa_chain_facade_forwards_to_split_retrieval_pipeline():
+    assert _SiliconFlowReranker is SiliconFlowReranker
+    assert _dense_only_retrieve is dense_only_retrieve
+    assert callable(build_qa_chain)
+
+
+def test_ingestion_pipeline_boundaries_import_and_keep_legacy_aliases():
+    assert IngestionPipeline is not None
+    assert SourceResult is not None
+    assert StageResult is not None
+    assert IngestionResult is not None
+    assert validate_ingestion_documents is not None
+    assert ingestion_chunker.SemanticChunker is legacy_chunker.SemanticChunker
+    assert ingestion_cleaner.TextCleaner is legacy_cleaner.TextCleaner
+    assert CsvLoader is not None
+
+
+def test_shared_contracts_and_chunk_identity_remain_at_package_root():
+    from public_kb.chunk_ids import compute_chunk_uid
+    from public_kb.config import Settings
+    from public_kb.contracts import RetrievalMode, RerankerStatus
+
+    assert callable(compute_chunk_uid)
+    assert Settings is not None
+    assert RetrievalMode.HYBRID_RRF is not None
+    assert RerankerStatus.FAILED is not None
+    assert RetrievalDiagnostics is not None
+
+
+def test_agent_knowledge_entry_does_not_import_public_kb_internals():
+    entry_path = Path(node_knowledge_qa.__module__.replace(".", "/"))
+    entry_path = Path(*entry_path.parts).with_suffix(".py")
+    if not entry_path.is_absolute():
+        entry_path = PUBLIC_KB_ROOT.parent / entry_path
+
+    tree = ast.parse(entry_path.read_text(encoding="utf-8"))
+    imported_modules = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            imported_modules.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            imported_modules.add(node.module)
+
+    forbidden_prefixes = (
+        "public_kb.qa_chain",
+        "public_kb.rag_engine",
+        "public_kb.retrieval",
+        "public_kb.generation",
+        "public_kb.ingestion",
+    )
+    assert not any(
+        module == prefix or module.startswith(prefix + ".")
+        for module in imported_modules
+        for prefix in forbidden_prefixes
+    )

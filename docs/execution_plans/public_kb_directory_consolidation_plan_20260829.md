@@ -339,7 +339,7 @@ functions: text_bm25_emb
 ### 7.4 CSV 小批量入库
 
 ```powershell
-& "D:\agent_project\zhaotoubiao_demo 1\.venv\Scripts\python.exe" scripts/poc_validate_csv_ingestion.py
+& "D:\agent_project\zhaotoubiao_demo 1\.venv\Scripts\python.exe" scripts/poc_validate_csv_ingestion.py --refresh
 ```
 
 期望：

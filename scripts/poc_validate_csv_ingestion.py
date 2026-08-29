@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import csv
+import argparse
 import json
 import sys
 import time
@@ -75,12 +76,22 @@ def _check_metadata(rows: list[dict]) -> list[str]:
     return missing
 
 
-def main() -> int:
+def main(*, refresh: bool = False) -> int:
     settings = Settings(
         milvus_uri=URI,
         collection_name=COLLECTION,
         enable_bm25=True,
     )
+    if refresh:
+        bootstrap_client = MilvusClient(uri=URI)
+        if bootstrap_client.has_collection(COLLECTION):
+            if not COLLECTION.startswith(settings.milvus_experiment_prefix):
+                raise RuntimeError(
+                    f"拒绝刷新非实验集合 {COLLECTION!r}；允许前缀为 "
+                    f"{settings.milvus_experiment_prefix!r}"
+                )
+            bootstrap_client.drop_collection(COLLECTION)
+
     embeddings = create_embeddings(settings)
     started_at = time.perf_counter()
     with TemporaryDirectory() as temp_dir:
@@ -153,4 +164,13 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    parser = argparse.ArgumentParser(
+        description="Validate CSV ingestion on the local Milvus POC collection."
+    )
+    parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help="Drop the experimental validation collection before initializing it again.",
+    )
+    arguments = parser.parse_args()
+    sys.exit(main(refresh=arguments.refresh))
