@@ -24,7 +24,6 @@ from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_milvus import Milvus as MilvusVectorStore
 from pymilvus import AnnSearchRequest, RRFRanker
 
-from .chunk_ids import compute_chunk_uid
 from .citations import CitationValidator, build_citations
 from .config import Settings
 from .contracts import (
@@ -35,11 +34,21 @@ from .contracts import (
 )
 from .retrieval.reranker.protocol import Reranker
 from .retrieval.reranker.siliconflow import SiliconFlowReranker
+from .retrieval.entities import entity_to_doc, normalize_hit_entity
+from .retrieval.milvus_search import (
+    hybrid_search_with_full_fields,
+    search_with_full_fields,
+)
 
 
 # Historical callers and tests patch this private symbol in qa_chain. Keep the
 # alias while the module is split into retrieval and generation pipelines.
 _SiliconFlowReranker = SiliconFlowReranker
+
+_normalize_hit_entity = normalize_hit_entity
+_entity_to_doc = entity_to_doc
+_search_with_full_fields = search_with_full_fields
+_hybrid_search_with_full_fields = hybrid_search_with_full_fields
 
 logger = logging.getLogger(__name__)
 
@@ -123,18 +132,6 @@ def _build_sources(
     ]
 
 
-# ============================================================
-#  Milvus 实体 → Document 溯源元数据透传
-# ============================================================
-
-# 检索输出字段：优先全字段（含动态元数据），失败回退基础字段
-_OUTPUT_FIELDS_ALL = ["*"]
-_OUTPUT_FIELDS_FALLBACK = ["text", "id", "doc_name", "chapter", "chunk_index"]
-
-# Document metadata 中不属于业务溯源字段的键（来自 Milvus 实体）
-_EXCLUDED_META_KEYS = ("text", "vector", "sparse_vector", "id", "distance", "entity")
-
-
 class HybridRetrievalError(RuntimeError):
     """严格验证模式下，混合检索未按契约执行。"""
 
@@ -147,123 +144,6 @@ class _RetrievalTrace:
         self.diagnostics = RetrievalDiagnostics(
             retrieval_mode=RetrievalMode.REFUSAL,
         )
-
-
-def _normalize_hit_entity(entity: Any) -> Dict[str, Any]:
-    """归一化 pymilvus 3.x 检索命中实体。
-
-    MilvusClient.search/hybrid_search 的 Hit.entity 为嵌套结构:
-        {"id": int, "distance": float, "entity": {实际标量字段...}}
-    实际字段在内层 entity 中；get() 查询返回的行则是平铺结构。
-    本函数统一为平铺 dict（内层字段 + distance 兜底）。
-    """
-    if isinstance(entity, dict) and isinstance(entity.get("entity"), dict):
-        merged = dict(entity["entity"])
-        merged.setdefault("distance", entity.get("distance"))
-        merged.setdefault("id", entity.get("id"))
-        return merged
-    return dict(entity) if isinstance(entity, dict) else {}
-
-
-def _entity_to_doc(entity: Any, score: float) -> Document:
-    """将 Milvus 检索命中实体转换为携带完整溯源元数据的 Document。
-
-    元数据写入约定：
-      - chunk_id   : Milvus 主键 id（行级唯一，回表验证"错误关联"用）
-      - chunk_uid  : 内容派生稳定标识（存量数据无此字段时即时计算，与入库侧同口径）
-      - doc_name / chapter / chunk_index : 数据源位置
-      - 其余动态字段（source_file / source_url / publish_date 等）原样透传
-
-    Args:
-        entity: Milvus 命中实体（pymilvus 3.x Hit.entity 嵌套结构或平铺 dict）。
-        score: 检索相关度分数。
-
-    Returns:
-        带完整溯源元数据的 Document。
-    """
-    entity = _normalize_hit_entity(entity)
-    text = str(entity.get("text", "") or "")
-
-    meta: Dict[str, Any] = {}
-    for key, value in entity.items():
-        if key in _EXCLUDED_META_KEYS:
-            continue
-        if value is None:
-            continue
-        meta[key] = value
-
-    # chunk_id 统一命名（Milvus 主键名固定为 id）
-    meta["chunk_id"] = entity.get("id")
-    meta.setdefault("doc_name", "未知文档")
-    meta.setdefault("chapter", "未知章节")
-    meta.setdefault("chunk_index", -1)
-
-    # 存量数据无 chunk_uid → 即时计算（与入库侧 compute_chunk_uid 同口径）
-    if not meta.get("chunk_uid"):
-        meta["chunk_uid"] = compute_chunk_uid(text, meta)
-
-    return Document(page_content=text, metadata=meta)
-
-
-def _search_with_full_fields(
-    collection: Any,
-    settings: Settings,
-    *,
-    data: List[Any],
-    anns_field: str,
-    search_params: Dict[str, Any],
-    limit: int,
-) -> List[Any]:
-    """pymilvus search，优先 output_fields=['*'] 全字段（含动态元数据），
-    服务端不支持时回退基础字段列表。
-    """
-    try:
-        return collection.search(
-            settings.collection_name,
-            data=data,
-            anns_field=anns_field,
-            search_params=search_params,
-            limit=limit,
-            output_fields=_OUTPUT_FIELDS_ALL,
-        )[0]
-    except Exception as e:
-        logger.warning("output_fields=['*'] 检索失败 (%s)，回退基础字段", e)
-        return collection.search(
-            settings.collection_name,
-            data=data,
-            anns_field=anns_field,
-            search_params=search_params,
-            limit=limit,
-            output_fields=_OUTPUT_FIELDS_FALLBACK,
-        )[0]
-
-
-def _hybrid_search_with_full_fields(
-    collection: Any,
-    settings: Settings,
-    *,
-    reqs: List[Any],
-    ranker: Any,
-    limit: int,
-) -> List[Any]:
-    """pymilvus hybrid_search，output_fields=['*'] 优先，失败回退基础字段。"""
-    try:
-        return collection.hybrid_search(
-            settings.collection_name,
-            reqs=reqs,
-            ranker=ranker,
-            limit=limit,
-            output_fields=_OUTPUT_FIELDS_ALL,
-        )[0]
-    except Exception as e:
-        logger.warning("hybrid_search output_fields=['*'] 失败 (%s)，回退基础字段", e)
-        return collection.hybrid_search(
-            settings.collection_name,
-            reqs=reqs,
-            ranker=ranker,
-            limit=limit,
-            output_fields=_OUTPUT_FIELDS_FALLBACK,
-        )[0]
 
 
 # ============================================================
@@ -400,7 +280,7 @@ def build_qa_chain(
                 limit=settings.hybrid_sparse_limit,
             )
 
-            raw_hits = _hybrid_search_with_full_fields(
+            raw_hits = hybrid_search_with_full_fields(
                 collection,
                 settings,
                 reqs=[dense_req, sparse_req],
@@ -409,7 +289,7 @@ def build_qa_chain(
             )
             candidates: List[Tuple[str, float, dict]] = []
             for hit in raw_hits:
-                entity = _normalize_hit_entity(hit.entity)
+                entity = normalize_hit_entity(hit.entity)
                 candidates.append((str(entity.get("text", "")), hit.score, entity))
 
             trace = _RetrievalTrace()
@@ -436,7 +316,7 @@ def build_qa_chain(
                     index = int(item["index"])
                     if score >= threshold and 0 <= index < len(candidates):
                         _, rrf_score, entity = candidates[index]
-                        doc = _entity_to_doc(entity, score)
+                        doc = entity_to_doc(entity, score)
                         doc.metadata["rrf_score"] = round(rrf_score, 4)
                         doc.metadata["score_type"] = "reranker"
                         results.append((doc, score))
@@ -454,7 +334,7 @@ def build_qa_chain(
             # Reranker 失败时保留 RRF 排序，不构造虚假相关度分数。
             results = []
             for _, rrf_score, entity in candidates[:settings.retrieval_top_k]:
-                doc = _entity_to_doc(entity, rrf_score)
+                doc = entity_to_doc(entity, rrf_score)
                 doc.metadata["rrf_score"] = round(rrf_score, 4)
                 doc.metadata["score_type"] = "rrf"
                 results.append((doc, rrf_score))
@@ -596,7 +476,7 @@ def _dense_only_retrieve(
     if collection is not None and embeddings is not None:
         try:
             query_vector = dense_vec if dense_vec is not None else embeddings.embed_query(question)
-            raw_hits = _search_with_full_fields(
+            raw_hits = search_with_full_fields(
                 collection, settings,
                 data=[query_vector],
                 anns_field="vector",
@@ -609,7 +489,7 @@ def _dense_only_retrieve(
             results: List[Tuple[Document, float]] = []
             for hit in raw_hits:
                 if hit.score >= settings.similarity_threshold:
-                    doc = _entity_to_doc(hit.entity, hit.score)
+                    doc = entity_to_doc(hit.entity, hit.score)
                     doc.metadata["score"] = round(hit.score, 4)
                     results.append((doc, hit.score))
             logger.info(
