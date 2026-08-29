@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import ast
 import inspect
+import importlib
+import sys
+import warnings
 from pathlib import Path
 
 import public_kb
@@ -142,6 +145,69 @@ def test_generation_and_retrieval_do_not_import_legacy_citation_reranker_paths()
                 assert module not in {"reranker.protocol", "reranker.siliconflow"}, str(path)
                 if path.parent == PUBLIC_KB_ROOT / "generation":
                     assert not (node.level >= 2 and module == "citations"), str(path)
+
+
+def test_legacy_modules_are_marked_deprecated():
+    legacy_modules = [
+        "public_kb.embedding_service",
+        "public_kb.llm_factory",
+        "public_kb.milvus_store",
+        "public_kb.mineru_parser",
+        "public_kb.chunker",
+        "public_kb.text_cleaner",
+        "public_kb.csv_loader",
+        "public_kb.citations",
+        "public_kb.qa_chain",
+        "public_kb.process_csv",
+    ]
+    for module_name in legacy_modules:
+        module = importlib.import_module(module_name)
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            importlib.reload(module)
+        assert any(
+            warning.category is DeprecationWarning for warning in caught
+        ), module_name
+
+
+def test_agent_and_poc_entries_do_not_import_legacy_paths():
+    legacy_names = {
+        "public_kb.embedding_service",
+        "public_kb.llm_factory",
+        "public_kb.milvus_store",
+        "public_kb.mineru_parser",
+        "public_kb.chunker",
+        "public_kb.text_cleaner",
+        "public_kb.csv_loader",
+        "public_kb.citations",
+        "public_kb.process_csv",
+        "public_kb.qa_chain",
+    }
+    scanned_paths = [
+        PUBLIC_KB_ROOT.parent / "agent",
+        PUBLIC_KB_ROOT.parent / "scripts",
+    ]
+    python_paths = [
+        path
+        for scanned_path in scanned_paths
+        for path in (
+            scanned_path.glob("poc_*.py")
+            if scanned_path.name == "scripts"
+            else scanned_path.rglob("*.py")
+        )
+    ]
+
+    assert python_paths
+    for path in python_paths:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Import):
+                modules = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom):
+                modules = [node.module or ""]
+            else:
+                continue
+            assert not any(module in legacy_names for module in modules), path
 
 
 def test_internal_pipelines_do_not_import_legacy_service_paths():

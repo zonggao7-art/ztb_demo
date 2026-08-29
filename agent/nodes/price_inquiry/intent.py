@@ -12,7 +12,7 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from public_kb.llm_factory import create_llm
+from public_kb.services.llm import create_llm
 
 from .db import _get_settings
 from .models import HardFilters, SearchIntent
@@ -33,7 +33,7 @@ _QUERY_FILLER_PATTERN = re.compile(
 def _build_llm() -> ChatOpenAI:
     """构造询价链路使用的 LLM（temperature=0，保证解析确定性）。
 
-    统一由 public_kb.llm_factory.create_llm 构建，避免与 graph/rag_engine 重复。
+    统一由公共知识库 LLM 工厂构建，避免与 graph/rag_engine 重复。
     """
     return create_llm(_get_settings(), temperature=0.0)
 

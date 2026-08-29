@@ -1,7 +1,8 @@
-"""Compatibility facade for the split retrieval and generation pipelines."""
+"""Deprecated compatibility facade for the split retrieval and generation pipelines."""
 
 from __future__ import annotations
 
+import warnings
 from typing import Any, Optional
 
 from langchain_core.documents import Document
@@ -25,6 +26,13 @@ from .retrieval.milvus_search import (
 from .retrieval.reranker import SiliconFlowReranker
 from .retrieval.strategies import adaptive_threshold
 from .retrieval.retriever import HybridRetrievalError
+
+warnings.warn(
+    "public_kb.qa_chain is deprecated; use public_kb.generation.chain and "
+    "public_kb.retrieval.retriever",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 
 _SiliconFlowReranker = SiliconFlowReranker

@@ -16,9 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 from public_kb.config import Settings
-from public_kb.embedding_service import create_embeddings
 from public_kb.ingestion.cli import run_csv_ingestion
-from public_kb.milvus_store import MilvusStoreManager
+from public_kb.services.embeddings import create_embeddings
+from public_kb.services.milvus_store import MilvusStoreManager
 
 
 URI = "http://localhost:19531"

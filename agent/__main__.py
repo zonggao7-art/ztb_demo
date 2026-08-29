@@ -22,7 +22,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT_ROOT))
 
 from agent import AgentGraph
-from public_kb.citations import format_citations
+from public_kb.generation.citations import format_citations
 
 
 def setup_logging(verbose: bool = False) -> None:

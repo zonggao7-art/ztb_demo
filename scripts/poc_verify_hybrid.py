@@ -14,10 +14,11 @@ sys.path.insert(0, str(ROOT))
 from pymilvus import AnnSearchRequest, RRFRanker
 
 from public_kb.config import Settings
-from public_kb.embedding_service import create_embeddings
-from public_kb.llm_factory import create_llm
-from public_kb.milvus_store import MilvusStoreManager
-from public_kb.qa_chain import build_qa_chain
+from public_kb.generation.chain import build_chain as build_qa_chain
+from public_kb.retrieval.reranker import SiliconFlowReranker
+from public_kb.services.embeddings import create_embeddings
+from public_kb.services.llm import create_llm
+from public_kb.services.milvus_store import MilvusStoreManager
 
 URI = "http://localhost:19531"
 COLL = "public_kb_hybrid_poc_v1"
@@ -115,6 +116,7 @@ def main() -> int:
     chain = build_qa_chain(
         vector_store=vector_store, llm=llm, settings=base,
         collection=client, embeddings=embeddings,
+        reranker_class=SiliconFlowReranker,
     )
     try:
         res4 = chain.invoke(QUESTION)
@@ -144,6 +146,7 @@ def main() -> int:
     chain_bad = build_qa_chain(
         vector_store=vector_store, llm=llm, settings=bad_rerank,
         collection=client, embeddings=embeddings,
+        reranker_class=SiliconFlowReranker,
     )
     try:
         res5 = chain_bad.invoke(QUESTION)
@@ -196,6 +199,7 @@ def main() -> int:
     chain_strict = build_qa_chain(
         vector_store=vector_store, llm=llm, settings=strict,
         collection=client, embeddings=embeddings,
+        reranker_class=SiliconFlowReranker,
     )
     try:
         res8 = chain_strict.invoke(QUESTION)

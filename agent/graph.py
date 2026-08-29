@@ -21,7 +21,7 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage
 
 from public_kb.config import Settings as PublicKBSettings
-from public_kb.llm_factory import create_llm
+from public_kb.services.llm import create_llm
 
 from .state import AgentState
 from .router import build_router_node

@@ -14,7 +14,7 @@ from langchain_openai import OpenAIEmbeddings
 from pymilvus import DataType, MilvusClient
 
 from public_kb.config import Settings
-from public_kb.embedding_service import create_embeddings
+from public_kb.services.embeddings import create_embeddings
 
 from .db import _CLEAN_DB, _get_connection, _get_settings, _release_connection
 from .models import SearchIntent
