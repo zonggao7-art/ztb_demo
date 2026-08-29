@@ -29,6 +29,7 @@ from .embedding_service import create_embeddings
 from .llm_factory import create_llm
 from .milvus_store import MilvusStoreManager
 from .mineru_parser import MinerUParser
+from .ingestion.sources.pdf_source import PdfSource
 from .qa_chain import build_qa_chain
 from .text_cleaner import TextCleaner
 
@@ -247,15 +248,14 @@ class PublicKnowledgeRAG:
     # ==========================================================
 
     def _process_single_pdf(self, pdf_path: Path) -> List[Document]:
-        """处理单个 PDF：解析 → 清洗 → 切片。"""
-        # 步骤 1: MinerU 解析 → Markdown
-        raw_md = self._parser.parse(pdf_path)
-
-        # 步骤 2: 文本清洗
-        cleaned_md = self._cleaner.clean(raw_md)
-
-        # 步骤 3: 语义切片
-        documents = self._chunker.chunk(cleaned_md, pdf_path.name)
+        """处理单个 PDF：委托 PDF Source 完成解析、清洗与切片。"""
+        source = PdfSource(
+            pdf_path,
+            parser=self._parser,
+            cleaner=self._cleaner,
+            chunker=self._chunker,
+        )
+        documents = source.load().documents
         if not documents:
             logger.warning("%s 切片后无有效内容，跳过", pdf_path.name)
 
