@@ -11,15 +11,15 @@ from langchain_core.language_models import BaseChatModel
 from langchain_openai import OpenAIEmbeddings
 
 from .config import Settings
-from .embedding_service import create_embeddings
+from .services.embeddings import create_embeddings
 from .ingestion.pipeline import IngestionPipeline
 from .ingestion.sinks.milvus_sink import MilvusSink
 from .ingestion.sources.document_source import DocumentSource
 from .ingestion.sources.pdf_source import PdfSource
 from .ingestion.transforms import SemanticChunker, TextCleaner
-from .llm_factory import create_llm
-from .milvus_store import MilvusStoreManager
-from .mineru_parser import MinerUParser
+from .services.llm import create_llm
+from .services.milvus_store import MilvusStoreManager
+from .services.mineru_parser import MinerUParser
 from .qa_chain import build_qa_chain
 
 

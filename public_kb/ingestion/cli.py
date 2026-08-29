@@ -8,8 +8,8 @@ from typing import Any
 
 from ..config import Settings
 from ..csv_loader import CsvLoader
-from ..embedding_service import create_embeddings
-from ..milvus_store import MilvusStoreManager
+from ..services.embeddings import create_embeddings
+from ..services.milvus_store import MilvusStoreManager
 from .models import IngestionResult
 from .pipeline import IngestionPipeline
 from .sinks.markdown_sink import MarkdownSink

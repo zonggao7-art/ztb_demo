@@ -7,7 +7,7 @@ from typing import Optional, Union
 
 from ..models import SourceResult
 from ..transforms import SemanticChunker, TextCleaner
-from ...mineru_parser import MinerUParser
+from ...services.mineru_parser import MinerUParser
 
 
 class PdfSource:
