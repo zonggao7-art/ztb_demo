@@ -20,7 +20,11 @@ from public_kb.llm_factory import create_llm as legacy_create_llm
 from public_kb.milvus_store import MilvusStoreManager as legacy_milvus_store_manager
 from public_kb.mineru_parser import MinerUParser as legacy_mineru_parser
 from public_kb.contracts import RetrievalDiagnostics, validate_ingestion_documents
-from public_kb.csv_loader import CsvLoader
+from public_kb.csv_loader import (
+    CsvLoader as legacy_csv_loader,
+    save_chunks_to_markdown as legacy_save_chunks_to_markdown,
+)
+from public_kb.ingestion.sources.csv_loader import CsvLoader, save_chunks_to_markdown
 from public_kb.ingestion.models import IngestionResult, SourceResult, StageResult
 from public_kb.ingestion.pipeline import IngestionPipeline
 from public_kb.qa_chain import (
@@ -63,7 +67,8 @@ def test_ingestion_pipeline_boundaries_import_and_keep_legacy_aliases():
     assert validate_ingestion_documents is not None
     assert ingestion_chunker.SemanticChunker is legacy_chunker.SemanticChunker
     assert ingestion_cleaner.TextCleaner is legacy_cleaner.TextCleaner
-    assert CsvLoader is not None
+    assert CsvLoader is legacy_csv_loader
+    assert save_chunks_to_markdown is legacy_save_chunks_to_markdown
 
 
 def test_shared_contracts_and_chunk_identity_remain_at_package_root():
@@ -123,6 +128,41 @@ def test_internal_pipelines_do_not_import_legacy_service_paths():
                     assert not alias.name.startswith("public_kb.llm_factory"), str(path)
                     assert not alias.name.startswith("public_kb.milvus_store"), str(path)
                     assert not alias.name.startswith("public_kb.mineru_parser"), str(path)
+
+
+def test_ingestion_does_not_import_legacy_package_roots():
+    legacy_absolute_names = {"chunker", "text_cleaner", "csv_loader"}
+    scanned_paths = [
+        PUBLIC_KB_ROOT / "rag_engine.py",
+        PUBLIC_KB_ROOT / "generation",
+        PUBLIC_KB_ROOT / "ingestion",
+        PUBLIC_KB_ROOT / "retrieval",
+        PUBLIC_KB_ROOT / "services",
+    ]
+    python_paths = []
+    for path in scanned_paths:
+        if path.is_file():
+            python_paths.append(path)
+        elif path.is_dir():
+            python_paths.extend(path.rglob("*.py"))
+
+    assert not (PUBLIC_KB_ROOT / "ingestion" / "transforms" / "chunk_ids.py").exists()
+
+    for path in python_paths:
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.ImportFrom):
+                continue
+            module = node.module or ""
+            if node.level == 0:
+                assert module not in legacy_absolute_names, f"{path}: {module}"
+                assert not module.startswith("public_kb.chunker"), str(path)
+                assert not module.startswith("public_kb.text_cleaner"), str(path)
+                assert not module.startswith("public_kb.csv_loader"), str(path)
+            if node.level == 2 and module == "csv_loader":
+                assert False, f"{path}: from ..csv_loader imports the legacy package root"
+            if node.level >= 3 and module in legacy_absolute_names:
+                assert False, f"{path}: from ...{module} imports the legacy package root"
 
 
 def test_agent_knowledge_entry_does_not_import_public_kb_internals():

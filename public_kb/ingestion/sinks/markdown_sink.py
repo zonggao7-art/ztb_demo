@@ -7,7 +7,7 @@ from typing import Any, Dict, Optional, Sequence, Union
 
 from langchain_core.documents import Document
 
-from ...csv_loader import save_chunks_to_markdown
+from ..sources.csv_loader import save_chunks_to_markdown
 
 
 class MarkdownSink:

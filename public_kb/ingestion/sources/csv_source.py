@@ -7,7 +7,7 @@ from typing import Optional, Union
 
 from ..models import SourceResult
 from ..transforms import SemanticChunker, TextCleaner
-from ...csv_loader import CsvLoader
+from .csv_loader import CsvLoader
 
 
 class CsvSource:

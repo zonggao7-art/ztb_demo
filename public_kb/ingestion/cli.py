@@ -7,7 +7,7 @@ import logging
 from typing import Any
 
 from ..config import Settings
-from ..csv_loader import CsvLoader
+from .sources.csv_loader import CsvLoader
 from ..services.embeddings import create_embeddings
 from ..services.milvus_store import MilvusStoreManager
 from .models import IngestionResult
