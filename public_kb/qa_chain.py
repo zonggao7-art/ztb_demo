@@ -22,17 +22,13 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_milvus import Milvus as MilvusVectorStore
-from pymilvus import AnnSearchRequest, RRFRanker
-
 from .citations import CitationValidator, build_citations
 from .config import Settings
 from .contracts import (
-    RerankerStatus,
     RetrievalDiagnostics,
     RetrievalMode,
     validate_question,
 )
-from .retrieval.reranker.protocol import Reranker
 from .retrieval.reranker.siliconflow import SiliconFlowReranker
 from .retrieval.entities import entity_to_doc, normalize_hit_entity
 from .retrieval.milvus_search import (
@@ -41,6 +37,7 @@ from .retrieval.milvus_search import (
 )
 from .retrieval.fallback import dense_only_retrieve
 from .retrieval.strategies import adaptive_threshold
+from .retrieval.retriever import HybridRetriever, HybridRetrievalError
 
 
 # Historical callers and tests patch this private symbol in qa_chain. Keep the
@@ -136,10 +133,6 @@ def _build_sources(
     ]
 
 
-class HybridRetrievalError(RuntimeError):
-    """严格验证模式下，混合检索未按契约执行。"""
-
-
 class _RetrievalTrace:
     """一次检索调用的结果与诊断状态。"""
 
@@ -197,169 +190,25 @@ def build_qa_chain(
     # 引用溯源校验器（fail-soft：只产出结构化报告，不阻断回答）
     validator = CitationValidator(settings.citation_rules)
 
-    # ── Reranker 客户端（延迟初始化）──
-    _reranker: Optional[Reranker] = None
-
-    def _get_reranker() -> "Reranker":
-        nonlocal _reranker
-        if _reranker is None:
-            _reranker = _SiliconFlowReranker(
-                model=settings.reranker_model,
-                api_key=settings.embedding_api_key,
-                base_url=settings.embedding_base_url,
-            )
-        return _reranker
-
-    # Schema 能力只探测一次；真实集成测试可通过重建问答链重新探测。
-    _has_sparse_cache: Optional[bool] = None
-
-    def _dense_fallback(
-        question: str,
-        reason: str,
-        dense_vec: Optional[List[float]] = None,
-    ) -> _RetrievalTrace:
-        docs = dense_only_retrieve(
-            question,
-            vector_store,
-            settings,
-            collection,
-            embeddings,
-            dense_vec=dense_vec,
-        )
-        trace = _RetrievalTrace()
-        trace.docs = docs
-        trace.diagnostics = RetrievalDiagnostics(
-            retrieval_mode=(
-                RetrievalMode.DENSE_NATIVE
-                if collection is not None and embeddings is not None
-                else RetrievalMode.DENSE_LANGCHAIN
-            ),
-            dense_count=len(docs),
-            fallback_reason=reason,
-        )
-        return trace
+    retriever = HybridRetriever(
+        vector_store=vector_store,
+        collection=collection,
+        embeddings=embeddings,
+        settings=settings,
+        reranker=_SiliconFlowReranker(
+            model=settings.reranker_model,
+            api_key=settings.embedding_api_key,
+            base_url=settings.embedding_base_url,
+        ),
+    )
 
     # ── 阶段 1: 混合检索（RunnableLambda 包装）──
     def _retrieve(raw_question: str) -> _RetrievalTrace:
-        """稠密 COSINE + 服务端 BM25 → RRF → 可选 Reranker。"""
-        nonlocal _has_sparse_cache
-        question = validate_question(raw_question)
-
-        if collection is None or embeddings is None:
-            logger.info("未提供原生 collection/embeddings，使用纯稠密检索")
-            return _dense_fallback(question, "native_collection_or_embeddings_missing")
-
-        dense_vec: Optional[List[float]] = None
-        try:
-            dense_vec = embeddings.embed_query(question)
-
-            if _has_sparse_cache is None:
-                collection_info = collection.describe_collection(settings.collection_name)
-                field_names = {
-                    field.get("name", "")
-                    for field in collection_info.get("fields", [])
-                }
-                _has_sparse_cache = "sparse_vector" in field_names
-
-            if not _has_sparse_cache:
-                reason = "sparse_vector_field_missing"
-                if settings.strict_hybrid_validation:
-                    raise HybridRetrievalError(reason)
-                logger.info("当前 Schema 无稀疏向量字段，使用纯稠密检索")
-                return _dense_fallback(question, reason, dense_vec)
-
-            dense_req = AnnSearchRequest(
-                data=[dense_vec],
-                anns_field="vector",
-                param={
-                    "metric_type": "COSINE",
-                    "params": {"nprobe": settings.nprobe},
-                },
-                limit=settings.hybrid_dense_limit,
-            )
-            sparse_req = AnnSearchRequest(
-                data=[question],
-                anns_field="sparse_vector",
-                param={"metric_type": "BM25", "params": {}},
-                limit=settings.hybrid_sparse_limit,
-            )
-
-            raw_hits = hybrid_search_with_full_fields(
-                collection,
-                settings,
-                reqs=[dense_req, sparse_req],
-                ranker=RRFRanker(k=settings.rrf_k),
-                limit=settings.hybrid_fusion_limit,
-            )
-            candidates: List[Tuple[str, float, dict]] = []
-            for hit in raw_hits:
-                entity = normalize_hit_entity(hit.entity)
-                candidates.append((str(entity.get("text", "")), hit.score, entity))
-
-            trace = _RetrievalTrace()
-            if not candidates:
-                trace.diagnostics = RetrievalDiagnostics(
-                    retrieval_mode=RetrievalMode.REFUSAL,
-                    dense_count=settings.hybrid_dense_limit,
-                    sparse_count=settings.hybrid_sparse_limit,
-                )
-                return trace
-
-            reranker = _get_reranker()
-            reranked = reranker.rerank(
-                query=question,
-                documents=[candidate[0] for candidate in candidates],
-                top_k=settings.retrieval_top_k,
-            )
-
-            if reranker.last_status is RerankerStatus.SUCCESS and reranked:
-                threshold = adaptive_threshold(reranked[0]["relevance_score"])
-                results: List[Tuple[Document, float]] = []
-                for item in reranked:
-                    score = float(item["relevance_score"])
-                    index = int(item["index"])
-                    if score >= threshold and 0 <= index < len(candidates):
-                        _, rrf_score, entity = candidates[index]
-                        doc = entity_to_doc(entity, score)
-                        doc.metadata["rrf_score"] = round(rrf_score, 4)
-                        doc.metadata["score_type"] = "reranker"
-                        results.append((doc, score))
-                trace.docs = results
-                trace.diagnostics = RetrievalDiagnostics(
-                    retrieval_mode=RetrievalMode.HYBRID_RERANK,
-                    dense_count=settings.hybrid_dense_limit,
-                    sparse_count=settings.hybrid_sparse_limit,
-                    fusion_count=len(candidates),
-                    reranker_status=RerankerStatus.SUCCESS,
-                    threshold=threshold,
-                )
-                return trace
-
-            # Reranker 失败时保留 RRF 排序，不构造虚假相关度分数。
-            results = []
-            for _, rrf_score, entity in candidates[:settings.retrieval_top_k]:
-                doc = entity_to_doc(entity, rrf_score)
-                doc.metadata["rrf_score"] = round(rrf_score, 4)
-                doc.metadata["score_type"] = "rrf"
-                results.append((doc, rrf_score))
-            trace.docs = results
-            trace.diagnostics = RetrievalDiagnostics(
-                retrieval_mode=RetrievalMode.HYBRID_RRF,
-                dense_count=settings.hybrid_dense_limit,
-                sparse_count=settings.hybrid_sparse_limit,
-                fusion_count=len(candidates),
-                reranker_status=reranker.last_status,
-                fallback_reason="reranker_failed",
-            )
-            return trace
-
-        except HybridRetrievalError:
-            raise
-        except Exception as error:
-            if settings.strict_hybrid_validation:
-                raise HybridRetrievalError(str(error)) from error
-            logger.warning("混合检索异常 (%s)，回退到纯稠密检索", error)
-            return _dense_fallback(question, f"hybrid_error:{type(error).__name__}", dense_vec)
+        result = retriever.retrieve(raw_question)
+        trace = _RetrievalTrace()
+        trace.docs = result.docs
+        trace.diagnostics = result.diagnostics
+        return trace
 
     # ── 阶段 2: 判断 + 回答 ──
     def _decide_and_answer(inputs: Dict[str, Any]) -> Dict[str, Any]:
