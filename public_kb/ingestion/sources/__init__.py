@@ -1,0 +1,2 @@
+"""Ingestion source adapters."""
+

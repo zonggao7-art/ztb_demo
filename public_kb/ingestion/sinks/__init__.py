@@ -1,0 +1,2 @@
+"""Ingestion sink adapters."""
+
