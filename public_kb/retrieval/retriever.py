@@ -179,7 +179,10 @@ class HybridRetriever:
         reranked: List[dict],
         candidates: List[Tuple[str, float, dict]],
     ) -> RetrievalResult:
-        threshold = adaptive_threshold(reranked[0]["relevance_score"])
+        threshold = adaptive_threshold(
+            reranked[0]["relevance_score"],
+            settings=self._settings,
+        )
         results: List[Tuple[Document, float]] = []
         for item in reranked:
             score = float(item["relevance_score"])

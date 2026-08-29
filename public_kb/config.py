@@ -162,6 +162,30 @@ class Settings:
     nprobe: int = 32               # IVF 检索探测单元数（显式控制精度）
     rrf_k: int = 60                # RRF 融合参数 k
     reranker_model: str = "BAAI/bge-reranker-v2-m3"  # Cross-Encoder 重排序模型
+    rerank_high_confidence_score: float = field(
+        default_factory=lambda: float(os.getenv("RERANK_HIGH_CONFIDENCE_SCORE", "0.75"))
+    )
+    rerank_medium_confidence_score: float = field(
+        default_factory=lambda: float(os.getenv("RERANK_MEDIUM_CONFIDENCE_SCORE", "0.50"))
+    )
+    rerank_high_confidence_threshold: float = field(
+        default_factory=lambda: float(os.getenv("RERANK_HIGH_CONFIDENCE_THRESHOLD", "0.40"))
+    )
+    rerank_medium_confidence_threshold: float = field(
+        default_factory=lambda: float(os.getenv("RERANK_MEDIUM_CONFIDENCE_THRESHOLD", "0.45"))
+    )
+    rerank_low_confidence_threshold: float = field(
+        default_factory=lambda: float(os.getenv("RERANK_LOW_CONFIDENCE_THRESHOLD", "0.50"))
+    )
+    reranker_timeout: float = field(
+        default_factory=lambda: float(os.getenv("RERANKER_TIMEOUT", "30"))
+    )
+    reranker_max_retries: int = field(
+        default_factory=lambda: int(os.getenv("RERANKER_MAX_RETRIES", "2"))
+    )
+    reranker_retry_backoff_seconds: float = field(
+        default_factory=lambda: float(os.getenv("RERANKER_RETRY_BACKOFF_SECONDS", "0.25"))
+    )
     strict_hybrid_validation: bool = field(
         default_factory=lambda: os.getenv(
             "STRICT_HYBRID_VALIDATION", "false"
