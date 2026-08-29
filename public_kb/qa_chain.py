@@ -39,6 +39,8 @@ from .retrieval.milvus_search import (
     hybrid_search_with_full_fields,
     search_with_full_fields,
 )
+from .retrieval.fallback import dense_only_retrieve
+from .retrieval.strategies import adaptive_threshold
 
 
 # Historical callers and tests patch this private symbol in qa_chain. Keep the
@@ -49,6 +51,8 @@ _normalize_hit_entity = normalize_hit_entity
 _entity_to_doc = entity_to_doc
 _search_with_full_fields = search_with_full_fields
 _hybrid_search_with_full_fields = hybrid_search_with_full_fields
+_adaptive_threshold = adaptive_threshold
+_dense_only_retrieve = dense_only_retrieve
 
 logger = logging.getLogger(__name__)
 
@@ -214,7 +218,7 @@ def build_qa_chain(
         reason: str,
         dense_vec: Optional[List[float]] = None,
     ) -> _RetrievalTrace:
-        docs = _dense_only_retrieve(
+        docs = dense_only_retrieve(
             question,
             vector_store,
             settings,
@@ -309,7 +313,7 @@ def build_qa_chain(
             )
 
             if reranker.last_status is RerankerStatus.SUCCESS and reranked:
-                threshold = _adaptive_threshold(reranked[0]["relevance_score"])
+                threshold = adaptive_threshold(reranked[0]["relevance_score"])
                 results: List[Tuple[Document, float]] = []
                 for item in reranked:
                     score = float(item["relevance_score"])
@@ -429,92 +433,3 @@ def build_qa_chain(
 
     logger.info("LCEL 问答链构建完成（bge-m3 混合检索模式）")
     return chain
-
-
-# ============================================================
-#  动态阈值 & 降级兜底
-# ============================================================
-
-def _adaptive_threshold(top_score: float) -> float:
-    """基于 Reranker 最高分动态决定过滤阈值。
-
-    策略：
-    - top1 ≥ 0.75 → 高置信，放宽至 0.40，允许低分 chunk 补充上下文
-    - top1 ≥ 0.50 → 中等置信，阈值 0.45
-    - top1 < 0.50 → 直接使用 0.50（实际由 _decide_and_answer 判定是否拒答）
-    """
-    if top_score >= 0.75:
-        return 0.40
-    if top_score >= 0.50:
-        return 0.45
-    return 0.50
-
-
-def _dense_only_retrieve(
-    question: str,
-    vector_store: MilvusVectorStore,
-    settings: Settings,
-    collection: Optional[Any] = None,
-    embeddings: Optional[Any] = None,
-    dense_vec: Optional[List[float]] = None,
-) -> List[Tuple[Document, float]]:
-    """降级检索：优先使用 pymilvus 原生 search（可获取动态元数据），
-    失败时回退到 langchain_milvus similarity_search_with_score。
-
-    Args:
-        question: 用户问题。
-        vector_store: Milvus 向量存储（langchain_milvus 包装器）。
-        settings: 全局配置。
-        collection: MilvusClient（可选，用于获取元数据）。
-        embeddings: Embedding 模型实例（可选，用于生成查询向量）。
-        dense_vec: 已生成的稠密查询向量；提供时避免重复调用 Embedding。
-
-    Returns:
-        (Document, score) 列表，含完整元数据，经阈值过滤。
-    """
-    # ── 方案 A: pymilvus 原生搜索（可获取动态字段 metadata）──
-    if collection is not None and embeddings is not None:
-        try:
-            query_vector = dense_vec if dense_vec is not None else embeddings.embed_query(question)
-            raw_hits = search_with_full_fields(
-                collection, settings,
-                data=[query_vector],
-                anns_field="vector",
-                search_params={
-                    "metric_type": "COSINE",
-                    "params": {"nprobe": settings.nprobe},
-                },
-                limit=settings.hybrid_dense_limit,
-            )
-            results: List[Tuple[Document, float]] = []
-            for hit in raw_hits:
-                if hit.score >= settings.similarity_threshold:
-                    doc = entity_to_doc(hit.entity, hit.score)
-                    doc.metadata["score"] = round(hit.score, 4)
-                    results.append((doc, hit.score))
-            logger.info(
-                "pymilvus稠密检索: %d条命中, 过滤后=%d条 (threshold=%.2f)",
-                len(raw_hits), len(results), settings.similarity_threshold,
-            )
-            return results[:settings.retrieval_top_k]
-        except Exception as e:
-            logger.warning("pymilvus 原生检索失败 (%s)，回退到 langchain_milvus", e)
-
-    # ── 方案 B: langchain_milvus 降级（metadata 可能不完整）──
-    try:
-        raw = vector_store.similarity_search_with_score(
-            question, k=settings.hybrid_dense_limit,
-        )
-    except Exception as e:
-        logger.warning("langchain_milvus 检索也失败: %s", e)
-        return []
-
-    filtered = [
-        (doc, score) for doc, score in raw
-        if score >= settings.similarity_threshold
-    ]
-    logger.info(
-        "langchain_milvus降级检索: 原始=%d条, 过滤后=%d条 (threshold=%.2f)",
-        len(raw), len(filtered), settings.similarity_threshold,
-    )
-    return filtered[:settings.retrieval_top_k]
