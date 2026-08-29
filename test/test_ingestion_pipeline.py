@@ -9,6 +9,8 @@ from langchain_core.documents import Document
 from public_kb.csv_loader import CsvLoader
 from public_kb.ingestion.models import SourceResult
 from public_kb.ingestion.pipeline import IngestionPipeline
+from public_kb.ingestion.sinks.markdown_sink import MarkdownSink
+from public_kb.ingestion.sinks.milvus_sink import MilvusSink
 from public_kb.ingestion.sources.csv_source import CsvSource
 
 
@@ -93,3 +95,42 @@ def test_csv_source_preserves_row_level_metadata(tmp_path):
         assert document.metadata["source_url"] == "https://example.com/policy"
         assert document.metadata["source_file"] == "policy_data.csv"
         assert "_line_num" in document.metadata
+
+
+class FakeMilvusManager:
+    def __init__(self) -> None:
+        self.initialized: List[Sequence[Document]] = []
+        self.added: List[Sequence[Document]] = []
+
+    def initialize_collection(
+        self,
+        documents: Sequence[Document],
+        *,
+        recreate: bool = False,
+    ) -> None:
+        self.initialized.append(documents)
+
+    def add_documents(self, documents: Sequence[Document]) -> None:
+        self.added.append(documents)
+
+
+def test_milvus_sink_supports_initialize_and_append_modes():
+    manager = FakeMilvusManager()
+    initialize_sink = MilvusSink(manager, mode="initialize")
+    append_sink = MilvusSink(manager, mode="append")
+
+    assert initialize_sink.write([_document()], records=[]) == 1
+    assert append_sink.write([_document()], records=[]) == 1
+    assert len(manager.initialized) == 1
+    assert len(manager.added) == 1
+
+
+def test_markdown_sink_writes_document_preview(tmp_path):
+    document = _document()
+    document.metadata["source_file"] = "sample.csv"
+    sink = MarkdownSink(tmp_path, source_file="sample.csv")
+
+    count = sink.write([document], records=[{"_line_num": 1, "title": "测试"}])
+
+    assert count == 1
+    assert (tmp_path / "sample_chunks.md").exists()
