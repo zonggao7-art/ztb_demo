@@ -113,4 +113,8 @@ CSV-INGESTION-CHECK: PASS
 
 ## 6. 结论
 
-`public_kb` 目录收敛已完成。旧路径兼容壳已物理删除，当前只保留一套分层实现。后续协程改造应直接使用新的 `services/`、`ingestion/`、`retrieval/`、`generation/` 边界。
+`public_kb` 目录收敛已完成。旧路径兼容壳已物理删除，当前只保留一套分层实现和 `qa_chain.py` 一个在线链路稳定适配层。后续协程改造应直接使用新的 `services/`、`ingestion/`、`retrieval/`、`generation/` 边界。
+
+## 7. 追加修正
+
+按协作约定恢复 `public_kb/qa_chain.py` 作为在线问答链稳定入口。该文件只保留 `build_qa_chain()` 原签名和少量旧符号转发，真实链路实现仍位于 `generation/chain.py` 与 `retrieval/` 分层模块中。

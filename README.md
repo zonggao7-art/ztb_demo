@@ -151,6 +151,7 @@ python test/explain_sql.py --db ztb_clean --sql "<SQL>"
 │       └── fallback.py     # 兜底
 ├── public_kb/              # RAG 引擎
 │   ├── rag_engine.py       # PublicKnowledgeRAG 统一门面
+│   ├── qa_chain.py         # 在线问答链稳定入口
 │   ├── config.py           # 全局配置
 │   ├── contracts.py        # 输入输出 / Milvus / 检索契约
 │   ├── chunk_ids.py        # chunk_id 与 chunk_uid

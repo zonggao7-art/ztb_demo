@@ -23,10 +23,16 @@ from public_kb.ingestion.pipeline import IngestionPipeline
 from public_kb.ingestion.sources.csv_loader import CsvLoader, save_chunks_to_markdown
 from public_kb.ingestion.transforms.chunker import SemanticChunker
 from public_kb.ingestion.transforms.cleaner import TextCleaner
+from public_kb.qa_chain import (
+    HybridRetrievalError as StableHybridRetrievalError,
+    _dense_only_retrieve as stable_dense_only_retrieve,
+    _SiliconFlowReranker as stable_siliconflow_reranker,
+    build_qa_chain,
+)
 from public_kb.rag_engine import PublicKnowledgeRAG
 from public_kb.retrieval.fallback import dense_only_retrieve
 from public_kb.retrieval.reranker import Reranker, SiliconFlowReranker
-from public_kb.retrieval.retriever import HybridRetriever
+from public_kb.retrieval.retriever import HybridRetrievalError, HybridRetriever
 from public_kb.services.embeddings import _SafeEmbeddings, create_embeddings
 from public_kb.services.llm import create_llm
 from public_kb.services.milvus_store import MilvusStoreManager
@@ -43,7 +49,6 @@ LEGACY_MODULES = {
     "public_kb.text_cleaner",
     "public_kb.csv_loader",
     "public_kb.citations",
-    "public_kb.qa_chain",
     "public_kb.process_csv",
 }
 LEGACY_FILES = {
@@ -55,7 +60,6 @@ LEGACY_FILES = {
     "text_cleaner.py",
     "csv_loader.py",
     "citations.py",
-    "qa_chain.py",
     "process_csv.py",
 }
 
@@ -103,6 +107,14 @@ def test_generation_and_retrieval_boundaries_are_consolidated():
     assert dense_only_retrieve is not None
     assert not (PUBLIC_KB_ROOT / "retrieval" / "reranker" / "protocol.py").exists()
     assert not (PUBLIC_KB_ROOT / "retrieval" / "reranker" / "siliconflow.py").exists()
+
+
+def test_qa_chain_is_a_thin_stable_entrypoint():
+    parameters = list(inspect.signature(build_qa_chain).parameters)
+    assert parameters == ["vector_store", "llm", "settings", "collection", "embeddings"]
+    assert stable_siliconflow_reranker is SiliconFlowReranker
+    assert stable_dense_only_retrieve is dense_only_retrieve
+    assert StableHybridRetrievalError is HybridRetrievalError
 
 
 def test_legacy_compatibility_files_are_removed():
