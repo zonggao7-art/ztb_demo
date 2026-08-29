@@ -58,6 +58,9 @@ def build_chain(
             model=settings.reranker_model,
             api_key=settings.embedding_api_key,
             base_url=settings.embedding_base_url,
+            timeout=settings.reranker_timeout,
+            max_retries=settings.reranker_max_retries,
+            retry_backoff_seconds=settings.reranker_retry_backoff_seconds,
         ),
     )
 

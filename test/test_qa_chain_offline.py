@@ -6,6 +6,8 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
+import requests
+
 from langchain_core.documents import Document
 from langchain_core.language_models.fake_chat_models import FakeListChatModel
 
@@ -109,10 +111,68 @@ class RerankerTests(unittest.TestCase):
                 raise TimeoutError("timeout")
 
         reranker = _SiliconFlowReranker(
-            "model", "key", "https://example.invalid/v1", http_client=FailingHttp,
+            "model", "key", "https://example.invalid/v1",
+            http_client=FailingHttp, max_retries=0,
         )
 
         self.assertEqual(reranker.rerank("问题", ["文档"], 1), [])
+        self.assertIs(reranker.last_status, RerankerStatus.FAILED)
+
+    def test_transient_failure_is_retried_without_sleeping_in_tests(self) -> None:
+        class RetryableHttp:
+            def __init__(self) -> None:
+                self.calls = 0
+
+            def post(self, *args, **kwargs):
+                self.calls += 1
+                if self.calls == 1:
+                    raise TimeoutError("transient")
+
+                class Response:
+                    @staticmethod
+                    def raise_for_status():
+                        return None
+
+                    @staticmethod
+                    def json():
+                        return {"results": [{"index": 0, "relevance_score": 0.9}]}
+
+                return Response()
+
+        http_client = RetryableHttp()
+        sleeps: list[float] = []
+        reranker = _SiliconFlowReranker(
+            "model", "key", "https://example.invalid/v1",
+            http_client=http_client, max_retries=2,
+            retry_backoff_seconds=0.25,
+            sleep_fn=sleeps.append,
+        )
+
+        results = reranker.rerank("问题", ["文档"], 1)
+
+        self.assertEqual(http_client.calls, 2)
+        self.assertEqual(sleeps, [0.25])
+        self.assertEqual(results[0]["relevance_score"], 0.9)
+        self.assertIs(reranker.last_status, RerankerStatus.SUCCESS)
+
+    def test_client_error_is_not_retried(self) -> None:
+        class ClientErrorHttp:
+            def __init__(self) -> None:
+                self.calls = 0
+
+            def post(self, *args, **kwargs):
+                self.calls += 1
+                response = SimpleNamespace(status_code=400)
+                raise requests.HTTPError("bad request", response=response)
+
+        http_client = ClientErrorHttp()
+        reranker = _SiliconFlowReranker(
+            "model", "key", "https://example.invalid/v1",
+            http_client=http_client, max_retries=2, sleep_fn=lambda seconds: None,
+        )
+
+        self.assertEqual(reranker.rerank("问题", ["文档"], 1), [])
+        self.assertEqual(http_client.calls, 1)
         self.assertIs(reranker.last_status, RerankerStatus.FAILED)
 
 
