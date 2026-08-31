@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from public_kb.config import Settings
@@ -110,20 +112,21 @@ def test_router_end_to_end_with_mocked_mineru(tmp_path, monkeypatch):
     # 用 fake 替换 MinerURouter 的远端解析
     from public_kb.services.mineru_api_parser import MinerUApiParser
 
-    class _FakeApi(MinerUApiParser):
-        def health(self):  # type: ignore[override]
+    class _FakeApi:
+        """替身 MinerUApiParser：返回固定 Markdown，记录调用。"""
+
+        def __init__(self) -> None:
+            self.calls: list = []
+
+        def health(self) -> dict:
             return {"parser_version": "1.3.12"}
 
-        def parse(self, pdf_path, *, page_range=None):  # type: ignore[override]
+        def parse(self, pdf_path, *, page_range=None):
+            self.calls.append(Path(pdf_path))
             return f"<!-- mineru fake for {Path(pdf_path).name} -->\n"
 
     fake = _FakeApi()
-    monkeypatch.setattr(
-        "public_kb.ingestion.transforms.pdf_router.MinerUApiParser",
-        lambda *a, **kw: fake,
-    )
-
-    r = PdfRouter(s)
+    r = PdfRouter(s, miner_u_parser=fake)
     md = r.parse(src)
     assert isinstance(md, str)
     # 没有 Tier C 页时，markdown 应只有页标记 + 快路径产物
