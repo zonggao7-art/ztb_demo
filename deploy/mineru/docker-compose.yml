@@ -1,0 +1,71 @@
+# MinerU 解析服务 — Docker Compose（服务器 group_7/mineru 部署用）
+#
+# 使用方式（服务器侧）：
+#   cd group_7/mineru
+#   cp .env.example .env          # 填入 token / 端口 / GPU 卡号
+#   docker compose -p ztb-mineru up -d --build
+#
+# 服务暴露：POST /parse（子 PDF → Markdown）、GET /health
+# 说明：本 compose 只负责 MinerU 解析服务；向量库与业务侧在本地 deploy/milvus 与 ztb_demo。
+
+services:
+  mineru-api:
+    build:
+      context: ./service
+    image: ztb-mineru-api:latest
+    container_name: ztb-mineru-api
+    restart: unless-stopped
+
+    # GPU 透传：默认用全部可见 GPU；多组共用时建议用 .env 指定单卡
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      MINERU_API_TOKEN: ${MINERU_API_TOKEN:-}
+      MINERU_OUTPUT_DIR: /workspace/output
+      MINERU_CACHE_DIR: /workspace/cache
+      # magic-pdf 命令（容器内已装）
+      MINERU_CMD: ${MINERU_CMD:-magic-pdf}
+      MINERU_DEVICE_MODE: ${MINERU_DEVICE_MODE:-cuda}
+      # 单请求解析超时（秒）
+      MINERU_TIMEOUT: ${MINERU_TIMEOUT:-1800}
+      # 显存限制：显式传给 magic-pdf 的 device memory（GB）
+      MINERU_DEVICE_MEMORY: ${MINERU_DEVICE_MEMORY:-}
+      # 模型下载源与缓存（magic-pdf 内嵌 HF 下载，重定向到 hf-mirror）
+      HF_ENDPOINT: https://hf-mirror.com
+      HF_HOME: /root/.cache/huggingface
+      MODELSCOPE_CACHE: /root/.cache/modelscope
+
+    ports:
+      - "${MINERU_PORT:-8002}:8000"
+
+    volumes:
+      - ztb_mineru_models:/root/.cache/models       # 模型权重（下载一次复用）
+      - ztb_mineru_hf:/root/.cache/huggingface      # HF 模型缓存（含 MinerU 内嵌模型）
+      - ztb_mineru_workspace:/workspace             # 上传/输出/缓存/交付物
+      - ztb_mineru_root:/root                       # magic-pdf 配置与中间产物
+
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # 资源限制：避免影响同机其他组（92G 内存中给本服务封顶）
+    mem_limit: 48g
+    cpus: 8
+
+volumes:
+  ztb_mineru_models:
+    name: ztb_mineru_models
+  ztb_mineru_hf:
+    name: ztb_mineru_hf
+  ztb_mineru_workspace:
+    name: ztb_mineru_workspace
+  ztb_mineru_root:
+    name: ztb_mineru_root
