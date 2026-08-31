@@ -1,3 +1,4 @@
+# 功能：把 PDF 经 MinerU 解析、清洗、分块后包装为 pipeline 数据源。
 """PDF source adapter for MinerU-based ingestion."""
 
 from __future__ import annotations
@@ -7,16 +8,19 @@ from typing import Optional, Union
 
 from ..models import SourceResult
 from ..transforms import SemanticChunker, TextCleaner
-from ...services.mineru_parser import MinerUParser
 
 
 class PdfSource:
-    """Load one PDF as parser -> clean -> semantic chunks."""
+    """Load one PDF as parser -> clean -> semantic chunks.
+
+    `parser` duck-typed：需要 `parse(pdf_path) -> str`。
+    生产用 MinerUParser（M1 全量）；三档路由开启时用 PdfRouter（计划 §6 T3）。
+    """
 
     def __init__(
         self,
         pdf_path: Union[str, Path],
-        parser: MinerUParser,
+        parser: object,
         cleaner: Optional[TextCleaner] = None,
         chunker: Optional[SemanticChunker] = None,
     ) -> None:
