@@ -33,15 +33,19 @@ logger = logging.getLogger(__name__)
 
 
 def compute_cache_key(
-    sub_pdf_bytes: bytes,
+    source_pdf_bytes: bytes,
+    page_idxs: Sequence[int],
     parser_version: str,
     range_id: str,
 ) -> str:
-    """子 PDF 内容 + 解析器版本 + 范围 ID → MD5 hex 缓存键。
+    """缓存 key = md5(source_pdf_bytes) | page_range | parser_version | range_id。
 
-    对齐部署补充方案 §4.3（本地/服务器双侧一致）。
+    对齐部署补充方案 §4.3：用源 PDF 字节哈希（不是子 PDF——子 PDF 含 pymupdf
+    生成时间戳，两次调用 bytes 不一致，会导致缓存永远 miss）。
     """
-    composite = f"{hashlib.md5(sub_pdf_bytes).hexdigest()}|{parser_version}|{range_id}"
+    src_hash = hashlib.md5(source_pdf_bytes).hexdigest()
+    page_part = ",".join(str(p) for p in sorted(set(page_idxs)))
+    composite = f"{src_hash}|{page_part}|{parser_version}|{range_id}"
     return hashlib.md5(composite.encode("utf-8")).hexdigest()
 
 
@@ -108,12 +112,14 @@ class MinerURouter:
         subpdf_dir.mkdir(parents=True, exist_ok=True)
 
         out: List[ParsedPage] = []
+        source_pdf_bytes = source_pdf.read_bytes()
         for r in ranges:
             page_idxs = list(r.page_idxs)
             subpdf_path = subpdf_dir / f"{r.range_id}.pdf"
             write_subpdf(source_pdf, page_idxs, subpdf_path)
-            subpdf_bytes = subpdf_path.read_bytes()
-            cache_key = compute_cache_key(subpdf_bytes, parser_version, r.range_id)
+            cache_key = compute_cache_key(
+                source_pdf_bytes, page_idxs, parser_version, r.range_id,
+            )
 
             cached = self._cache.get(cache_key)
             if cached is not None:

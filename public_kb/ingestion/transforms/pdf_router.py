@@ -69,7 +69,19 @@ class PdfRouter:
     `parser.parse(pdf_path) -> str`。
     """
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        *,
+        miner_u_parser: Optional[MinerUApiParser] = None,
+    ) -> None:
+        """构造 PDF 三档路由编排器。
+
+        Args:
+            settings: 全局配置。
+            miner_u_parser: 可选注入的 MinerUApiParser（默认根据 settings 构造）；
+                主要用于测试时注入 fake。生产环境不传，走默认路径。
+        """
         self._settings = settings
         self._enabled = settings.pdf_tiered_routing_enabled
 
@@ -86,7 +98,7 @@ class PdfRouter:
                 two_col_confidence=settings.pdf_tiered_two_col_confidence,
                 # table_min_lines 暂沿用分类器默认值；T2B 表格骨架启用时再传入
             )
-            miner_u_api = MinerUApiParser(settings)
+            miner_u_api = miner_u_parser or MinerUApiParser(settings)
             self._miner_u_router = MinerURouter(settings, parser=miner_u_api)
         else:
             self._fallback_parser = MinerUParser(settings)

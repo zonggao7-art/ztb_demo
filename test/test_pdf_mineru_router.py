@@ -21,27 +21,34 @@ from public_kb.services.mineru_api_parser import MinerUApiParser
 
 
 def test_cache_key_stable_for_same_inputs():
-    k1 = compute_cache_key(b"abc", "1.3.12", "r1")
-    k2 = compute_cache_key(b"abc", "1.3.12", "r1")
+    k1 = compute_cache_key(b"abc", [3, 4, 5], "1.3.12", "r1")
+    k2 = compute_cache_key(b"abc", [3, 4, 5], "1.3.12", "r1")
     assert k1 == k2
 
 
 def test_cache_key_changes_with_version():
-    k1 = compute_cache_key(b"abc", "1.3.12", "r1")
-    k2 = compute_cache_key(b"abc", "1.3.13", "r1")
+    k1 = compute_cache_key(b"abc", [3, 4, 5], "1.3.12", "r1")
+    k2 = compute_cache_key(b"abc", [3, 4, 5], "1.3.13", "r1")
     assert k1 != k2
 
 
 def test_cache_key_changes_with_range():
-    k1 = compute_cache_key(b"abc", "1.3.12", "r1")
-    k2 = compute_cache_key(b"abc", "1.3.12", "r2")
+    k1 = compute_cache_key(b"abc", [3, 4, 5], "1.3.12", "r1")
+    k2 = compute_cache_key(b"abc", [4, 5, 6], "1.3.12", "r1")
     assert k1 != k2
 
 
 def test_cache_key_changes_with_content():
-    k1 = compute_cache_key(b"abc", "1.3.12", "r1")
-    k2 = compute_cache_key(b"def", "1.3.12", "r1")
+    k1 = compute_cache_key(b"abc", [3, 4, 5], "1.3.12", "r1")
+    k2 = compute_cache_key(b"def", [3, 4, 5], "1.3.12", "r1")
     assert k1 != k2
+
+
+def test_cache_key_stable_for_permuted_page_idxs():
+    """页码顺序不影响 key（同集合视为同一范围）。"""
+    k1 = compute_cache_key(b"abc", [3, 4, 5], "1.3.12", "r1")
+    k2 = compute_cache_key(b"abc", [5, 4, 3], "1.3.12", "r1")
+    assert k1 == k2
 
 
 # ── LocalCache ──────────────────────────────────────────────

@@ -30,7 +30,7 @@ def test_no_tier_c_returns_empty():
 
 def test_single_tier_c_creates_one_range():
     decisions = [_d(3, "C")]
-    ranges = aggregate_complex_ranges(decisions, total_pages=10)
+    ranges = aggregate_complex_ranges(decisions, total_pages=10, expand_pages=0)
     assert len(ranges) == 1
     r = ranges[0]
     assert r.core_page_idxs == (3,)
@@ -41,7 +41,7 @@ def test_single_tier_c_creates_one_range():
 
 def test_consecutive_tier_c_aggregated():
     decisions = [_d(3, "C"), _d(4, "C"), _d(5, "C")]
-    ranges = aggregate_complex_ranges(decisions, total_pages=10)
+    ranges = aggregate_complex_ranges(decisions, total_pages=10, expand_pages=0)
     assert len(ranges) == 1
     r = ranges[0]
     assert r.core_page_idxs == (3, 4, 5)
@@ -50,7 +50,7 @@ def test_consecutive_tier_c_aggregated():
 
 def test_non_consecutive_split_into_two():
     decisions = [_d(2, "C"), _d(3, "C"), _d(7, "C"), _d(8, "C")]
-    ranges = aggregate_complex_ranges(decisions, total_pages=10)
+    ranges = aggregate_complex_ranges(decisions, total_pages=10, expand_pages=0)
     assert len(ranges) == 2
     assert ranges[0].core_page_idxs == (2, 3)
     assert ranges[1].core_page_idxs == (7, 8)
@@ -93,7 +93,8 @@ def test_range_id_stable_for_same_seed():
 
 def test_range_id_differs_between_ranges():
     decisions = [_d(2, "C"), _d(5, "C")]
-    ranges = aggregate_complex_ranges(decisions, total_pages=10, range_id_seed="seed")
+    # 默认 expand_pages=1 会让相邻 C 段合并成一 range；显式传 0 才能产生两个。
+    ranges = aggregate_complex_ranges(decisions, total_pages=10, expand_pages=0)
     assert ranges[0].range_id != ranges[1].range_id
 
 
