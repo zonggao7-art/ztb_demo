@@ -1,0 +1,11 @@
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.29,<1.0
+python-multipart>=0.0.9
+# 模型预下载（preload_models.py 用 modelscope snapshot_download）
+modelscope>=1.26.0
+# magic-pdf 运行期依赖补齐（见 Dockerfile 注释）：
+#  - transformers 锁 <4.52，避免 torch.load 安全检查抛 ValueError
+#  - pycocotools 是 layoutlmv3/visualizer 的隐式依赖，magic-pdf[full] 未声明
+transformers==4.51.2
+pycocotools>=2.0.11
+
