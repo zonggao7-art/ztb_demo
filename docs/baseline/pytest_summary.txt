@@ -1,0 +1,28 @@
+# 单元测试快照 — 阶段 0
+
+- 生成日期：2026-08-25
+- 分支：`feat/async-memory-streaming`
+- 命令：`python -m pytest test/ --tb=line -q --ignore=test/legacy`
+
+## 结果
+
+```
+4 failed, 184 passed, 1 skipped in 31.90s
+```
+
+## 失败明细（4 项预存问题，与阶段 0 无关，禁止在阶段 1~6 中被修复后冒充通过）
+
+| 测试 | 文件 | 期望 | 实际 |
+|---|---|---|---|
+| `TestSubRouteClassification::test_company_query_supplier_recommend` | `test/test_sub_route.py:93` | `company_query` | `all` |
+| `TestSubRouteClassification::test_company_query_penalty_check` | `test/test_sub_route.py:103` | `company_query` | `all` |
+| `TestSubRouteClassification::test_bidding_query_purchaser` | `test/test_sub_route.py:135` | `bidding_query` | `all` |
+| `TestSubRouteClassification::test_bidding_query_aggregation` | `test/test_sub_route.py:144` | `bidding_query` | `all` |
+
+## 跳过明细
+
+`test/test_cloud_sync.py::TestCloudSync` 系列 — 云端 Milvus 同步测试（本地环境跳过）。
+
+## 完整原始输出
+
+详见 `test_report/_baseline_pytest.txt`。

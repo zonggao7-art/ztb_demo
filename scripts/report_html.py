@@ -70,7 +70,7 @@ def build_html(metrics, case_rows, cat_stats, field_stats, timing, meta_agg, mis
     env = metrics["env"]
     env_rows = "".join(
         f"<tr><td>{k}</td><td>{v}</td></tr>"
-        for k, v in env.items() if k not in ("os", "python", "time")
+        for k, v in env.items() if k not in ("os", "python", "time", "llm")
     )
     cat_rows = "".join(
         f"<tr><td>{k}</td><td>{v['cases']}</td><td>{v['field_recall']}%</td>"
@@ -144,7 +144,7 @@ def build_html(metrics, case_rows, cat_stats, field_stats, timing, meta_agg, mis
 <tr><th>项目</th><th>说明</th></tr>
 <tr><td>操作系统</td><td>{env['os']}</td></tr>
 <tr><td>Python</td><td>{env['python']}</td></tr>
-<tr><td>大语言模型</td><td>deepseek-chat（temperature=0，超时 60s，重试 1 次）</td></tr>
+<tr><td>大语言模型</td><td>{env.get('llm', '未知')}（temperature=0，超时 60s，重试 1 次）</td></tr>
 <tr><td>Embedding</td><td>BAAI/bge-m3（SiliconFlow，1024 维）</td></tr>
 <tr><td>结构化数据库</td><td>MySQL 8.0（Docker）ztb_clean：bid_project 17,742 / company_info 38,911 / company_penalty 1,805</td></tr>
 <tr><td>向量数据库</td><td>Milvus 2.4 standalone：public_kb 29,729 / mysql_price_semantic 77,597</td></tr>

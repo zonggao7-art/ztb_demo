@@ -1,0 +1,51 @@
+# ============================================================
+# 招投标智能助手 — pip-compile 输入（增量）
+# 生成命令: pip-compile requirements.in -o requirements.txt
+# 说明: 本文件只列版本约束；最终锁定的完整列表由 pip-compile 生成到 requirements.txt。
+# 由于当前环境无法安装 pip-tools（pip 24.2, python 3.12, 离线受限），
+# 阶段 0 临时手工同步到 requirements.txt，阶段 1 联网后再用 pip-compile 重锁。
+# ============================================================
+
+# ── LangChain / LangGraph 核心（与原 requirements.txt 一致） ──
+langchain-core>=0.3.37,<0.5.0
+langchain-openai>=1.0.0,<2.0.0
+langchain-milvus>=0.4.0
+langgraph>=1.2.0
+langgraph-checkpoint>=2.0.0
+
+# ── 向量 / 关系库 ──
+pymilvus>=2.4.5
+pymysql>=1.1.0
+
+# ── LLM / Embedding / Rerank ──
+openai>=1.50.0,<2.0.0
+tiktoken>=0.7.0,<0.9.0
+sentence-transformers>=3.0
+
+# ── 文档 / 环境 ──
+markdown>=3.6,<4.0
+python-dotenv>=1.0.0,<2.0.0
+setuptools>=65,<70
+
+# ── 异步基础设施（§8.1 新增）──
+httpx>=0.27,<0.29
+aiohttp>=3.9,<4.0
+orjson>=3.10
+
+# ── MySQL 连接池（与 SQLAlchemy 二选一） ──
+DBUtils>=3.1,<4.0
+
+# ── Checkpointer 后端 ──
+psycopg[binary]>=3.1,<4.0
+asyncpg>=0.29
+aiosqlite>=0.20
+
+# ── Schema / 序列化 ──
+pydantic>=2.6,<3.0
+
+# ── 重试与观测 ──
+tenacity>=8.2
+prometheus-client>=0.20
+
+# ── Linux/macOS 事件循环加速（可选） ──
+uvloop>=0.19; sys_platform != "win32"

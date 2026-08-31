@@ -41,7 +41,7 @@ def build_markdown(metrics, case_rows, cat_stats, field_stats,
     a("| --- | --- |")
     a("| 操作系统 | " + metrics["env"]["os"] + " |")
     a("| Python | " + metrics["env"]["python"] + " |")
-    a("| 大语言模型 | deepseek-chat（temperature=0，超时 60s，最大重试 1 次） |")
+    a("| 大语言模型 | " + metrics["env"]["llm"] + " |")
     a("| Embedding 模型 | BAAI/bge-m3（SiliconFlow，1024 维） |")
     a("| 结构化数据库 | MySQL 8.0（Docker），库 `ztb_clean`：bid_project 17,742 / company_info 38,911 / company_penalty 1,805 |")
     a("| 向量数据库 | Milvus 2.4 standalone（本地 127.0.0.1:19530）：public_kb 29,729 / mysql_price_semantic 77,597 |")

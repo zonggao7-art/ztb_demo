@@ -314,6 +314,11 @@ def collect_env():
         "time": time.strftime("%Y-%m-%d %H:%M:%S"),
     }
     try:
+        from public_kb.config import Settings
+        env["llm"] = Settings().llm_model  # 当前对话模型（OpenRouter 等）
+    except Exception:
+        env["llm"] = "未知"
+    try:
         import pymysql
         env["pymysql"] = getattr(pymysql, "__version__", "?")
     except Exception:
