@@ -1,3 +1,4 @@
+# 功能：PublicKnowledgeRAG 对外门面，串联离线入库与在线问答。
 """Public knowledge RAG facade for ingestion and question answering."""
 
 from __future__ import annotations
@@ -17,11 +18,12 @@ from .ingestion.sinks.milvus_sink import MilvusSink
 from .ingestion.sources.document_source import DocumentSource
 from .ingestion.sources.pdf_source import PdfSource
 from .ingestion.transforms import SemanticChunker, TextCleaner
+from .ingestion.transforms.pdf_structure import adapt_pdf_markdown
 from .generation.chain import build_chain
 from .retrieval.reranker import SiliconFlowReranker
 from .services.llm import create_llm
 from .services.milvus_store import MilvusStoreManager
-from .services.mineru_parser import MinerUParser
+from .services.milvus_store import MilvusStoreManager
 
 
 logger = logging.getLogger(__name__)
@@ -36,7 +38,8 @@ class PublicKnowledgeRAG:
         self._llm: BaseChatModel = create_llm(self._settings)
         self._store_manager = MilvusStoreManager(self._settings, self._embeddings)
         self._qa_chain: Optional[Any] = None
-        self._parser = MinerUParser(self._settings)
+        from .ingestion.parser_factory import build_pdf_parser
+        self._parser = build_pdf_parser(self._settings)
         self._cleaner = TextCleaner()
         self._chunker = SemanticChunker(
             max_chars=self._settings.chunk_max_chars,
@@ -115,6 +118,17 @@ class PublicKnowledgeRAG:
         self._store_manager.load_existing()
         self._build_qa_chain()
 
+    def load_existing(self) -> bool:
+        """公开入口：加载并校验已存在的集合，成功后构建问答链。
+
+        返回是否加载成功（集合不存在时为 False）。此前 CLI 直接访问私有
+        ``_store_manager.load_existing()``（M6 治理），现收敛到公开方法。
+        """
+        loaded = self._store_manager.load_existing()
+        if loaded:
+            self._build_qa_chain()
+        return loaded
+
     def add_pdf(self, pdf_path: str) -> int:
         """Parse one PDF and append its chunks to the existing collection."""
         source = self._pdf_source(pdf_path)
@@ -147,7 +161,19 @@ class PublicKnowledgeRAG:
 
     def _process_single_pdf(self, pdf_path: Path) -> List[Document]:
         """Process one PDF through the PDF Source transform boundary."""
-        documents = self._pdf_source(pdf_path).load().documents
+        if not self._settings.enable_pdf_structure:
+            documents = self._pdf_source(pdf_path).load().documents
+        else:
+            raw_markdown = self._parser.parse(pdf_path)
+            cleaned_markdown = self._cleaner.clean(raw_markdown)
+            documents = adapt_pdf_markdown(
+                cleaned_markdown,
+                doc_name=pdf_path.name,
+                chunker=self._chunker,
+                min_table_rows=self._settings.pdf_min_table_rows,
+                enable_toc_filter=self._settings.enable_pdf_toc_filter,
+                enable_reflow_flag=self._settings.enable_pdf_reflow_flag,
+            )
         if not documents:
             logger.warning("%s 切片后无有效内容，跳过", pdf_path.name)
         return documents
