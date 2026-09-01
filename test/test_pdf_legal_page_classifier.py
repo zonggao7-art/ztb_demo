@@ -75,6 +75,40 @@ def test_two_col_text_low_confidence_goes_tier_c():
     assert d.page_label == "uncertain"
 
 
+def test_two_col_ocr_imbalanced_blocks_goes_tier_a():
+    """OCR 双栏页：一侧合并成少块、另一侧拆成多块，但弱侧 ≥4 块 → 仍 A。
+
+    回归：旧 balance 判据对左 4 / 右 20 这类 OCR 常态失衡误判为 C，
+    导致整本 OCR 书被送上 MinerU（book2 全本 574 页问题）。
+    """
+    p = _profile(
+        has_two_col=True,
+        two_col_gap=190.0,
+        two_col_split_x=240.0,
+        # 左 4 块 + 右 20 块（OCR 右栏逐行拆块）
+        x_starts=(40.0, 42.0, 45.0, 50.0) + tuple(float(300.0 + i * 2) for i in range(20)),
+        n_blocks=24,
+    )
+    d = _classifier().classify(p)
+    assert d.tier == "A"
+    assert d.page_label == "two_col_text"
+    assert d.parser == "fast_text"
+
+
+def test_two_col_sidebar_low_confidence_goes_tier_c():
+    """正文 + 边注：弱侧仅 1 块 → 仍 C（避免把边注页当双栏）。"""
+    p = _profile(
+        has_two_col=True,
+        two_col_gap=180.0,
+        two_col_split_x=240.0,
+        x_starts=(40.0, 45.0, 48.0, 52.0, 55.0, 60.0, 390.0),
+        n_blocks=7,
+    )
+    d = _classifier().classify(p)
+    assert d.tier == "C"
+    assert d.page_label == "uncertain"
+
+
 # ── Tier B / C：表格 ─────────────────────────────────────
 
 def test_regular_table_goes_tier_b():

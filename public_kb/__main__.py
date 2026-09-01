@@ -132,6 +132,40 @@ def cmd_clear() -> None:
         print("❌ 已取消。")
 
 
+def cmd_prepare_handoff(pdf_dir: str, out_dir: str, force: bool) -> None:
+    """只解析 + 分块，产出 assembled.md 与 documents.jsonl（不向量化、不入库）。"""
+    from public_kb.config import Settings
+    from public_kb.ingestion.handoff import prepare_handoff
+
+    summary = prepare_handoff(pdf_dir, Settings(), out_dir=out_dir, force=force)
+    ok = [e for e in summary if "error" not in e]
+    failed = [e for e in summary if "error" in e]
+    cached = sum(1 for e in ok if e.get("cached"))
+    total_chunks = sum(int(e.get("chunks", 0)) for e in ok)
+    logger.info(
+        "交接产物导出完成: 成功 %d 本 / 失败 %d 本 / 缓存 %d 本 / 共 %d 块 → %s",
+        len(ok), len(failed), cached, total_chunks, out_dir,
+    )
+    for entry in failed:
+        logger.error("  失败: %s → %s", entry["pdf"], entry["error"])
+
+
+def cmd_ingest_handoff(kind: str, path: str, mode: str) -> None:
+    """从交接产物入库（jsonl 或 assembled markdown 目录）。"""
+    from public_kb.config import Settings
+
+    if kind == "jsonl":
+        from public_kb.ingestion.handoff import ingest_documents_jsonl
+        result = ingest_documents_jsonl(path, Settings(), mode=mode)
+    else:
+        from public_kb.ingestion.handoff import ingest_markdown_dir
+        result = ingest_markdown_dir(path, Settings(), mode=mode)
+    logger.info(
+        "交接产物入库完成: source=%s chunks=%d inserted=%d",
+        result.source, result.chunk_count, result.inserted_count,
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="招投标公共知识库 RAG 系统",
@@ -156,12 +190,45 @@ def main() -> None:
         "--clear", action="store_true",
         help="清空知识库",
     )
+    parser.add_argument(
+        "--prepare-handoff", action="store_true",
+        help="导出交接产物：解析 PDF 并产出 assembled.md + documents.jsonl（不向量化、不入库）",
+    )
+    parser.add_argument(
+        "--force", action="store_true",
+        help="配合 --prepare-handoff：忽略文件级缓存，强制重新解析",
+    )
+    parser.add_argument(
+        "--out-dir", type=str, default=None,
+        help="交接产物输出目录（配合 --prepare-handoff / --ingest-markdown）",
+    )
+    parser.add_argument(
+        "--ingest-jsonl", type=str, default=None, metavar="FILE",
+        help="从交接产物 documents.jsonl 直接入库",
+    )
+    parser.add_argument(
+        "--ingest-markdown", type=str, default=None, metavar="DIR",
+        help="从 <stem>.assembled.md 目录重新分块入库",
+    )
+    parser.add_argument(
+        "--mode", choices=("initialize", "append"), default="append",
+        help="入库模式（默认 append；集合不存在时自动初始化）",
+    )
 
     args = parser.parse_args()
 
     pdf_dir = args.pdf_dir or _get_default_pdf_dir()
 
-    if args.init:
+    if args.prepare_handoff:
+        out_dir = args.out_dir or str(
+            _PROJECT_ROOT / "DATA" / "raw_data" / "handoff"
+        )
+        cmd_prepare_handoff(pdf_dir, out_dir, args.force)
+    elif args.ingest_jsonl:
+        cmd_ingest_handoff("jsonl", args.ingest_jsonl, args.mode)
+    elif args.ingest_markdown:
+        cmd_ingest_handoff("markdown", args.ingest_markdown, args.mode)
+    elif args.init:
         cmd_init(pdf_dir)
     elif args.clear:
         cmd_clear()

@@ -176,21 +176,54 @@ class PdfRouter:
     # ── 内部步骤 ───────────────────────────────────────────
 
     def _profile_and_classify(self, pdf_path: Path) -> List[PageRouteDecision]:
-        """整本 PDF → 每页 PageRouteDecision。"""
+        """整本 PDF → 每页 PageRouteDecision（页面画像多线程并行，按页序汇合）。
+
+        画像大头是 get_text("dict") 等 MuPDF C 调用（会释放 GIL），多线程可拿到
+        真实并行度；每个 worker 独立按路径打开 PDF 处理一段连续页（Page 对象
+        不可跨线程共享），最后按 page_idx 升序汇合保证确定性。
+        """
         # 延迟导入避免循环 + 仅在开关开启时强依赖
         import pymupdf
+        from concurrent.futures import ThreadPoolExecutor, as_completed
         from .pdf_page_profile import build_page_profile
 
         assert self._classifier is not None
-        out: List[PageRouteDecision] = []
+        bg_ratio = self._settings.pdf_tiered_background_img_ratio
+        workers = max(
+            1, min(self._settings.pdf_tiered_profile_max_workers,
+                   (os.cpu_count() or 1))
+        )
+
         doc = pymupdf.open(str(pdf_path))
         try:
-            for page_idx, page in enumerate(doc):
-                profile = build_page_profile(page, page_idx)
-                out.append(self._classifier.classify(profile))
+            total = doc.page_count
         finally:
             doc.close()
-        return out
+
+        step = max(1, (total + workers - 1) // workers)
+
+        def _profile_pages(page_idxs: Sequence[int]) -> List:
+            d = pymupdf.open(str(pdf_path))
+            try:
+                out = []
+                for idx in page_idxs:
+                    out.append(build_page_profile(
+                        d.load_page(idx), idx, background_img_ratio=bg_ratio,
+                    ))
+                return out
+            finally:
+                d.close()
+
+        profiles: List[Any] = []
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = [
+                pool.submit(_profile_pages, list(range(start, min(start + step, total))))
+                for start in range(0, total, step)
+            ]
+            for fut in as_completed(futures):
+                profiles.extend(fut.result())
+        profiles.sort(key=lambda p: p.page_idx)  # 保序确定性
+        return [self._classifier.classify(p) for p in profiles]
 
     @staticmethod
     def _total_pages(pdf_path: Path) -> int:
@@ -279,44 +312,62 @@ class PdfRouter:
         pdf_path: Path,
         decisions: Sequence[PageRouteDecision],
     ) -> List[Tuple[PageRouteDecision, str, List[str]]]:
-        """Tier A：并行快路径（每个 worker 独立打开 PDF）。"""
+        """Tier A：并行快路径（每 worker 只打开一次 PDF，处理一批页）。"""
         if not decisions:
             return []
 
         max_workers = max(1, self._settings.pdf_tiered_fast_max_workers)
+        # 每 worker 处理连续一批页，文档只打开一次，避免逐页重复 open
+        chunk_size = max(1, (len(decisions) + max_workers - 1) // max_workers)
+        chunks = [
+            decisions[i:i + chunk_size]
+            for i in range(0, len(decisions), chunk_size)
+        ]
 
-        def worker(d: PageRouteDecision) -> Tuple[PageRouteDecision, str, List[str]]:
-            warnings: List[str] = []
+        def worker(items: Sequence[PageRouteDecision]):
             import pymupdf
-            doc = pymupdf.open(str(pdf_path))  # 每个线程独立 Document
-            try:
-                page = doc.load_page(d.page_idx)
-                if d.page_label == "two_col_text":
-                    from .pdf_page_profile import build_page_profile
-                    from .pdf_fast_text import iter_lines
-                    from .pdf_two_column_reflow import reflow_page_markdown
+            from .pdf_page_profile import build_page_profile
+            from .pdf_fast_text import iter_lines
+            from .pdf_two_column_reflow import reflow_page_markdown
 
-                    profile = build_page_profile(page, d.page_idx)
-                    lines = iter_lines(page)
-                    md = reflow_page_markdown(
-                        lines,
-                        split_x=profile.two_col_split_x,
-                        page_width=profile.width,
-                    )
-                else:
-                    md = extract_page_markdown(page, page_idx=d.page_idx)
-            except Exception as exc:  # noqa: BLE001
-                warnings.append(f"fast_text_failed: {exc}")
-                md = ""
+            doc = pymupdf.open(str(pdf_path))  # 每线程独立 Document
+            try:
+                results: List[Tuple[PageRouteDecision, str, List[str]]] = []
+                for d in items:
+                    warnings: List[str] = []
+                    try:
+                        page = doc.load_page(d.page_idx)
+                        if d.page_label == "two_col_text":
+                            profile = build_page_profile(
+                                page,
+                                d.page_idx,
+                                background_img_ratio=(
+                                    self._settings.pdf_tiered_background_img_ratio
+                                ),
+                            )
+                            lines = iter_lines(page)
+                            md = reflow_page_markdown(
+                                lines,
+                                split_x=profile.two_col_split_x,
+                                page_width=profile.width,
+                            )
+                        else:
+                            md = extract_page_markdown(page, page_idx=d.page_idx)
+                    except Exception as exc:  # noqa: BLE001
+                        warnings.append(f"fast_text_failed: {exc}")
+                        md = ""
+                    results.append((d, md, warnings))
+                return results
             finally:
                 doc.close()
-            return d, md, warnings
 
         out: List[Tuple[PageRouteDecision, str, List[str]]] = []
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
-            futures = {pool.submit(worker, d): d for d in decisions}
+            futures = [pool.submit(worker, c) for c in chunks]
             for fut in as_completed(futures):
-                out.append(fut.result())
+                out.extend(fut.result())
+        # 按页序汇合（确定性）
+        out.sort(key=lambda item: item[0].page_idx)
         return out
 
     def _probe_parser_version(self) -> str:

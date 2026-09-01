@@ -186,6 +186,14 @@ class Settings:
             os.getenv("PDF_TIERED_IMAGE_AREA_RATIO", "0.35")
         )
     )
+    pdf_tiered_background_img_ratio: float = field(
+        # 覆盖页面积 ≥ 该比例的单张图片视为背景/OCR 扫描底图剔除。
+        # 0.85 → 0.70：实测 OCR 书扫描底图覆盖 0.75~0.86，0.85 拦不住；
+        # book1/book3 在 0.70 下路由不变（探针验证），仅修复 book2 图片误判。
+        default_factory=lambda: float(
+            os.getenv("PDF_TIERED_BACKGROUND_IMG_RATIO", "0.70")
+        )
+    )
     pdf_tiered_expand_boundary_pages: int = field(
         default_factory=lambda: int(
             os.getenv("PDF_TIERED_EXPAND_BOUNDARY_PAGES", "1")
@@ -193,6 +201,16 @@ class Settings:
     )
     pdf_tiered_fast_max_workers: int = field(
         default_factory=lambda: int(os.getenv("PDF_TIERED_FAST_MAX_WORKERS", "4"))
+    )
+    pdf_tiered_profile_max_workers: int = field(
+        default_factory=lambda: int(
+            os.getenv("PDF_TIERED_PROFILE_MAX_WORKERS", "16")
+        )
+    )
+    pdf_tiered_book_timeout_sec: int = field(
+        default_factory=lambda: int(
+            os.getenv("PDF_TIERED_BOOK_TIMEOUT_SEC", "1200")
+        )
     )
     pdf_tiered_allow_partial: bool = field(
         default_factory=lambda: os.getenv(
