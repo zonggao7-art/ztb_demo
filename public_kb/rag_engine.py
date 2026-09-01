@@ -15,6 +15,7 @@ PublicKnowledgeRAG — 招投标公共知识库对外统一入口。
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from pathlib import Path
 from typing import Any, AsyncIterator, Dict, List, Optional
@@ -279,6 +280,80 @@ class PublicKnowledgeRAG:
 
         yield _event(EventType.CITATIONS, {"citations": result["citations"]})
         yield _event(EventType.FINAL, {"result": result})
+
+    async def retrieve_async(
+        self, question: str, top_k: int | None = None
+    ) -> List[Dict[str, Any]]:
+        """仅检索不生成（异步）— 返回 top-K 规范化证据片段。
+
+        供工具层（agent.tools.knowledge.search_public_kb）与外部调用方使用：
+        只做混合检索 + Rerank + 阈值过滤，不调用 LLM 生成答案。
+        返回条数上限受检索管线候选池约束（hybrid_fusion_limit / retrieval_top_k）。
+
+        Args:
+            question: 检索问题。
+            top_k: 返回片段数上限；None 则使用 settings.retrieval_top_k。
+
+        Returns:
+            [{"rank", "doc_name", "chapter", "chunk_index", "chunk_uid",
+              "text", "score", "metadata"}, ...]
+
+        Raises:
+            RuntimeError: 知识库尚未初始化。
+        """
+        if self._qa_chain is None:
+            raise RuntimeError(
+                "知识库尚未初始化，请先调用 init_knowledge_base() 入库。"
+            )
+
+        pipeline = self._ensure_async_pipeline()
+        docs_with_scores = await pipeline.retrieve_async(question)
+        return self._normalize_chunks(docs_with_scores, top_k)
+
+    def retrieve(self, question: str, top_k: int | None = None) -> List[Dict[str, Any]]:
+        """仅检索不生成（同步）— retrieve_async 的同步镜像。
+
+        注意：内部使用 asyncio.run 桥接异步检索管线；
+        若当前已运行事件循环，请改用 ``await rag.retrieve_async(...)``。
+
+        Raises:
+            RuntimeError: 知识库尚未初始化，或检测到运行中的事件循环。
+        """
+        try:
+            asyncio.get_running_loop()
+            raise RuntimeError(
+                "检测到已运行的事件循环；请改用 await rag.retrieve_async(...)"
+            )
+        except RuntimeError as e:
+            if "改用" in str(e):
+                raise
+            # 正常路径：没有运行中的 loop，继续 asyncio.run
+        return asyncio.run(self.retrieve_async(question, top_k))
+
+    @staticmethod
+    def _normalize_chunks(
+        docs_with_scores: List[Any], top_k: Optional[int]
+    ) -> List[Dict[str, Any]]:
+        """将 (Document, score) 列表规范化为统一的证据片段结构。"""
+        chunks: List[Dict[str, Any]] = []
+        for rank, item in enumerate(docs_with_scores, start=1):
+            doc, score = item[0], item[1]
+            meta = dict(doc.metadata or {})
+            chunks.append(
+                {
+                    "rank": rank,
+                    "doc_name": str(meta.get("doc_name", "") or meta.get("source", "") or ""),
+                    "chapter": str(meta.get("chapter", "") or ""),
+                    "chunk_index": meta.get("chunk_index", -1),
+                    "chunk_uid": str(meta.get("chunk_uid", "") or ""),
+                    "text": doc.page_content,
+                    "score": round(float(score), 4),
+                    "metadata": meta,
+                }
+            )
+        if top_k is not None:
+            chunks = chunks[:top_k]
+        return chunks
 
     def clear_kb(self) -> None:
         """清空公共知识库所有数据（仅管理员使用）。"""
