@@ -82,3 +82,6 @@ milvus/etcd-data/
 test_report/
 # ===== Milvus v2.6 POC 栈运行时数据（不入仓） =====
 milvus/volumes-v26/
+
+# ===== Claude Code 会话本地脚本（含 SSH 凭证，禁止入库） =====
+.claude/
