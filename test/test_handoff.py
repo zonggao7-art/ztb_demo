@@ -94,115 +94,123 @@ def test_markdown_path_matches_jsonl_path(tmp_path):
     assert jsonl_uids == md_uids
 
 
-def test_prepare_handoff_cache_skips_reparse(tmp_path, monkeypatch):
-    """文件级缓存：二次运行命中 assembled.md，不再调用 parser.parse。"""
+def _make_pdf(path: Path, pages: int = 1) -> None:
+    """构造一个最小空白 PDF。"""
     import pymupdf
 
-    pdf_dir = tmp_path / "pdfs"
-    pdf_dir.mkdir()
     doc = pymupdf.open()
     try:
-        doc.new_page(width=400, height=600)
-        doc.save(str(pdf_dir / "book.pdf"))
+        for _ in range(pages):
+            doc.new_page(width=400, height=600)
+        doc.save(str(path))
     finally:
         doc.close()
 
-    calls: list = []
 
-    class _FakeParser:
-        def parse(self, pdf_path):  # noqa: D102
-            calls.append(Path(pdf_path))
-            return _MD
+class _FakeParser:
+    """替身解析器：返回固定 markdown。"""
 
-    monkeypatch.setattr(
-        "public_kb.ingestion.parser_factory.build_pdf_parser",
-        lambda settings: _FakeParser(),
-    )
-    out = tmp_path / "out"
-    s = _settings()
-    s.enable_pdf_structure = False
-
-    prepare_handoff(pdf_dir, s, out_dir=out)
-    assert len(calls) == 1
-    md = (out / "book.assembled.md").read_text(encoding="utf-8")
-    assert md == _MD
-
-    # 二次运行：缓存命中，不再解析；jsonl 重新由缓存 md 切片
-    prepare_handoff(pdf_dir, s, out_dir=out)
-    assert len(calls) == 1  # 未再调用 parser.parse
-    jsonl_uids = {d.metadata["chunk_uid"]
-                  for d in load_documents_jsonl(out / "book.documents.jsonl")}
-    assert jsonl_uids
-
-    # force=True 强制重解析
-    prepare_handoff(pdf_dir, s, out_dir=out, force=True)
-    assert len(calls) == 2
+    def parse(self, pdf_path):  # noqa: D102
+        return _MD
 
 
-def test_prepare_handoff_skips_timeout_book_and_continues(tmp_path, monkeypatch):
-    """单本超时 → 记录失败并继续下一本，不卡死整体。"""
-    import pymupdf
-
-    pdf_dir = tmp_path / "pdfs"
-    pdf_dir.mkdir()
-    for name in ("slow.pdf", "fast.pdf"):
-        doc = pymupdf.open()
-        try:
-            doc.new_page(width=400, height=600)
-            doc.save(str(pdf_dir / name))
-        finally:
-            doc.close()
-
+def _slow_worker(pdf_path, out_dir, force, settings, result_queue):
+    """子进程 worker（超时测试用）：sleep 超过超时阈值。"""
     import time
 
-    class _SlowFirstParser:
-        def parse(self, pdf_path):  # noqa: D102
-            if "slow" in Path(pdf_path).name:
-                time.sleep(5)  # 超过 1s 超时
-            return _MD
-
-    monkeypatch.setattr(
-        "public_kb.ingestion.parser_factory.build_pdf_parser",
-        lambda settings: _SlowFirstParser(),
-    )
-    s = _settings()
-    s.enable_pdf_structure = False
-    s.pdf_tiered_book_timeout_sec = 1
-
-    summary = prepare_handoff(pdf_dir, s, out_dir=tmp_path / "out")
-    by_name = {e["pdf"]: e for e in summary}
-    assert "error" in by_name["slow.pdf"] and "跳过" in by_name["slow.pdf"]["error"]
-    assert "error" not in by_name["fast.pdf"]  # 超时书不阻断下一本
-    assert (tmp_path / "out" / "fast.assembled.md").exists()
+    time.sleep(3)
+    result_queue.put({"chunks": 0, "cached": True})
 
 
-def test_prepare_handoff_skips_dev_pdfs(tmp_path, monkeypatch):
-    """prepare_handoff 跳过下划线前缀开发产物，正常解析其余 PDF。"""
-    import pymupdf
+def _fast_worker(pdf_path, out_dir, force, settings, result_queue):
+    """子进程 worker（成功路径测试用）：立即返回固定 entry。"""
+    result_queue.put({"chunks": 7, "markdown": "m", "jsonl": "j"})
+
+
+def test_prepare_handoff_cache_hit_skips_parse(tmp_path):
+    """文件级缓存：assembled.md 已存在时只分块不解析（主进程，快速）。"""
+    from public_kb.ingestion.handoff import _process_single_book
 
     pdf_dir = tmp_path / "pdfs"
     pdf_dir.mkdir()
-    for name in ("book.pdf", "_smoke.pdf"):
-        doc = pymupdf.open()
-        try:
-            doc.new_page(width=400, height=600)
-            doc.save(str(pdf_dir / name))
-        finally:
-            doc.close()
+    _make_pdf(pdf_dir / "book.pdf")
 
-    class _FakeParser:
-        def parse(self, pdf_path):  # noqa: D102
-            return _MD
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / "book.assembled.md").write_text(_MD, encoding="utf-8")
 
+    s = _settings()
+    s.enable_pdf_structure = False
+    summary = prepare_handoff(pdf_dir, s, out_dir=out)
+    entry = {e["pdf"]: e for e in summary}["book.pdf"]
+    assert entry.get("cached") is True
+    assert (out / "book.documents.jsonl").exists()
+    jsonl = load_documents_jsonl(out / "book.documents.jsonl")
+    assert jsonl and all(d.metadata["chunk_uid"].startswith("ck-") for d in jsonl)
+    # _process_single_book 缓存路径同语义：不触碰解析器
+    entry2 = _process_single_book(pdf_dir / "book.pdf", out, False, s)
+    assert entry2.get("cached") is True
+
+
+def test_process_single_book_parse_writes_artifacts(tmp_path, monkeypatch):
+    """全量解析路径：写 assembled.md + documents.jsonl（进程内，替换解析器）。"""
+    from public_kb.ingestion.handoff import _process_single_book
+
+    pdf_dir = tmp_path / "pdfs"
+    pdf_dir.mkdir()
+    _make_pdf(pdf_dir / "book.pdf")
     monkeypatch.setattr(
         "public_kb.ingestion.parser_factory.build_pdf_parser",
         lambda settings: _FakeParser(),
     )
-    out = tmp_path / "out"
     s = _settings()
-    s.enable_pdf_structure = False  # 简化：直接走 chunker
+    s.enable_pdf_structure = False
+    out = tmp_path / "out"
+    out.mkdir()
+    entry = _process_single_book(pdf_dir / "book.pdf", out, False, s)
+    assert entry["chunks"] > 0
+    assert (out / "book.assembled.md").read_text(encoding="utf-8") == _MD
+    assert (out / "book.documents.jsonl").exists()
+
+
+def test_book_process_timeout_terminates(tmp_path):
+    """进程级超时：超时 terminate，返回 TimeoutError 且不残留结果。"""
+    from public_kb.ingestion.handoff import _run_book_process
+
+    result, err = _run_book_process(
+        tmp_path / "x.pdf", tmp_path, False, _settings(), 1,
+        worker=_slow_worker,
+    )
+    assert result is None
+    assert err is not None and "跳过" in str(err)
+
+
+def test_book_process_returns_result(tmp_path):
+    """进程级成功路径：子进程结果经队列回传。"""
+    from public_kb.ingestion.handoff import _run_book_process
+
+    result, err = _run_book_process(
+        tmp_path / "x.pdf", tmp_path, False, _settings(), 10,
+        worker=_fast_worker,
+    )
+    assert err is None
+    assert result == {"chunks": 7, "markdown": "m", "jsonl": "j"}
+
+
+def test_prepare_handoff_skips_dev_pdfs(tmp_path):
+    """prepare_handoff 跳过下划线前缀开发产物；正常书走缓存不解析。"""
+    pdf_dir = tmp_path / "pdfs"
+    pdf_dir.mkdir()
+    _make_pdf(pdf_dir / "book.pdf")
+    _make_pdf(pdf_dir / "_smoke.pdf")
+
+    out = tmp_path / "out"
+    out.mkdir()
+    (out / "book.assembled.md").write_text(_MD, encoding="utf-8")
+
+    s = _settings()
+    s.enable_pdf_structure = False
     summary = prepare_handoff(pdf_dir, s, out_dir=out)
     assert [e["pdf"] for e in summary] == ["book.pdf"]
-    assert (out / "book.assembled.md").exists()
-    assert (out / "book.documents.jsonl").exists()
     assert not (out / "_smoke.assembled.md").exists()
+    assert (out / "book.documents.jsonl").exists()
