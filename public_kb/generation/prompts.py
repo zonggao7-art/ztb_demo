@@ -1,3 +1,4 @@
+# 功能：构造公共知识库问答使用的系统提示词和用户模板。
 """Prompt construction for the public knowledge QA chain."""
 
 from __future__ import annotations

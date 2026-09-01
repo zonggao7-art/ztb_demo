@@ -1,3 +1,4 @@
+# 功能：把内存中已解析 Document 包装为 pipeline 数据源。
 """In-memory document source for already-parsed chunks."""
 
 from __future__ import annotations

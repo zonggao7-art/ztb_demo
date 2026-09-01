@@ -1,3 +1,4 @@
+# 功能：定义离线入库 Sink 的统一接口契约。
 """Sink contract for ingestion pipelines."""
 
 from __future__ import annotations

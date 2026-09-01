@@ -1,3 +1,4 @@
+# 功能：生成和校验 chunk_id / chunk_uid 等稳定数据标识。
 """
 Chunk 稳定标识工具 — 内容派生的业务唯一 chunk_uid。
 

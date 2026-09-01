@@ -1,3 +1,4 @@
+# 功能：公共知识库命令行入口，用于初始化、问答和交互测试。
 """
 公共知识库 CLI 入口 + 测试示例。
 
@@ -54,9 +55,8 @@ def cmd_init(pdf_dir: str) -> None:
 def cmd_query(question: str) -> None:
     """执行单次问答。"""
     rag = PublicKnowledgeRAG()
-    # 尝试加载已有集合
-    rag._store_manager.load_existing()
-    rag._build_qa_chain()
+    # 尝试加载已有集合（公开入口，M6 治理后不再访问私有成员）
+    rag.load_existing()
 
     result = rag.query(question)
     print("\n" + "=" * 60)
@@ -90,13 +90,12 @@ def _print_citations(result: dict) -> None:
 def cmd_interactive() -> None:
     """交互式问答模式。"""
     rag = PublicKnowledgeRAG()
-    # 尝试加载已有集合
-    if not rag._store_manager.load_existing():
+    # 尝试加载已有集合（公开入口，M6 治理后不再访问私有成员）
+    if not rag.load_existing():
         logger.error(
             "未找到 public_kb 集合，请先运行: python -m public_kb --init"
         )
         return
-    rag._build_qa_chain()
 
     print("\n" + "=" * 60)
     print("  招投标公共知识库 — 交互问答模式")

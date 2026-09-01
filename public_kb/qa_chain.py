@@ -1,3 +1,4 @@
+# 功能：在线问答链稳定入口，保持旧 build_qa_chain 签名并转发到 generation.chain。
 """Stable entry for the public knowledge-base QA chain."""
 
 from __future__ import annotations
@@ -14,6 +15,10 @@ from .retrieval.reranker import SiliconFlowReranker
 from .retrieval.retriever import HybridRetrievalError
 
 
+# 下划线别名说明（M6 治理）：此模块是"稳定兼容壳"，保留旧 build_qa_chain
+# 签名。下划线别名（_SiliconFlowReranker / _dense_only_retrieve）仅用于
+# 让 test_public_kb_layout.py 的 AST 守卫能锚定"稳定入口只依赖这两个符号"，
+# 不参与任何业务逻辑；业务实现一律走 generation/retrieval 正式路径。
 _SiliconFlowReranker = SiliconFlowReranker
 _dense_only_retrieve = dense_only_retrieve
 

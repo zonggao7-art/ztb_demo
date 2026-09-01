@@ -1,3 +1,4 @@
+# 功能：统一创建 DeepSeek / OpenAI 兼容 Chat LLM。
 """
 LLM 工厂 — 统一的 ChatOpenAI 构造入口。
 

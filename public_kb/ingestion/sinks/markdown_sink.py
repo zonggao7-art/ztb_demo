@@ -1,3 +1,4 @@
+# 功能：把分块结果写入 Markdown 预览文件，用于人工校对。
 """Optional Markdown sink for preview and debugging."""
 
 from __future__ import annotations

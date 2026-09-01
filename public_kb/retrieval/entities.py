@@ -1,3 +1,4 @@
+# 功能：把 Milvus 命中实体规范化为带完整 metadata 的 Document。
 """Normalization helpers for Milvus retrieval entities."""
 
 from __future__ import annotations

@@ -1,3 +1,4 @@
+# 功能：把单个 CSV 文件包装为 pipeline 可消费的数据源。
 """CSV source adapter for lossless, in-memory ingestion."""
 
 from __future__ import annotations

@@ -1,3 +1,4 @@
+# 功能：定义离线入库 Source 的统一接口契约。
 """Source contract for ingestion pipelines."""
 
 from __future__ import annotations

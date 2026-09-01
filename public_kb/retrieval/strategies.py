@@ -1,3 +1,4 @@
+# 功能：实现检索阈值、过滤和相似度策略。
 """Retrieval filtering and threshold strategies."""
 
 from __future__ import annotations

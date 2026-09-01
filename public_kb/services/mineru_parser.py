@@ -1,3 +1,4 @@
+# 功能：调用本地 MinerU CLI 把 PDF 解析为 Markdown。
 """
 MinerU PDF 解析器 — 通过 subprocess 调用本地 magic-pdf 命令行。
 

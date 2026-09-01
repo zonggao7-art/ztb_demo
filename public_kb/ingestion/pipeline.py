@@ -1,3 +1,4 @@
+# 功能：离线入库 pipeline 编排器，按顺序执行 Source 和 Sink。
 """Explicit orchestration for offline ingestion."""
 
 from __future__ import annotations
@@ -77,10 +78,14 @@ class IngestionPipeline:
                 )
             )
 
+        # M2：启用去重时，chunk_count 与 inserted_count 的差即被去重跳过的块数
+        skipped_duplicates = max(0, len(documents) - inserted_count)
+
         return IngestionResult(
             source=source_name,
             chunk_count=len(documents),
             inserted_count=inserted_count,
             stage_results=(source_stage, validation_stage, *sink_stages),
             status="completed",
+            skipped_duplicates=skipped_duplicates,
         )

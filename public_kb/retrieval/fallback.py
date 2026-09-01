@@ -1,3 +1,4 @@
+# 功能：实现稀疏检索不可用时的稠密检索降级路径。
 """Dense-only retrieval fallback helpers."""
 
 from __future__ import annotations
@@ -9,6 +10,7 @@ from langchain_core.documents import Document
 from langchain_milvus import Milvus as MilvusVectorStore
 
 from ..config import Settings
+from ..contracts import MilvusCollectionContract
 from .entities import entity_to_doc
 from .milvus_search import search_with_full_fields
 
@@ -23,6 +25,7 @@ def dense_only_retrieve(
     collection: Optional[Any] = None,
     embeddings: Optional[Any] = None,
     dense_vec: Optional[List[float]] = None,
+    expr: Optional[str] = None,
 ) -> List[Tuple[Document, float]]:
     """降级检索：优先使用 pymilvus 原生 search（可获取动态元数据），
     失败时回退到 langchain_milvus similarity_search_with_score。
@@ -34,22 +37,25 @@ def dense_only_retrieve(
         collection: MilvusClient（可选，用于获取元数据）。
         embeddings: Embedding 模型实例（可选，用于生成查询向量）。
         dense_vec: 已生成的稠密查询向量；提供时避免重复调用 Embedding。
+        expr: 可选标量过滤表达式（如法条时效过滤，任务 M3）。
 
     Returns:
         (Document, score) 列表，含完整元数据，经阈值过滤。
     """
     if collection is not None and embeddings is not None:
         try:
+            contract = MilvusCollectionContract()
             query_vector = dense_vec if dense_vec is not None else embeddings.embed_query(question)
             raw_hits = search_with_full_fields(
                 collection, settings,
                 data=[query_vector],
-                anns_field="vector",
+                anns_field=contract.dense_field,
                 search_params={
-                    "metric_type": "COSINE",
+                    "metric_type": contract.dense_metric,
                     "params": {"nprobe": settings.nprobe},
                 },
                 limit=settings.hybrid_dense_limit,
+                expr=expr,
             )
             results: List[Tuple[Document, float]] = []
             for hit in raw_hits:

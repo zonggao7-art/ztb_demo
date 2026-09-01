@@ -1,3 +1,4 @@
+# 功能：把检索到的 Document 格式化为 LLM 上下文和返回 sources。
 """Context and source formatting for the public knowledge QA chain."""
 
 from __future__ import annotations

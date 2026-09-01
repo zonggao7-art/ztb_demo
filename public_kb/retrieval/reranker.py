@@ -1,3 +1,4 @@
+# 功能：调用 SiliconFlow Reranker 重排序，并提供故障重试和降级契约。
 """Reranker protocol and SiliconFlow HTTP client."""
 
 from __future__ import annotations
