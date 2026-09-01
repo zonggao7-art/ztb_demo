@@ -54,7 +54,7 @@ def fake_httpx(monkeypatch):
     return fake
 
 
-def _settings(tmp_path, base_url="http://8.153.82.13:8002", token="sekret"):
+def _settings(tmp_path, base_url="http://127.0.0.1:8002", token="sekret"):
     s = Settings()
     s.mineru_api_base_url = base_url
     s.mineru_api_token = token
