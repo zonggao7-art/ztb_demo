@@ -1,3 +1,4 @@
+# 功能：CSV 单文件和批量向量化入库命令行入口。
 """Command-line entries for single-file and batch CSV ingestion."""
 
 from __future__ import annotations

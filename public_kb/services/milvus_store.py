@@ -1,3 +1,4 @@
+# 功能：管理 Milvus 集合 schema、索引、连接、加载和写入。
 """Milvus 向量存储管理器。
 
 约束：
@@ -54,11 +55,12 @@ class MilvusStoreManager:
         documents: Sequence[Document],
         *,
         recreate: bool = False,
-    ) -> None:
+    ) -> int:
         """创建集合并批量导入文档。
 
         默认不覆盖同名集合。只有显式传入 ``recreate=True`` 且集合名符合
         实验前缀时才允许删除，防止误删当前 ``public_kb``。
+        返回实际写入行数（M2：启用去重后可能小于 len(validated)）。
         """
         validated = validate_ingestion_documents(documents)
         collection_name = self._settings.collection_name
@@ -83,10 +85,14 @@ class MilvusStoreManager:
         self._validate_collection_contract()
         self._client.load_collection(collection_name)
 
-        self._batch_insert(validated)
+        inserted = self._batch_insert(validated)
         self._client.flush(collection_name)
         self._store = self._create_vector_store_wrapper()
-        logger.info("集合 %s 入库完成，共 %d 条记录", collection_name, len(validated))
+        logger.info(
+            "集合 %s 入库完成，共 %d 条记录（去重跳过 %d 条）",
+            collection_name, inserted, len(validated) - inserted,
+        )
+        return inserted
 
     def _build_schema(self) -> Any:
         """构建 dense-only 或 dense+BM25 的集合 Schema。"""
@@ -185,18 +191,56 @@ class MilvusStoreManager:
                 f"集合缺少索引: {', '.join(sorted(missing_indexes))}"
             )
 
-    def _batch_insert(self, documents: Sequence[Document]) -> None:
-        """批量向量化并插入集合；不在客户端生成 BM25 sparse 内容。"""
+    def _batch_insert(self, documents: Sequence[Document]) -> int:
+        """批量向量化并插入集合；不在客户端生成 BM25 sparse 内容。
+
+        启用去重（settings.enable_dedup）时，逐批按 chunk_uid 判重：
+          1. 批内先按 chunk_uid 去重（同一批出现相同 uid 只写一次）；
+          2. 再查询集合中已存在的 uid（增量/幂等场景），命中跳过；
+          3. 返回实际写入行数（`_batch_insert` 语义从"无返回"改为"返回写入数"）。
+        关闭去重时行为与旧版完全一致（全量写）。
+        """
         batch_size = 100
         total = len(documents)
         inserted = 0
+        skipped = 0
 
-        for start in range(0, total, batch_size):
-            batch = list(documents[start:start + batch_size])
+        # 批内按 chunk_uid 去重
+        to_write = list(documents)
+        if self._settings.enable_dedup:
+            unique: list[Document] = []
+            seen: set[str] = set()
+            for doc in to_write:
+                uid = str(
+                    doc.metadata.get("chunk_uid")
+                    or compute_chunk_uid(doc.page_content, doc.metadata)
+                )
+                if uid in seen:
+                    skipped += 1
+                    continue
+                seen.add(uid)
+                unique.append(doc)
+            to_write = unique
+
+        for start in range(0, len(to_write), batch_size):
+            batch = to_write[start:start + batch_size]
             texts = [doc.page_content for doc in batch]
             vectors = self._embeddings.embed_documents(texts)
             validate_embedding_batch(batch, vectors, self._settings.embedding_dim)
             data = self._build_records(batch, vectors)
+
+            if self._settings.enable_dedup:
+                # 查询集合中已存在的 uid，命中跳过（幂等/增量场景）
+                existing = self._query_existing_uids(
+                    [row["chunk_uid"] for row in data]
+                )
+                deduped_data = [
+                    row for row in data if row["chunk_uid"] not in existing
+                ]
+                skipped += len(data) - len(deduped_data)
+                data = deduped_data
+                if not data:
+                    continue
 
             result = self._client.insert(self._settings.collection_name, data)
             insert_count = self._extract_insert_count(result, len(data))
@@ -205,9 +249,43 @@ class MilvusStoreManager:
                     f"批次期望写入 {len(data)} 条，服务端确认 {insert_count} 条"
                 )
             inserted += insert_count
-            logger.debug("入库进度: %d/%d", inserted, total)
+            logger.debug("入库进度: %d/%d", inserted, len(to_write))
 
+        if skipped:
+            logger.info("去重跳过 %d 条重复文本块", skipped)
         logger.info("入库完成: %d 条记录已写入", inserted)
+        return inserted
+
+    def _query_existing_uids(self, uids: Sequence[str]) -> set[str]:
+        """按 chunk_uid 批量查询集合中已存在的 uid（用于幂等/增量去重）。
+
+        每次调用前先对 uid 去重并限制单次查询规模，避免表达式过长。
+        查询失败（如集合尚未就绪）时按空集处理——去重是尽力而为的
+        优化，不应阻断入库主流程。
+        """
+        if not uids:
+            return set()
+        existing: set[str] = set()
+        unique_uids = sorted(set(uids))
+        # Milvus expr 长度/性能考虑：分批查询，每批 200 个 uid
+        chunk_size = 200
+        for start in range(0, len(unique_uids), chunk_size):
+            part = unique_uids[start:start + chunk_size]
+            expr = f"chunk_uid in {list(part)}"
+            try:
+                rows = self._client.query(
+                    collection_name=self._settings.collection_name,
+                    filter=expr,
+                    output_fields=["chunk_uid"],
+                )
+            except Exception as exc:
+                logger.warning("chunk_uid 判重查询失败（%s），按未命中处理", exc)
+                continue
+            for row in rows or []:
+                uid = row.get("chunk_uid")
+                if uid is not None:
+                    existing.add(str(uid))
+        return existing
 
     def _build_records(
         self,
@@ -228,6 +306,9 @@ class MilvusStoreManager:
                 or compute_chunk_uid(doc.page_content, doc.metadata),
                 "schema_version": self._settings.collection_schema_version,
                 "embedding_model": self._settings.embedding_model,
+                # 法条时效性（任务 M3）：施行日期 / 效力状态（可空，向后兼容）
+                "effective_date": doc.metadata.get("effective_date") or "",
+                "status": doc.metadata.get("status") or "",
             }
             for key, value in doc.metadata.items():
                 if key in ("doc_name", "chapter", "chunk_index", "chunk_uid"):
@@ -240,24 +321,30 @@ class MilvusStoreManager:
             data.append(record)
         return data
 
-    def add_documents(self, documents: Sequence[Document]) -> None:
-        """增量导入文档。"""
+    def add_documents(self, documents: Sequence[Document]) -> int:
+        """增量导入文档。
+
+        启用去重时幂等：重复导入同一批文本块会因 chunk_uid 已存在而全部
+        跳过（返回 0）；返回实际写入行数。
+        """
         validated = validate_ingestion_documents(documents)
         if not self._has_collection():
             logger.info("集合不存在，转为全量初始化")
-            self.initialize_collection(validated)
-            return
+            return self.initialize_collection(validated)
         self._validate_collection_contract()
         if self._store is None:
             self.load_existing()
 
         logger.info("增量导入 %d 个文档块", len(validated))
-        self._batch_insert(validated)
+        inserted = self._batch_insert(validated)
         self._client.flush(self._settings.collection_name)
         logger.info(
-            "增量导入完成，当前集合总数约 %d",
+            "增量导入完成 %d 条（跳过 %d 条），当前集合总数约 %d",
+            inserted,
+            len(validated) - inserted,
             int(self._client.get_collection_stats(self._settings.collection_name).get("row_count", 0) or 0),
         )
+        return inserted
 
     @property
     def collection(self) -> Any:

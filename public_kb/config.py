@@ -1,3 +1,4 @@
+# 功能：集中加载和管理公共知识库所有配置参数。
 """
 统一配置中心 — 集中管理所有可配置参数。
 
@@ -137,11 +138,87 @@ class Settings:
     # ============================================================
     mineru_timeout: int = 3600  # OCR 版 PDF 需要较长超时
     # magic-pdf 输出目录（临时中间产物）
+    # 注意（M6 治理）：此目录存放 MinerU 解析的中间 Markdown 缓存，仅用于
+    # 断点续跑，勿与 DATA 的组织化目录（cleaned_v1 等）混放或提交入库。
     mineru_output_dir: str = field(
         default_factory=lambda: os.path.join(
             os.path.dirname(__file__), "..", "DATA", "raw_data"
         )
     )
+
+    # ── MinerU 远程解析服务（三档路由 Tier C / 部署补充方案 §4）──
+    # 本地侧只依赖 HTTP 协议，换部署位置只改 base_url（PDF_PARSE_BASE_URL 优先）。
+    mineru_api_base_url: str = field(
+        default_factory=lambda: os.getenv(
+            "PDF_PARSE_BASE_URL", os.getenv("MINERU_API_BASE_URL", "")
+        )
+    )
+    mineru_api_token: str = field(
+        default_factory=lambda: os.getenv("MINERU_API_TOKEN", "")
+    )
+    mineru_api_timeout: int = field(
+        default_factory=lambda: int(os.getenv("MINERU_API_TIMEOUT", "1800"))
+    )
+
+    # ── PDF 三档路由（三档路由计划 §7）──
+    # 总开关：关闭时回退旧的 MinerUParser 全量链路（M1 行为不变）。
+    pdf_tiered_routing_enabled: bool = field(
+        default_factory=lambda: os.getenv(
+            "PDF_TIERED_ROUTING_ENABLED", "false"
+        ).lower() in {"1", "true", "yes"}
+    )
+    pdf_tiered_two_col_confidence: float = field(
+        default_factory=lambda: float(os.getenv("PDF_TIERED_TWO_COL_CONFIDENCE", "0.80"))
+    )
+    pdf_tiered_min_text_chars: int = field(
+        default_factory=lambda: int(os.getenv("PDF_TIERED_MIN_TEXT_CHARS", "80"))
+    )
+    pdf_tiered_table_min_rows: int = field(
+        default_factory=lambda: int(os.getenv("PDF_TIERED_TABLE_MIN_ROWS", "2"))
+    )
+    pdf_tiered_table_max_empty_ratio: float = field(
+        default_factory=lambda: float(
+            os.getenv("PDF_TIERED_TABLE_MAX_EMPTY_RATIO", "0.30")
+        )
+    )
+    pdf_tiered_image_area_ratio: float = field(
+        default_factory=lambda: float(
+            os.getenv("PDF_TIERED_IMAGE_AREA_RATIO", "0.35")
+        )
+    )
+    pdf_tiered_expand_boundary_pages: int = field(
+        default_factory=lambda: int(
+            os.getenv("PDF_TIERED_EXPAND_BOUNDARY_PAGES", "1")
+        )
+    )
+    pdf_tiered_fast_max_workers: int = field(
+        default_factory=lambda: int(os.getenv("PDF_TIERED_FAST_MAX_WORKERS", "4"))
+    )
+    pdf_tiered_allow_partial: bool = field(
+        default_factory=lambda: os.getenv(
+            "PDF_TIERED_ALLOW_PARTIAL", "false"
+        ).lower() in {"1", "true", "yes"}
+    )
+    pdf_tiered_manifest_dir: str = field(
+        default_factory=lambda: os.getenv(
+            "PDF_TIERED_MANIFEST_DIR",
+            os.path.join(
+                os.path.dirname(__file__), "..", "DATA", "raw_data", "_pdf_tiered_manifest"
+            ),
+        )
+    )
+
+    # ============================================================
+    # PDF 结构适配（任务 M1）— 电子书类 PDF 的表格原子块/目录过滤/双栏打标
+    # ============================================================
+    enable_pdf_structure: bool = field(
+        default_factory=lambda: os.getenv(
+            "ENABLE_PDF_STRUCTURE", "true"
+        ).lower() in {"1", "true", "yes"}
+    )
+    pdf_min_table_rows: int = 2  # 连续 | 表格行达到该行数才视为表格原子段
+    enable_pdf_toc_filter: bool = True  # 剔除点线目录行（"……(82)"）
+    enable_pdf_reflow_flag: bool = True  # 疑似双栏乱序块打标（供人工抽检）
 
     # ============================================================
     # 切片参数
@@ -228,6 +305,23 @@ class Settings:
     enable_auto_semantic_bootstrap: bool = field(
         default_factory=lambda: os.getenv(
             "ENABLE_AUTO_SEMANTIC_BOOTSTRAP", "false"
+        ).lower() in {"1", "true", "yes"}
+    )
+
+    # ============================================================
+    # 入库去重（任务 M2）— 基于 chunk_uid 的文本块级去重与幂等
+    # ============================================================
+    enable_dedup: bool = field(
+        default_factory=lambda: os.getenv("ENABLE_DEDUP", "true").lower()
+        in {"1", "true", "yes"}
+    )
+
+    # ============================================================
+    # 法条时效性（任务 M3）— 检索时按施行日期过滤（默认关，不动现网行为）
+    # ============================================================
+    enable_effective_filter: bool = field(
+        default_factory=lambda: os.getenv(
+            "ENABLE_EFFECTIVE_FILTER", "false"
         ).lower() in {"1", "true", "yes"}
     )
 

@@ -1,3 +1,4 @@
+# 功能：校验并写入 Milvus，完成稠密/稀疏向量化入库和索引构建。
 """Milvus sink for initialized and incremental ingestion."""
 
 from __future__ import annotations
@@ -27,7 +28,5 @@ class MilvusSink:
     ) -> int:
         validated = validate_ingestion_documents(documents)
         if self._mode == "initialize":
-            self._manager.initialize_collection(validated)
-        else:
-            self._manager.add_documents(validated)
-        return len(validated)
+            return self._manager.initialize_collection(validated)
+        return self._manager.add_documents(validated)

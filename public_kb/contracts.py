@@ -1,3 +1,4 @@
+# 功能：定义入库、检索、问答和 Milvus 数据的跨模块契约。
 """公共知识库建库与检索的最小数据契约。
 
 本模块只定义跨组件共享的稳定边界，不访问 Milvus、Embedding 或 LLM。
@@ -7,6 +8,7 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+from datetime import date
 from enum import Enum
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -188,3 +190,17 @@ def validate_qa_result(result: Dict[str, Any]) -> None:
     diagnostics = result.get("retrieval_diagnostics")
     if diagnostics is not None and not isinstance(diagnostics, dict):
         raise RetrievalContractError("retrieval_diagnostics 必须是字典")
+
+
+# ============================================================
+# 法条时效性（任务 M3）— 检索过滤表达式生成
+# ============================================================
+
+def build_effective_expr(today: date) -> str:
+    """生成"仅召回已施行法条"的 Milvus 标量过滤表达式。
+
+    动态字段 ``effective_date`` 为 YYYY-MM-DD 字符串（缺失为 NULL）：
+    ``effective_date is null or effective_date <= <today>``。
+    这样旧数据（无该字段）不会被过滤掉，新数据按施行日期生效。
+    """
+    return f'effective_date is null or effective_date <= "{today.isoformat()}"'

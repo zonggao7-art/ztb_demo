@@ -5,12 +5,12 @@
 # ============================================================
 
 # ── LangChain 核心 ──
-langchain-core>=0.3.37,<0.5.0
-langchain-openai>=1.0.0,<2.0.0
+langchain-core>=1.5.4,<2.0.0
+langchain-openai>=1.5.0,<2.0.0
 langchain-milvus>=0.4.0
 
 # ── LangGraph Agent 骨架 ──
-langgraph>=1.2.0
+langgraph>=1.2.11,<2.0.0
 langgraph-checkpoint>=2.0.0
 
 # ── 向量数据库 ──
@@ -20,7 +20,8 @@ pymilvus>=2.4.5
 pymysql>=1.1.0
 
 # ── LLM & Embedding ──
-openai>=1.50.0,<2.0.0
+# 注意：langchain-openai 1.5.x 要求 openai>=2.45，故此处下限为 2.45（与运行环境 openai 3.0.0 对齐）
+openai>=2.45,<4
 tiktoken>=0.7.0,<0.9.0
 
 # ── 重排序模型（Cross-Encoder，via SiliconFlow）──

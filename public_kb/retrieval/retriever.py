@@ -1,3 +1,4 @@
+# 功能：在线混合检索编排器，串联稠密/稀疏、RRF、阈值过滤和重排。
 """Hybrid retrieval orchestration."""
 
 from __future__ import annotations
@@ -12,9 +13,11 @@ from pymilvus import AnnSearchRequest, RRFRanker
 
 from ..config import Settings
 from ..contracts import (
+    MilvusCollectionContract,
     RetrievalDiagnostics,
     RetrievalMode,
     RerankerStatus,
+    build_effective_expr,
     validate_question,
 )
 from .entities import entity_to_doc, normalize_hit_entity
@@ -61,12 +64,14 @@ class HybridRetriever:
     def retrieve(self, raw_question: str) -> RetrievalResult:
         """稠密 COSINE + 服务端 BM25 → RRF → 可选 Reranker。"""
         question = validate_question(raw_question)
+        expr = self._effective_expr()
 
         if self._collection is None or self._embeddings is None:
             logger.info("未提供原生 collection/embeddings，使用纯稠密检索")
             return self._dense_fallback(
                 question,
                 "native_collection_or_embeddings_missing",
+                expr=expr,
             )
 
         dense_vec: Optional[List[float]] = None
@@ -88,9 +93,9 @@ class HybridRetriever:
                 if self._settings.strict_hybrid_validation:
                     raise HybridRetrievalError(reason)
                 logger.info("当前 Schema 无稀疏向量字段，使用纯稠密检索")
-                return self._dense_fallback(question, reason, dense_vec)
+                return self._dense_fallback(question, reason, dense_vec, expr)
 
-            return self._hybrid_retrieve(question, dense_vec)
+            return self._hybrid_retrieve(question, dense_vec, expr)
         except HybridRetrievalError:
             raise
         except Exception as error:
@@ -101,26 +106,36 @@ class HybridRetriever:
                 question,
                 f"hybrid_error:{type(error).__name__}",
                 dense_vec,
+                expr,
             )
+
+    def _effective_expr(self) -> Optional[str]:
+        """按开关生成法条时效过滤表达式；关闭时返回 None（不过滤）。"""
+        if not self._settings.enable_effective_filter:
+            return None
+        from datetime import date
+        return build_effective_expr(date.today())
 
     def _hybrid_retrieve(
         self,
         question: str,
         dense_vec: List[float],
+        expr: Optional[str] = None,
     ) -> RetrievalResult:
+        contract = MilvusCollectionContract()
         dense_req = AnnSearchRequest(
             data=[dense_vec],
-            anns_field="vector",
+            anns_field=contract.dense_field,
             param={
-                "metric_type": "COSINE",
+                "metric_type": contract.dense_metric,
                 "params": {"nprobe": self._settings.nprobe},
             },
             limit=self._settings.hybrid_dense_limit,
         )
         sparse_req = AnnSearchRequest(
             data=[question],
-            anns_field="sparse_vector",
-            param={"metric_type": "BM25", "params": {}},
+            anns_field=contract.sparse_field,
+            param={"metric_type": contract.sparse_metric, "params": {}},
             limit=self._settings.hybrid_sparse_limit,
         )
 
@@ -130,6 +145,7 @@ class HybridRetriever:
             reqs=[dense_req, sparse_req],
             ranker=RRFRanker(k=self._settings.rrf_k),
             limit=self._settings.hybrid_fusion_limit,
+            expr=expr,
         )
         candidates: List[Tuple[str, float, dict]] = []
         for hit in raw_hits:
@@ -210,6 +226,7 @@ class HybridRetriever:
         question: str,
         reason: str,
         dense_vec: Optional[List[float]] = None,
+        expr: Optional[str] = None,
     ) -> RetrievalResult:
         docs = dense_only_retrieve(
             question,
@@ -218,6 +235,7 @@ class HybridRetriever:
             self._collection,
             self._embeddings,
             dense_vec=dense_vec,
+            expr=expr,
         )
         return RetrievalResult(
             docs=docs,

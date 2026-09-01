@@ -1,3 +1,4 @@
+# 功能：组装 LCEL 问答链，编排检索结果、拒答判断、回答生成和引用校验。
 """LCEL question answering chain for the public knowledge base."""
 
 from __future__ import annotations

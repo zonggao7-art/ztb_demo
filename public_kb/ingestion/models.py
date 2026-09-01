@@ -1,3 +1,4 @@
+# 功能：定义离线入库的数据契约、阶段结果和汇总结果。
 """Data contracts and stage statistics for ingestion pipelines."""
 
 from __future__ import annotations
@@ -38,3 +39,4 @@ class IngestionResult:
     stage_results: tuple[StageResult, ...]
     status: str
     error: str | None = None
+    skipped_duplicates: int = 0  # 任务 M2：因 chunk_uid 去重跳过的文本块数（向后兼容默认 0）

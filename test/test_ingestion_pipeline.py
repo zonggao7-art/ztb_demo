@@ -107,11 +107,13 @@ class FakeMilvusManager:
         documents: Sequence[Document],
         *,
         recreate: bool = False,
-    ) -> None:
+    ) -> int:
         self.initialized.append(documents)
+        return len(documents)
 
-    def add_documents(self, documents: Sequence[Document]) -> None:
+    def add_documents(self, documents: Sequence[Document]) -> int:
         self.added.append(documents)
+        return len(documents)
 
 
 def test_milvus_sink_supports_initialize_and_append_modes():
