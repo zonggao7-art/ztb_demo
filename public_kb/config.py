@@ -208,10 +208,11 @@ class Settings:
         )
     )
     pdf_tiered_book_timeout_sec: int = field(
-        # 单本导出超时：超时则终止该本并继续下一本。默认 1h——MinerU 对
-        # OCR/复杂页约 110s/范围，慢但进展中的书应允许跑完；卡死才被切断。
+        # 单本导出超时：超时则终止该本并继续下一本。默认 2h——MinerU 对
+        # OCR/复杂页约 110~150s/范围，book2 ~45 范围 / book3 ~50 范围，各需
+        # 约 1~1.5h；慢但进展中的书应允许跑完，卡死（如异常大范围）才被切断。
         default_factory=lambda: int(
-            os.getenv("PDF_TIERED_BOOK_TIMEOUT_SEC", "3600")
+            os.getenv("PDF_TIERED_BOOK_TIMEOUT_SEC", "7200")
         )
     )
     pdf_tiered_allow_partial: bool = field(
