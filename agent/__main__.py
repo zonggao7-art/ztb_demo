@@ -7,6 +7,13 @@ Agent CLI 入口。
 
     # 交互问答模式
     python -m agent --interactive
+
+    # 工具库清单（无需 LLM/基础设施）
+    python -m agent --list-tools
+
+    # Agent 自助调用模式（需 .env: AGENT_TOOLS_ENABLED=true）
+    python -m agent --agent-mode --question "XX公司有无不良记录？"
+    python -m agent --agent-mode --interactive
 """
 
 from __future__ import annotations
@@ -46,6 +53,8 @@ def main() -> None:
   python -m agent --question
   python -m agent --interactive
   python -m agent --question "..." --async   # 阶段 1 起可用，验证异步图
+  python -m agent --list-tools               # 查看工具库清单
+  python -m agent --agent-mode --interactive # Agent 自助调用模式（需 AGENT_TOOLS_ENABLED=true）
         """,
     )
     parser.add_argument(
@@ -80,9 +89,28 @@ def main() -> None:
         default=None,
         help="单次问答总超时秒数",
     )
+    parser.add_argument(
+        "--list-tools",
+        action="store_true",
+        help="列出工具库清单（工具名/标签/参数 schema），无需初始化 LLM",
+    )
+    parser.add_argument(
+        "--agent-mode",
+        dest="agent_mode",
+        action="store_true",
+        help="Agent 自助调用模式：LLM 通过 tool-calling 自主调用工具库（需 AGENT_TOOLS_ENABLED=true）",
+    )
 
     args = parser.parse_args()
     setup_logging(args.verbose)
+
+    if args.list_tools:
+        run_list_tools()
+        return
+
+    if args.agent_mode:
+        run_agent_mode(args)
+        return
 
     if not args.question and not args.interactive:
         parser.print_help()
@@ -107,6 +135,63 @@ def main() -> None:
             run_single_stream(agent, args.question, deadline_s=args.timeout)
         else:
             run_single(agent, args.question)
+
+
+def run_list_tools() -> None:
+    """打印工具库清单（注册 + 白名单过滤视角），无需初始化 LLM/基础设施。"""
+    from agent.tools import GLOBAL_TOOL_REGISTRY, get_enabled_tools, register_default_tools
+
+    register_default_tools()
+    enabled = {t.name for t in get_enabled_tools()}
+    manifest = GLOBAL_TOOL_REGISTRY.to_manifest()
+
+    print(f"工具库清单（共 {len(manifest)} 个，启用 {len(enabled)} 个）\n")
+    for item in manifest:
+        mark = "✅" if item["name"] in enabled else "⛔"
+        tags = "/".join(item["tags"])
+        readonly = "只读" if item["readonly"] else "读写"
+        print(f"{mark} {item['name']}  [{tags}] {readonly} v{item['version']}")
+        print(f"   {item['description']}")
+        params = item.get("parameters", {}).get("properties", {})
+        if params:
+            required = set(item.get("parameters", {}).get("required", []))
+            print(f"   参数: {', '.join(f'{k}{"*" if k in required else ""}' for k in params)}")
+        if not enabled:
+            break_note = "（全部被 AGENT_TOOLS_WHITELIST 过滤）" if item["name"] not in enabled else ""
+            if break_note:
+                print(f"   {break_note}")
+        print()
+
+
+def run_agent_mode(args: argparse.Namespace) -> None:
+    """Agent 自助调用模式入口（tool-calling 循环）。"""
+    from agent.agent_loop import (
+        build_tool_agent,
+        run_interactive_agent,
+        run_single_agent,
+    )
+    from public_kb.config import Settings
+
+    settings = Settings()
+    if not args.question and not args.interactive:
+        print("⚠️  --agent-mode 需要搭配 --question 或 --interactive 使用。")
+        return
+
+    print("正在初始化 Agent 自助调用模式...")
+    try:
+        compiled = build_tool_agent(settings=settings)
+    except RuntimeError as e:
+        print(f"❌ {e}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ 初始化失败: {e}")
+        sys.exit(1)
+
+    print("✅ Agent 就绪！\n")
+    if args.interactive:
+        run_interactive_agent(compiled, settings)
+    else:
+        run_single_agent(compiled, settings, args.question)
 
 
 def _render_business_data(data: Any) -> None:

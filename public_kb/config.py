@@ -276,3 +276,31 @@ class Settings:
 
     # ── Reranker 超时 ──
     rerank_timeout_s: int = int(os.getenv("RERANK_TIMEOUT_S", "5"))
+
+    # ============================================================
+    # 工具化（Tool Registry / Agent 平台化 P1）
+    # ============================================================
+    # Agent 自助调用总开关；false 时 --agent-mode 拒绝启动（--list-tools 不受限）
+    agent_tools_enabled: bool = field(
+        default_factory=lambda: os.getenv("AGENT_TOOLS_ENABLED", "false").lower() in {"1", "true", "yes"}
+    )
+    # 工具白名单（逗号分隔工具名；空 = 全部注册的工具可用）
+    agent_tools_whitelist: str = field(
+        default_factory=lambda: os.getenv("AGENT_TOOLS_WHITELIST", "")
+    )
+    # 单工具执行超时兜底（秒）
+    agent_tool_timeout_s: float = field(
+        default_factory=lambda: float(os.getenv("AGENT_TOOL_TIMEOUT_S", "20"))
+    )
+    # 检索类工具默认 top_k
+    agent_tool_default_top_k: int = field(
+        default_factory=lambda: int(os.getenv("AGENT_TOOL_DEFAULT_TOP_K", "20"))
+    )
+    # LLM 可见工具返回内容的字符截断上限（防 prompt 膨胀）
+    agent_tool_max_content_chars: int = field(
+        default_factory=lambda: int(os.getenv("AGENT_TOOL_MAX_CONTENT_CHARS", "4000"))
+    )
+    # Agent 原型单次任务最大步数（recursion_limit）
+    agent_loop_max_steps: int = field(
+        default_factory=lambda: int(os.getenv("AGENT_LOOP_MAX_STEPS", "6"))
+    )
