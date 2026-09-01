@@ -133,15 +133,25 @@ class LegalPageClassifier:
     def _two_col_confidence_score(profile: PageProfile) -> float:
         """估算双栏列序置信度。
 
-        启发式：存在明显栏间隙且左右两侧都有文本块 → 高分；
-        只有一侧块多、或间隙接近阈值 → 低分（宁可进 Tier C）。
+        判据取「块平衡」与「弱侧文本块数」的较大者：
+          - 块平衡：两侧块数接近 → 高分（干净的 2+2 双栏）；
+          - 弱侧块数：OCR 双栏页一侧常被合并成少而大的块、另一侧拆成多而
+            小的块（实测 book2 左 8~10 / 右 45~51），块数平衡失效；但弱侧
+            仍有 ≥4 块即说明两侧都有成块文本 → 高分；
+          - 正文 + 边注/侧栏布局：弱侧只有 1-2 块，两项都不满足 → 低分 → C。
         """
         split_x = profile.two_col_split_x
         left = sum(1 for x in profile.x_starts if x < split_x)
         right = profile.n_blocks - left
         balance = 1.0 - abs(left - right) / max(1, profile.n_blocks)
-        # 间隙相对页宽越大越可信（前提是已过 two_col_gap_ratio 门槛）
-        return round(0.55 + 0.4 * balance, 3)
+        side_min = min(left, right)
+        return round(
+            max(
+                0.55 + 0.4 * balance,
+                0.55 + 0.4 * min(1.0, side_min / 5.0),
+            ),
+            3,
+        )
 
     @staticmethod
     def _decide(
