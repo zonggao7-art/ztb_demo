@@ -563,3 +563,13 @@ T4-3 页内块排序 → T4-4 表格占位标签 → T4-2 页序缝合
   - manifest 输出逐页 route/parser/置信度 + tier/parser 分布摘要。
 - 至此"无 MinerU 也能完整装配快路径产物"的链路已打通：L1 分类 → L2 快路径 → T4 装配 → manifest。
 
+### L4 + L6 — MinerU 接入 + 接线 + 单书端到端验收 ✅（2026-09-01）
+- 接入：`pdf_complex_range.py`（范围聚合+边界扩展）、`pdf_mineru_router.py`（远程路由+缓存）、`pdf_router.py`（三档编排，commit ebe539d / 8f28365）；接线：`parser_factory.py` + `rag_engine.py`（commit 9330c66）。
+- 验收：`scripts/pdf_l6_single_book_verify.py` 跑通真实整本书（book1，774 页）。**PASS**，详见 `l6_single_book_verification_report_20260901.md`。
+- 验收暴露并修复 2 个 bug（345 passed）：
+  1. **边界页重复解析**（违反 §6 T3）：边界扩展进 Tier C 范围的 A 类页仍被快路径解析 → 同页内容两份、页标记重复 33。修复：Tier A 派发剔除 `tier_c_page_set`；新增回归测试 `test_tier_a_excludes_range_covered_pages_and_fills_route`。
+  2. **manifest 范围行 tier 为空**：编排器补填 `PageRouteDecision(tier=C, label=tier_c_range, reason=pages=...)`。
+- 关键数据：章节标题保留率 100%（9/9）；34 范围全部命中本地缓存重跑仅 25.6s（首次 1137s / 34 次远程调用）；路由 84% 本地 / 6.6% MinerU。
+- 剩余验收（下一轮）：① 条款连续性指标改标题感知匹配；② Milvus 入库 + 106 题检索/引用回归（对比全量 MinerU 基线）；③ 人工抽检范围 005 与双栏样例；④ 全绿后 `pdf_tiered_routing_enabled` 代码默认值改 `true`。
+- 环境注意：阿里云安全组未放行 8002，本地需 SSH 隧道 + `NO_PROXY=127.0.0.1`（Windows 系统代理会劫持 httpx 并回 502）。
+
