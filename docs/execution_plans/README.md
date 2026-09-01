@@ -11,6 +11,12 @@
 | [code_optimization_execution_plan_hybrid_retrieval.md](code_optimization_execution_plan_hybrid_retrieval.md) | 混合检索代码优化执行方案 | 已被 POC 结果和后续工程化审查部分覆盖 |
 | [pipeline_refactor_execution_plan.md](pipeline_refactor_execution_plan.md) | `public_kb` 在线检索、生成层、离线入库 Pipeline 的分阶段重构方案 | 已完成，待全量入库 |
 | [public_kb_directory_consolidation_plan_20260829.md](public_kb_directory_consolidation_plan_20260829.md) | `public_kb` 目录结构收敛、兼容层治理与回归验证方案 | 已完成；仅保留 `qa_chain.py` 稳定入口 |
+| [public_kb_optimization_execution_plan_20260830.md](public_kb_optimization_execution_plan_20260830.md) | 基于两份审查报告的总优化计划（M0–M6） | 已全部完成 |
+| [public_kb_optimization_execution_detail_20260830.md](public_kb_optimization_execution_detail_20260830.md) | M0–M6 细化任务卡 + 附录 A–I 执行状态与验证记录 | 已全部完成，整体验证 V-1/V-2/V-3/V-5/V-6 通过；V-4 待 MinerU |
+| [public_kb_m0_baseline_20260830.md](../public_kb_m0_baseline_20260830.md) | M0 基线冻结记录（239 passed 起点） | 已存档 |
+| [pdf_routing_pipeline_plan_20260831.md](pdf_routing_pipeline_plan_20260831.md) | 原两层 PDF 路由方案 | **已被三档计划吸收，不再作为独立执行基线** |
+| [pdf_legal_tiered_routing_execution_plan_20260831.md](pdf_legal_tiered_routing_execution_plan_20260831.md) | **PDF 三档路由（Tier A 快路径 / Tier B 表格 / Tier C MinerU）+ golden set 验收** — 最新执行基线 | 待执行（L0–L6） |
+| [pdf_tiered_server_deploy_supplement_20260831.md](pdf_tiered_server_deploy_supplement_20260831.md) | 公司服务器 MinerU 部署拓扑 / 数据回流 / 远程解析协议 / 一键迁移 / 组员交付 | 待执行（依赖三档计划） |
 
 ## 文档放置规则
 
