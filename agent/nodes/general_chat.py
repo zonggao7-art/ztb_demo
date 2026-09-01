@@ -7,10 +7,13 @@ general_chat — 通用对话节点。
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from langchain_core.messages import AIMessage
 
+from ..streaming import EventType
+from ..streaming.context import emit
 from ..state import AgentState
 
 logger = logging.getLogger(__name__)
@@ -39,6 +42,7 @@ def node_general_chat(state: AgentState) -> dict:
 
     question = str(messages[-1].content)
     logger.info("general_chat: %s", question[:80])
+    emit(EventType.STAGE, {"stage": "general_compose"})
 
     # 通用对话为静态欢迎语，不使用 LLM
     answer = (
@@ -63,3 +67,19 @@ def node_general_chat(state: AgentState) -> dict:
         },
         "messages": [AIMessage(content=answer)],
     }
+
+
+async def node_general_chat_async(state: AgentState) -> dict:
+    """通用对话流式适配（当前为静态引导文案，按 UTF-8 字符分段）。"""
+    messages = state.get("messages", [])
+    question = str(messages[-1].content)
+    logger.info("general_chat(async): %s", question[:80])
+    sync_result = await asyncio.to_thread(node_general_chat, state)
+    answer = str(sync_result["business_result"]["answer"])
+    step = max(1, len(answer) // 12)
+    for start in range(0, len(answer), step):
+        delta = answer[start:start + step]
+        emit(EventType.TOKEN, {"delta": delta, "synthetic": True})
+        await asyncio.sleep(0)
+    emit(EventType.FINAL, {"answer": answer, "business_result": {"branch": "general_chat"}})
+    return sync_result

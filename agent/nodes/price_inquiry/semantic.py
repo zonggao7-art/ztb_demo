@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import threading
 import time
 from collections import defaultdict
@@ -22,25 +21,19 @@ from .schema import _HARDCODED_SCHEMA, _semantic_columns
 
 logger = logging.getLogger(__name__)
 
-_MYSQL_SEMANTIC_COLLECTION = os.getenv(
-    "MYSQL_SEMANTIC_COLLECTION", "mysql_price_semantic"
-)
+# 询价语义检索参数 — 统一由 Settings 提供（.env 可覆盖，见 public_kb.config），
+# 保持模块级常量名以兼容包内 re-export。
+_MYSQL_SEMANTIC_COLLECTION = _get_settings().mysql_semantic_collection
 
-_MYSQL_SEMANTIC_BATCH_SIZE = int(os.getenv("MYSQL_SEMANTIC_BATCH_SIZE", "100"))
+_MYSQL_SEMANTIC_BATCH_SIZE = _get_settings().mysql_semantic_batch_size
 
-_MYSQL_SEMANTIC_TOP_K = int(os.getenv("MYSQL_SEMANTIC_TOP_K", "64"))
+_MYSQL_SEMANTIC_TOP_K = _get_settings().mysql_semantic_top_k
 
-_MYSQL_SEMANTIC_PER_TABLE_LIMIT = int(
-    os.getenv("MYSQL_SEMANTIC_PER_TABLE_LIMIT", "24")
-)
+_MYSQL_SEMANTIC_PER_TABLE_LIMIT = _get_settings().mysql_semantic_per_table_limit
 
-_MYSQL_SEMANTIC_TEXT_TRUNCATE = int(
-    os.getenv("MYSQL_SEMANTIC_TEXT_TRUNCATE", "120")
-)
+_MYSQL_SEMANTIC_TEXT_TRUNCATE = _get_settings().mysql_semantic_text_truncate
 
-_MYSQL_SEMANTIC_THRESHOLD = float(
-    os.getenv("MYSQL_SEMANTIC_THRESHOLD", "0.30")
-)
+_MYSQL_SEMANTIC_THRESHOLD = _get_settings().mysql_semantic_threshold
 
 _EMBEDDINGS_CACHE: Optional[OpenAIEmbeddings] = None
 

@@ -6,10 +6,13 @@ fallback — 兜底引导节点。
 
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from langchain_core.messages import AIMessage
 
+from ..streaming import EventType
+from ..streaming.context import _STREAM_ACTIVE, emit
 from ..state import AgentState
 
 logger = logging.getLogger(__name__)
@@ -29,6 +32,8 @@ def node_fallback(state: AgentState) -> dict:
     # 检查是否有异常降级信息
     biz = state.get("business_result", {})
     failed_branch = biz.get("data", {}).get("failed_branch", "") if isinstance(biz.get("data"), dict) else ""
+    if _STREAM_ACTIVE.get():
+        emit(EventType.STAGE, {"stage": "fallback", "failed_branch": failed_branch or None})
 
     if failed_branch:
         # 来自 _with_fallback 异常降级
@@ -61,3 +66,16 @@ def node_fallback(state: AgentState) -> dict:
         },
         "messages": [AIMessage(content=answer)],
     }
+
+
+async def node_fallback_async(state: AgentState) -> dict:
+    result = await asyncio.to_thread(node_fallback, state)
+    answer = str(result["business_result"]["answer"])
+    if result["business_result"].get("data", {}).get("failed_branch"):
+        emit(EventType.ERROR, {
+            "code": "node_failed",
+            "message": answer,
+            "retryable": True,
+        })
+    emit(EventType.FINAL, {"answer": answer, "business_result": {"branch": "fallback"}})
+    return result

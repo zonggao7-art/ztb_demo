@@ -49,6 +49,29 @@ class _SafeEmbeddings(OpenAIEmbeddings):
         safe = text[:_MAX_TEXT_CHARS] if len(text) > _MAX_TEXT_CHARS else text
         return super().embed_query(safe)
 
+    # ── 异步入口（阶段 2）：与同步版同口径的截断保护，底层走 OpenAIEmbeddings 原生 aembed_* ──
+
+    async def aembed_documents(
+        self,
+        texts: list[str],
+        chunk_size: Optional[int] = None,
+        **kwargs: object,
+    ) -> list[list[float]]:
+        safe_texts = [
+            t[:_MAX_TEXT_CHARS] if len(t) > _MAX_TEXT_CHARS else t for t in texts
+        ]
+        truncated = sum(1 for t in texts if len(t) > _MAX_TEXT_CHARS)
+        if truncated:
+            logger.debug(
+                "Embedding 安全截断(异步): %d 条文本超出 %d 字符限制",
+                truncated, _MAX_TEXT_CHARS,
+            )
+        return await super().aembed_documents(safe_texts, chunk_size=chunk_size, **kwargs)
+
+    async def aembed_query(self, text: str) -> list[float]:
+        safe = text[:_MAX_TEXT_CHARS] if len(text) > _MAX_TEXT_CHARS else text
+        return await super().aembed_query(safe)
+
 
 def create_embeddings(settings: Settings) -> OpenAIEmbeddings:
     """根据配置创建 OpenAIEmbeddings 实例。

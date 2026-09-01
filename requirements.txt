@@ -2,6 +2,11 @@
 # 招投标智能助手 — Python 依赖清单（统一版）
 # 安装方式: pip install -r requirements.txt
 # 覆盖: Agent 骨架 + 公共知识库 RAG 引擎 + 工具脚本
+# 
+# 维护说明:
+#   1. 版本约束请同步到 requirements.in（pip-compile 输入源）
+#   2. 运行 `pip-compile requirements.in -o requirements.txt` 重新锁定
+#   3. 阶段 0 因 pip-tools 不可用，本文件手工同步自 requirements.in
 # ============================================================
 
 # ── LangChain 核心 ──
@@ -32,3 +37,33 @@ markdown>=3.6,<4.0
 # ── 环境与工具 ──
 python-dotenv>=1.0.0,<2.0.0
 setuptools>=65,<70                       # pymilvus 2.4.x 依赖 pkg_resources（setuptools>=70 已移除）
+
+# ============================================================
+# 异步 + 记忆 + 流式改造新增（§8.1）
+# ============================================================
+
+# ── 异步基础设施 ──
+httpx>=0.27,<0.29                        # Reranker / 外部 HTTP 异步客户端
+aiohttp>=3.9,<4.0                        # 备用异步 HTTP（SSE 上游推送）
+orjson>=3.10                             # SSE / JSON envelope 高效序列化
+
+# ── MySQL 连接池（DBUtils 与 SQLAlchemy 二选一）──
+DBUtils>=3.1,<4.0                        # PooledDB: 跨平台 MySQL 有界连接池
+# SQLAlchemy>=2.0,<2.1                  # 备用连接池方案
+
+# ── Checkpointer 后端驱动 ──
+psycopg[binary]>=3.1,<4.0                # PostgreSQL
+asyncpg>=0.29                            # PostgresSaver 异步连接
+aiosqlite>=0.20                          # SqliteSaver 异步依赖
+
+# ── Schema / 序列化 ──
+pydantic>=2.6,<3.0                       # envelope / memory schema 强类型
+fastapi>=0.111,<1.0                      # 阶段 5 SSE 服务
+uvicorn>=0.30,<1.0                       # ASGI 运行时
+
+# ── 重试与观测 ──
+tenacity>=8.2                            # 退避重试统一封装
+prometheus-client>=0.20                  # 指标导出（可选）
+
+# ── Linux/macOS 事件循环加速（可选；Windows 跳过） ──
+uvloop>=0.19; sys_platform != "win32"

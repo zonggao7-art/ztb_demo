@@ -15,6 +15,14 @@ from .db import (
     _release_connection,
     _settings_cache,
 )
+from .db_async import (
+    _build_pool,
+    _get_pool,
+    acquire,
+    close_pool,
+    health_check,
+)
+
 
 from .enum_norm import (
     _ENUM_CACHE,
@@ -48,6 +56,7 @@ from .intent import (
     _looks_like_code,
     _normalize_token,
     _parse_unified_intent,
+    _parse_unified_intent_async,
     _post_process_intent,
     _safe_parse_intent,
     _split_overlong_keyword,
@@ -69,12 +78,24 @@ from .node import (
     node_price_inquiry,
 )
 
+from .node_async import (
+    node_price_inquiry_async,
+)
+
 from .queries import (
     _query_all_tables,
     _query_bidding_aggregation,
     _query_bidding_data,
     _query_company_data,
     _query_penalty_by_company_name,
+)
+
+from .recall_async import (
+    _SQLTimeoutError,
+    _merge_and_rank,
+    _query_table_async,
+    query_tables_async,
+    safe_execute,
 )
 
 from .recall import (
@@ -238,7 +259,12 @@ __all__ = [
     "_mysql_base_kwargs",
     "_normalize_intent_enums",
     "_normalize_token",
+    "_SQLTimeoutError",
+    "_build_pool",
+    "_get_pool",
+    "_merge_and_rank",
     "_parse_unified_intent",
+    "_parse_unified_intent_async",
     "_pool_connections",
     "_pool_in_use",
     "_pool_lock",
@@ -250,6 +276,7 @@ __all__ = [
     "_query_company_data",
     "_query_penalty_by_company_name",
     "_query_semantic_rows",
+    "_query_table_async",
     "_query_tables",
     "_rank_records",
     "_rebuild_mysql_semantic_collection",
@@ -262,5 +289,11 @@ __all__ = [
     "_split_overlong_keyword",
     "_sql_executor",
     "_strip_preference_filters",
+    "acquire",
+    "close_pool",
+    "health_check",
     "node_price_inquiry",
+    "node_price_inquiry_async",
+    "query_tables_async",
+    "safe_execute",
 ]

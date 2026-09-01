@@ -1,0 +1,35 @@
+{
+    "generated":  "2026-08-25",
+    "branch":  "feat/async-memory-streaming",
+    "total_cases":  1500,
+    "field_recall_rate":  99.464,
+    "answer_accuracy":  99.533,
+    "correct_cases":  1493,
+    "timing_p50_ms":  2694.0,
+    "timing_p95_ms":  3344.0,
+    "timing_avg_ms":  2760.0,
+    "timing_max_ms":  9710.0,
+    "sql_count_avg":  1.794,
+    "total_sql_time_avg_ms":  27.4,
+    "node_elapsed_avg_ms":  1760.8,
+    "categories":  {
+                       "企业失信惩戒":  {
+                                      "cases":  500,
+                                      "accuracy":  99.8,
+                                      "field_recall":  99.817,
+                                      "avg_time":  2.924
+                                  },
+                       "企业工商情报":  {
+                                      "cases":  500,
+                                      "accuracy":  100.0,
+                                      "field_recall":  100.0,
+                                      "avg_time":  2.78
+                                  },
+                       "招投标项目中标情报":  {
+                                         "cases":  500,
+                                         "accuracy":  98.8,
+                                         "field_recall":  98.865,
+                                         "avg_time":  2.575
+                                     }
+                   }
+}

@@ -1,0 +1,60 @@
+{
+  "stage": "pre-async",
+  "generated_at": "2026-08-25T12:08:56.325224+00:00",
+  "source": "historical",
+  "infra_reachable": {
+    "mysql": false,
+    "milvus": false,
+    "deepseek": false,
+    "embedding": false
+  },
+  "results": [
+    {
+      "name": "rag_e2e",
+      "n": 106,
+      "p50_ms": 2351.5,
+      "p95_ms": 3889.5,
+      "mean_ms": 2522.97,
+      "max_ms": 5525.0,
+      "min_ms": 1109.3,
+      "source": "knowledge_citation_results.jsonl"
+    },
+    {
+      "name": "mysql_sql",
+      "n": 1495,
+      "p50_ms": 27.4,
+      "p95_ms": 482.0,
+      "mean_ms": 27.4,
+      "max_ms": 482.0,
+      "min_ms": 0.0,
+      "source": "metrics.json (price_inquiry eval)",
+      "caveat": "p95 退化为 max；阶段1+在线基准可补正"
+    },
+    {
+      "name": "price_node_total",
+      "n": 1495,
+      "p50_ms": 1760.8,
+      "p95_ms": 3253.0,
+      "mean_ms": 1760.8,
+      "max_ms": 3253.0,
+      "min_ms": 1278.0,
+      "source": "metrics.json (price_inquiry eval)",
+      "caveat": "p50/p95 用 avg/max 近似"
+    },
+    {
+      "name": "price_e2e",
+      "n": 1500,
+      "p50_ms": 2694.0,
+      "p95_ms": 3344.0,
+      "mean_ms": 2760.0,
+      "max_ms": 9710.0,
+      "min_ms": 2053.0,
+      "source": "metrics.json (price_inquiry eval)"
+    }
+  ],
+  "notes": [
+    "--force-historical 指定",
+    "rag_e2e ← 106 cases from knowledge_citation_results.jsonl",
+    "price_e2e ← 1500 cases; accuracy=99.533%; field_recall=99.464%"
+  ]
+}

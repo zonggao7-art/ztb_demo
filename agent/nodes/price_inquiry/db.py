@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import threading
 from typing import Any, Optional
 
@@ -22,17 +21,18 @@ _pool_in_use: set[int] = set()
 def _mysql_base_kwargs() -> dict[str, Any]:
     settings = _get_settings()
     return {
-        "host": os.getenv("MYSQL_HOST", "192.168.10.120"),
-        "user": os.getenv("MYSQL_USER", "iflytek"),
-        "password": os.getenv("MYSQL_PASSWORD", ""),
-        "port": int(os.getenv("MYSQL_PORT", "3306")),
+        "host": settings.mysql_host,
+        "user": settings.mysql_user,
+        "password": settings.mysql_password,
+        "port": int(settings.mysql_port),
         "charset": "utf8mb4",
         "connect_timeout": min(10, settings.sql_query_timeout),
         "read_timeout": settings.sql_query_timeout,
         "write_timeout": settings.sql_query_timeout,
     }
 
-_CLEAN_DB = os.getenv("MYSQL_CLEAN_DB", "ztb_clean")
+# 业务库名统一从配置中心读取（.env: MYSQL_CLEAN_DB）
+_CLEAN_DB = Settings().mysql_clean_db
 
 _settings_cache: Optional[Settings] = None
 
