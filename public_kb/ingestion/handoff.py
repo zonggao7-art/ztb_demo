@@ -126,42 +126,36 @@ def prepare_handoff(
         entry: Dict[str, Any] = {"pdf": pdf_file.name}
         md_path = out_dir / f"{pdf_file.stem}{_MARKDOWN_SUFFIX}"
         jsonl_path = out_dir / f"{pdf_file.stem}.documents.jsonl"
-
-        def _process_book() -> Dict[str, Any]:
+        try:
             if md_path.exists() and not force:
-                # 缓存命中：跳过解析，直接对已有 markdown 分块
+                # 缓存命中：主进程直接分块（快，无需子进程）
                 raw_markdown = md_path.read_text(encoding="utf-8")
                 documents = _freeze_chunk_uid(
                     chunk_markdown(raw_markdown, pdf_file.stem, settings)
                 )
                 dump_documents_jsonl(documents, jsonl_path)
-                return {
+                entry.update({
                     "chunks": len(documents),
                     "markdown": str(md_path),
                     "jsonl": str(jsonl_path),
                     "cached": True,
-                }
-            raw_markdown = parser.parse(pdf_file)
-            documents = _freeze_chunk_uid(
-                chunk_markdown(raw_markdown, pdf_file.stem, settings)
+                })
+                logger.info(
+                    "⏭ %s 命中缓存 → %d 块（跳过解析）",
+                    pdf_file.name, len(documents),
+                )
+                summary.append(entry)
+                continue
+            # 全量解析：在子进程中运行，超时则 terminate（不留抢占 MinerU 的残留线程）
+            result, err = _run_book_process(
+                pdf_file, out_dir, force, settings, timeout_sec
             )
-            md_path.write_text(raw_markdown, encoding="utf-8")
-            dump_documents_jsonl(documents, jsonl_path)
-            return {
-                "chunks": len(documents),
-                "markdown": str(md_path),
-                "jsonl": str(jsonl_path),
-            }
-
-        try:
-            result, timeout_err = _run_with_timeout(_process_book, timeout_sec)
-            if timeout_err is not None:
-                raise timeout_err
+            if err is not None:
+                raise err
             entry.update(result)
-            status = "⏭ 命中缓存" if result.get("cached") else "✓"
             logger.info(
-                "%s %s → %d 块 → %s / %s",
-                status, pdf_file.name, result["chunks"],
+                "✓ %s → %d 块 → %s / %s",
+                pdf_file.name, result["chunks"],
                 md_path.name, jsonl_path.name,
             )
         except Exception as exc:  # noqa: BLE001
@@ -174,34 +168,101 @@ def prepare_handoff(
     return summary
 
 
-def _run_with_timeout(fn, timeout_sec: int) -> tuple:
-    """在守护线程中执行 fn；超时返回 (None, TimeoutError)。
+def _process_single_book(
+    pdf_path: str | Path,
+    out_dir: str | Path,
+    force: bool,
+    settings: Settings,
+) -> Dict[str, Any]:
+    """处理单本书（子进程或进程内调用）：解析 + 分块 + 落盘。返回 entry 字段。
 
-    守护线程不会被进程退出阻塞：超时后主流程继续处理下一本，被跳过的
-    线程在后台自行收尾（其内部 httpx 调用受 mineru_api_timeout 约束）。
+    doc_name 取 ``pdf.stem``；markdown 输出 ``{stem}.assembled.md``。
     """
-    import threading
+    from .parser_factory import build_pdf_parser
 
-    box: dict = {"done": False, "value": None, "exc": None}
+    pdf_file = Path(pdf_path)
+    out = Path(out_dir)
+    md_path = out / f"{pdf_file.stem}{_MARKDOWN_SUFFIX}"
+    jsonl_path = out / f"{pdf_file.stem}.documents.jsonl"
 
-    def _target() -> None:
-        try:
-            box["value"] = fn()
-        except Exception as exc:  # noqa: BLE001
-            box["exc"] = exc
-        finally:
-            box["done"] = True
+    if md_path.exists() and not force:
+        raw_markdown = md_path.read_text(encoding="utf-8")
+        documents = _freeze_chunk_uid(
+            chunk_markdown(raw_markdown, pdf_file.stem, settings)
+        )
+        dump_documents_jsonl(documents, jsonl_path)
+        return {
+            "chunks": len(documents),
+            "markdown": str(md_path),
+            "jsonl": str(jsonl_path),
+            "cached": True,
+        }
 
-    thread = threading.Thread(target=_target, daemon=True)
-    thread.start()
-    thread.join(timeout_sec)
-    if not box["done"]:
+    parser = build_pdf_parser(settings)
+    raw_markdown = parser.parse(pdf_file)
+    documents = _freeze_chunk_uid(
+        chunk_markdown(raw_markdown, pdf_file.stem, settings)
+    )
+    md_path.write_text(raw_markdown, encoding="utf-8")
+    dump_documents_jsonl(documents, jsonl_path)
+    return {
+        "chunks": len(documents),
+        "markdown": str(md_path),
+        "jsonl": str(jsonl_path),
+    }
+
+
+def _book_worker(
+    pdf_path: str,
+    out_dir: str,
+    force: bool,
+    settings: Settings,
+    result_queue: Any,
+) -> None:
+    """子进程入口：处理单本书，结果（含异常）经队列回传。"""
+    try:
+        entry = _process_single_book(pdf_path, out_dir, force, settings)
+        result_queue.put(entry)
+    except Exception as exc:  # noqa: BLE001
+        result_queue.put({"error": str(exc)})
+
+
+def _run_book_process(
+    pdf_file: str | Path,
+    out_dir: str | Path,
+    force: bool,
+    settings: Settings,
+    timeout_sec: int,
+    *,
+    worker: Any = None,
+) -> tuple:
+    """在独立子进程中处理单本书；超时则 terminate（彻底终止）。
+
+    用子进程而非线程：超时后线程无法被杀，会残留后台解析继续抢占 MinerU，
+    拖慢后续书。子进程 terminate 则立即释放全部资源。
+    """
+    import multiprocessing as mp
+    import queue as _queue
+
+    ctx = mp.get_context("spawn")
+    result_queue = ctx.Queue()
+    target = worker or _book_worker
+    proc = ctx.Process(
+        target=target,
+        args=(str(pdf_file), str(out_dir), bool(force), settings, result_queue),
+        daemon=True,
+    )
+    proc.start()
+    try:
+        result = result_queue.get(timeout=timeout_sec)
+        proc.join(5)
+        return result, None
+    except _queue.Empty:
+        proc.terminate()
+        proc.join(10)
         return None, TimeoutError(
             f"超过 {timeout_sec}s 未完成，已跳过该本"
         )
-    if box["exc"] is not None:
-        raise box["exc"]
-    return box["value"], None
 
 
 def dump_documents_jsonl(
