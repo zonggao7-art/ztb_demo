@@ -12,6 +12,7 @@ Agent CLI 入口。
 from __future__ import annotations
 
 import argparse
+import asyncio
 import logging
 import sys
 from pathlib import Path
@@ -22,6 +23,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT_ROOT))
 
 from agent import AgentGraph
+from agent.streaming import EventType, StreamEvent
 from public_kb.citations import format_citations
 
 
@@ -43,6 +45,7 @@ def main() -> None:
 示例:
   python -m agent --question
   python -m agent --interactive
+  python -m agent --question "..." --async   # 阶段 1 起可用，验证异步图
         """,
     )
     parser.add_argument(
@@ -60,6 +63,23 @@ def main() -> None:
         action="store_true",
         help="显示调试日志",
     )
+    parser.add_argument(
+        "--async",
+        dest="use_async",
+        action="store_true",
+        help="使用异步图（默认同步；阶段 1 调试时验证双轨入口）",
+    )
+    parser.add_argument(
+        "--stream",
+        action="store_true",
+        help="启用分帧流式输出（需搭配 --async 或流式能力）",
+    )
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=None,
+        help="单次问答总超时秒数",
+    )
 
     args = parser.parse_args()
     setup_logging(args.verbose)
@@ -69,18 +89,24 @@ def main() -> None:
         return
 
     # 初始化 Agent
-    print("正在初始化招投标智能助手...")
+    mode = "async" if args.use_async else "sync"
+    print(f"正在初始化招投标智能助手 (mode={mode})...")
     try:
-        agent = AgentGraph()
+        agent = AgentGraph(async_enabled=args.use_async)
         print("✅ 助手就绪！\n")
     except Exception as e:
         print(f"❌ 初始化失败: {e}")
         sys.exit(1)
 
     if args.interactive:
+        if args.stream:
+            print("⚠️ 交互模式暂不启用 --stream，已回退同步模式。")
         run_interactive(agent)
     elif args.question:
-        run_single(agent, args.question)
+        if args.stream:
+            run_single_stream(agent, args.question, deadline_s=args.timeout)
+        else:
+            run_single(agent, args.question)
 
 
 def _render_business_data(data: Any) -> None:
@@ -122,6 +148,69 @@ def run_single(agent: AgentGraph, question: str) -> None:
 
     except Exception as e:
         print(f"❌ 错误: {e}")
+
+
+def _render_stream_event(event: StreamEvent) -> str:
+    if event.type is EventType.STAGE:
+        stage = event.payload.get("stage", "")
+        icons = {
+            "router_done": "🧭",
+            "retrieval_start": "🔍",
+            "intent_done": "📋",
+            "sql_start": "🗄️",
+            "doc_qa_placeholder": "📄",
+            "fallback": "🧯",
+        }
+        return f"\n{icons.get(stage, '⚙️')} {stage}\n"
+    if event.type is EventType.TOKEN:
+        return str(event.payload.get("delta", ""))
+    if event.type is EventType.TABLE and not event.payload.get("synthetic_quiet"):
+        return ""
+    return ""
+
+
+def run_single_stream(agent: AgentGraph, question: str, *, deadline_s: float | None = None) -> None:
+    """单次分帧问答。"""
+    print(f"🙋 问题: {question}\n")
+    terminal_types = {EventType.FINAL, EventType.ERROR, EventType.CANCELLED}
+    final_event = None
+
+    async def consume():
+        nonlocal final_event
+        try:
+            async for event in agent.astream(question, deadline_s=deadline_s):
+                output = _render_stream_event(event)
+                if output:
+                    sys.stdout.write(output)
+                    sys.stdout.flush()
+                if event.type is EventType.CITATIONS:
+                    pass
+                if event.type in terminal_types:
+                    final_event = event
+        except KeyboardInterrupt:
+            print("\n⏹️ 已取消")
+
+    try:
+        asyncio.run(consume())
+    except KeyboardInterrupt:
+        print("\n⏹️ 已取消")
+
+    if not final_event or final_event.type not in terminal_types:
+        print("\n❌ 流式请求未正常结束")
+        return
+    if final_event.type is not EventType.FINAL:
+        payload = final_event.payload
+        print(f"\n❌ 终态[{final_event.type.value}]: {payload.get('message', payload.get('reason', ''))}")
+        return
+
+    answer = str(final_event.payload.get("answer", ""))
+    if answer:
+        print(f"\n🤖 回答:\n{answer}")
+
+    biz = (agent.get_state("default") or {}).get("business_result", {})
+    branch = biz.get("branch", "unknown")
+    print(f"── 分支: {branch} ──")
+    _render_business_data(biz.get("data"))
 
 
 def run_interactive(agent: AgentGraph) -> None:

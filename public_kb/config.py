@@ -60,6 +60,25 @@ class Settings:
     collection_name: str = "public_kb"
 
     # ============================================================
+    # MySQL 连接（询价链路结构化库；agent.nodes.price_inquiry.db 消费）
+    # ============================================================
+    mysql_host: str = field(
+        default_factory=lambda: os.getenv("MYSQL_HOST", "127.0.0.1")
+    )
+    mysql_port: int = field(
+        default_factory=lambda: int(os.getenv("MYSQL_PORT", "3306"))
+    )
+    mysql_user: str = field(
+        default_factory=lambda: os.getenv("MYSQL_USER", "root")
+    )
+    mysql_password: str = field(
+        default_factory=lambda: os.getenv("MYSQL_PASSWORD", "")
+    )
+    mysql_clean_db: str = field(
+        default_factory=lambda: os.getenv("MYSQL_CLEAN_DB", "ztb_clean")
+    )
+
+    # ============================================================
     # Embedding 模型
     # ============================================================
     embedding_model: str = field(
@@ -88,19 +107,23 @@ class Settings:
     # ============================================================
     # LLM 问答模型
     # ============================================================
+    # 读取优先级：LLM_*（规范名）→ OpenRouter 直配（API_KEY/BASE_URL/MODEL_NAME）
+    #            → DEEPSEEK_*（历史遗留兜底；2026-08 起对话模型默认切换为 OpenRouter）
     llm_model: str = field(
-        default_factory=lambda: os.getenv("LLM_MODEL", "deepseek-chat")
+        default_factory=lambda: os.getenv(
+            "LLM_MODEL", os.getenv("MODEL_NAME", "z-ai/glm-5.3-flash")
+        )
     )
     llm_api_key: str = field(
         default_factory=lambda: os.getenv(
             "LLM_API_KEY",
-            os.getenv("DEEPSEEK_API_KEY", os.getenv("CLOSEAI_API_KEY", "")),
+            os.getenv("API_KEY", os.getenv("DEEPSEEK_API_KEY", "")),
         )
     )
     llm_base_url: str = field(
         default_factory=lambda: os.getenv(
             "LLM_BASE_URL",
-            os.getenv("DEEPSEEK_BASE_URL", os.getenv("CLOSEAI_BASE_URL", "")),
+            os.getenv("BASE_URL", os.getenv("DEEPSEEK_BASE_URL", "")),
         )
     )
     llm_temperature: float = 0.0
@@ -135,6 +158,18 @@ class Settings:
     nprobe: int = 32               # IVF 检索探测单元数（显式控制精度）
     rrf_k: int = 60                # RRF 融合参数 k
     reranker_model: str = "BAAI/bge-reranker-v2-m3"  # Cross-Encoder 重排序模型
+
+    # ============================================================
+    # 询价语义检索（Milvus mysql_price_semantic 集合）
+    # ============================================================
+    mysql_semantic_collection: str = field(
+        default_factory=lambda: os.getenv("MYSQL_SEMANTIC_COLLECTION", "mysql_price_semantic")
+    )
+    mysql_semantic_batch_size: int = int(os.getenv("MYSQL_SEMANTIC_BATCH_SIZE", "100"))
+    mysql_semantic_top_k: int = int(os.getenv("MYSQL_SEMANTIC_TOP_K", "64"))
+    mysql_semantic_per_table_limit: int = int(os.getenv("MYSQL_SEMANTIC_PER_TABLE_LIMIT", "24"))
+    mysql_semantic_text_truncate: int = int(os.getenv("MYSQL_SEMANTIC_TEXT_TRUNCATE", "120"))
+    mysql_semantic_threshold: float = float(os.getenv("MYSQL_SEMANTIC_THRESHOLD", "0.30"))
 
     # ============================================================
     # 超时与重试参数（任务2）
@@ -191,3 +226,53 @@ class Settings:
     citation_rules: CitationRuleConfig = field(
         default_factory=CitationRuleConfig
     )
+
+
+    # ============================================================
+    # 异步 + 记忆 + 流式改造新增字段（手册 §8.2；阶段 1 起生效）
+    # ============================================================
+
+    # ── 异步执行开关 ──
+    async_backend_enabled: bool = field(
+        default_factory=lambda: os.getenv("ASYNC_BACKEND_ENABLED", "false").lower() in {"1", "true", "yes"}
+    )
+    async_io_workers: int = int(os.getenv("ASYNC_IO_WORKERS", "16"))
+    async_cpu_workers: int = int(os.getenv("ASYNC_CPU_WORKERS", "4"))
+    llm_max_concurrency: int = int(os.getenv("LLM_MAX_CONCURRENCY", "8"))
+    embedding_max_concurrency: int = int(os.getenv("EMBEDDING_MAX_CONCURRENCY", "8"))
+    rerank_max_concurrency: int = int(os.getenv("RERANK_MAX_CONCURRENCY", "4"))
+    milvus_max_concurrency: int = int(os.getenv("MILVUS_MAX_CONCURRENCY", "8"))
+    price_recall_concurrency: int = int(os.getenv("PRICE_RECALL_CONCURRENCY", "3"))
+
+    # ── MySQL 池（阶段 3 真正用，阶段 1 先占位） ──
+    mysql_max_pool_size: int = int(os.getenv("MYSQL_MAX_POOL_SIZE", "16"))
+    mysql_acquire_timeout_s: int = int(os.getenv("MYSQL_ACQUIRE_TIMEOUT", "3"))
+    sql_stmt_timeout_s: int = int(os.getenv("SQL_STMT_TIMEOUT_S", "8"))
+
+    # ── Checkpointer ──
+    checkpointer_backend: str = os.getenv("CHECKPOINTER_BACKEND", "memory")
+    checkpointer_sqlite_path: str = os.getenv("CHECKPOINTER_SQLITE_PATH", "checkpoints.db")
+    checkpointer_postgres_dsn: str = os.getenv("CHECKPOINTER_POSTGRES_DSN", "")
+
+    # ── 长期记忆（阶段 4 启用） ──
+    memory_enabled: bool = field(
+        default_factory=lambda: os.getenv("MEMORY_ENABLED", "false").lower() in {"1", "true", "yes"}
+    )
+    memory_store_backend: str = os.getenv("MEMORY_STORE_BACKEND", "sqlite")
+    memory_pg_dsn: str = os.getenv("MEMORY_PG_DSN", "")
+    memory_sqlite_path: str = os.getenv("MEMORY_SQLITE_PATH", "memory.db")
+    memory_max_injection_tokens: int = int(os.getenv("MEMORY_MAX_INJECTION_TOKENS", "400"))
+    memory_min_confidence: float = float(os.getenv("MEMORY_MIN_CONFIDENCE", "0.7"))
+    memory_allow_extracted: bool = field(
+        default_factory=lambda: os.getenv("MEMORY_ALLOW_EXTRACTED", "false").lower() in {"1", "true", "yes"}
+    )
+
+    # ── 流式输出（阶段 5 启用） ──
+    stream_enabled: bool = field(
+        default_factory=lambda: os.getenv("STREAM_ENABLED", "false").lower() in {"1", "true", "yes"}
+    )
+    stream_heartbeat_s: int = int(os.getenv("STREAM_HEARTBEAT_S", "15"))
+    stream_cancel_grace_s: int = int(os.getenv("STREAM_CANCEL_GRACE_S", "5"))
+
+    # ── Reranker 超时 ──
+    rerank_timeout_s: int = int(os.getenv("RERANK_TIMEOUT_S", "5"))

@@ -11,6 +11,8 @@ import logging
 
 from langchain_core.messages import AIMessage
 
+from ..streaming import EventType
+from ..streaming.context import emit
 from ..state import AgentState
 
 logger = logging.getLogger(__name__)
@@ -65,6 +67,7 @@ def node_doc_qa(state: AgentState) -> dict:
         {"business_result": {...}, "messages": [AIMessage]}
     """
     logger.info("doc_qa: 占位节点被调用（功能待上线）")
+    emit(EventType.STAGE, {"stage": "doc_qa_placeholder"})
 
     answer = (
         "📄 文档问答功能正在开发中，敬请期待！\n\n"
@@ -89,3 +92,11 @@ def node_doc_qa(state: AgentState) -> dict:
         },
         "messages": [AIMessage(content=answer)],
     }
+
+
+async def node_doc_qa_async(state: AgentState) -> dict:
+    """文档问答占位节点（异步/流式路径）。"""
+    result = node_doc_qa(state)
+    answer = str(result["business_result"]["answer"])
+    emit(EventType.FINAL, {"answer": answer, "business_result": {"branch": "doc_qa"}})
+    return result

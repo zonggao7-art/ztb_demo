@@ -386,6 +386,51 @@ def _parse_unified_intent(question: str, llm: ChatOpenAI) -> SearchIntent:
     )
     return intent
 
+async def _parse_unified_intent_async(question: str, llm: ChatOpenAI) -> SearchIntent:
+    """统一意图解析（异步版，阶段 3）。
+
+    与 _parse_unified_intent 行为完全一致（sub_route + filters 一次抽取、
+    不可解析/异常时回退关键词提取、post_process 去噪），
+    仅将 chain.invoke 替换为 chain.ainvoke。
+    """
+    if not question:
+        return SearchIntent(hard_filters=HardFilters(), original_question=question)
+
+    start = time.perf_counter()
+    try:
+        chain = _UNIFIED_INTENT_PROMPT | llm | StrOutputParser()
+        raw = await chain.ainvoke({"question": question})
+        logger.info("[UNIFIED_INTENT] raw_output=%s", raw[:500])
+        parsed = _extract_json(raw)
+        if parsed:
+            intent = SearchIntent.from_dict(parsed, question)
+        else:
+            logger.warning("[UNIFIED_INTENT] 无法解析 LLM 输出，回退到关键词提取")
+            intent = SearchIntent(
+                hard_filters=HardFilters(),
+                semantic_keywords=_extract_keywords(question),
+                original_question=question,
+            )
+    except Exception as e:
+        logger.warning("[UNIFIED_INTENT] LLM 调用失败 %s，回退到关键词提取", e)
+        intent = SearchIntent(
+            hard_filters=HardFilters(),
+            semantic_keywords=_extract_keywords(question),
+            original_question=question,
+        )
+
+    intent = _post_process_intent(intent)
+    elapsed = time.perf_counter() - start
+    logger.info(
+        "[UNIFIED_INTENT] cost=%.3fs sub_route=%s query_type=%s keywords=%s",
+        elapsed,
+        intent.sub_route,
+        intent.query_type,
+        intent.semantic_keywords,
+    )
+    return intent
+
+
 def _safe_parse_intent(raw: SearchIntent) -> SearchIntent:
     """容错回填：防止 LLM 遗漏字段导致下游 NullPointer。"""
     valid_routes = {"company_query", "bidding_query", "all"}

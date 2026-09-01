@@ -15,6 +15,20 @@ from langchain_openai import ChatOpenAI
 from .config import Settings
 
 
+def _normalize_base_url(base_url: str) -> str:
+    """规范化 base_url — OpenAI 客户端会在 base_url 后自动追加 /chat/completions。
+
+    配置里若直接给出完整请求端点（如 OpenRouter 的
+    https://openrouter.ai/api/v1/chat/completions），需剥掉该后缀，
+    否则会拼出 .../chat/completions/chat/completions 导致 404。
+    """
+    url = base_url.rstrip("/")
+    suffix = "/chat/completions"
+    if url.endswith(suffix):
+        url = url[: -len(suffix)]
+    return url
+
+
 def create_llm(settings: Settings, *, temperature: Optional[float] = None) -> ChatOpenAI:
     """根据 Settings 创建 ChatOpenAI 实例。
 
@@ -34,5 +48,5 @@ def create_llm(settings: Settings, *, temperature: Optional[float] = None) -> Ch
         "max_retries": settings.llm_max_retries,
     }
     if settings.llm_base_url:
-        kwargs["base_url"] = settings.llm_base_url
+        kwargs["base_url"] = _normalize_base_url(settings.llm_base_url)
     return ChatOpenAI(**kwargs)

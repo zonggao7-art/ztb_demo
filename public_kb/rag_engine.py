@@ -17,7 +17,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, AsyncIterator, Dict, List, Optional
 
 from langchain_core.documents import Document
 from langchain_core.language_models import BaseChatModel
@@ -61,6 +61,7 @@ class PublicKnowledgeRAG:
             self._settings, self._embeddings
         )
         self._qa_chain: Optional[Any] = None
+        self._async_pipeline: Optional[Any] = None  # 阶段 2：异步 RAG 流水线（懒建）
         self._parser: MinerUParser = MinerUParser(self._settings)
         self._cleaner: TextCleaner = TextCleaner()
         self._chunker: SemanticChunker = SemanticChunker(
@@ -190,11 +191,101 @@ class PublicKnowledgeRAG:
         )
         return result
 
+    async def aquery(self, question: str) -> Dict[str, Any]:
+        """query() 的异步镜像 — 返回结构与 query() 完全一致。
+
+        差异仅在 I/O：Embedding 原生异步、Milvus 走线程池桥接、
+        Reranker 走 httpx.AsyncClient、LLM 走 ainvoke（详见 qa_chain_async）。
+
+        Raises:
+            RuntimeError: 知识库尚未初始化。
+        """
+        if self._qa_chain is None:
+            raise RuntimeError(
+                "知识库尚未初始化，请先调用 init_knowledge_base() 入库。"
+            )
+
+        pipeline = self._ensure_async_pipeline()
+        logger.info("用户提问(async): %s", question[:100])
+        result: Dict[str, Any] = await pipeline.decide_and_answer_async({
+            "docs": await pipeline.retrieve_async(question),
+            "question": question,
+        })
+        logger.info(
+            "回答完成(async)，来源数: %d", len(result.get("sources", []))
+        )
+        return result
+
+    async def astream(self, question: str) -> AsyncIterator[Any]:
+        """流式问答（异步）— 产出统一 StreamEvent 序列。
+
+        事件序列：
+            stage(retrieval_start) → retrieval(候选摘要) → token*
+            → citations(标准化引用) → final(完整结果)
+
+        拒答场景跳过 retrieval/token，直接 final（answer 为拒答文案）。
+
+        Raises:
+            RuntimeError: 知识库尚未初始化。
+        """
+        import time as _time
+        from uuid import uuid4
+
+        from agent.streaming.events import EventType, StreamEvent
+
+        if self._qa_chain is None:
+            raise RuntimeError(
+                "知识库尚未初始化，请先调用 init_knowledge_base() 入库。"
+            )
+
+        pipeline = self._ensure_async_pipeline()
+        request_id = uuid4().hex
+
+        def _event(event_type: EventType, payload: Dict[str, Any]) -> Any:
+            return StreamEvent(
+                type=event_type, request_id=request_id,
+                payload=payload, ts=_time.time(),
+            )
+
+        logger.info("流式提问(async): %s", question[:100])
+        yield _event(EventType.STAGE, {"stage": "retrieval_start"})
+
+        docs_with_scores = await pipeline.retrieve_async(question)
+
+        if not docs_with_scores:
+            result = pipeline.build_refusal_result()
+            yield _event(EventType.FINAL, {"result": result})
+            return
+
+        yield _event(EventType.RETRIEVAL, {
+            "candidates": [
+                {
+                    "doc": doc.metadata.get("doc_name", ""),
+                    "chapter": doc.metadata.get("chapter", ""),
+                    "score": round(score, 4),
+                }
+                for doc, score in docs_with_scores
+            ],
+        })
+
+        # 逐 token 推流；引用必须晚于正文生成（风险 R-07）
+        parts: List[str] = []
+        async for delta in pipeline.stream_answer(docs_with_scores, question):
+            parts.append(delta)
+            yield _event(EventType.TOKEN, {"delta": delta})
+
+        answer = "".join(parts).strip()
+        result = pipeline.build_answer_result(docs_with_scores, question, answer)
+
+        yield _event(EventType.CITATIONS, {"citations": result["citations"]})
+        yield _event(EventType.FINAL, {"result": result})
+
     def clear_kb(self) -> None:
         """清空公共知识库所有数据（仅管理员使用）。"""
         logger.warning("正在清空 public_kb 集合...")
         self._store_manager.clear_collection()
         self._qa_chain = None
+        self._async_pipeline = None
         logger.warning("public_kb 集合已清空。")
 
     def ensure_loaded(self) -> None:
@@ -281,3 +372,26 @@ class PublicKnowledgeRAG:
             collection=collection,
             embeddings=self._embeddings,
         )
+        # 同步链重建后，异步流水线一并失效（下次使用时懒建）
+        self._async_pipeline = None
+
+    def _ensure_async_pipeline(self) -> Any:
+        """懒建异步 RAG 流水线（与同步链共享 vector_store/llm/collection/embeddings）。"""
+        if self._async_pipeline is not None:
+            return self._async_pipeline
+        from .qa_chain_async import AsyncRAGPipeline
+
+        try:
+            collection = self._store_manager.collection
+        except RuntimeError:
+            collection = None
+            logger.info("MilvusClient 不可用，异步问答链将使用纯稠密检索")
+
+        self._async_pipeline = AsyncRAGPipeline(
+            vector_store=self._store_manager.store,
+            llm=self._llm,
+            settings=self._settings,
+            collection=collection,
+            embeddings=self._embeddings,
+        )
+        return self._async_pipeline

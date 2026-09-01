@@ -19,6 +19,8 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.tools import tool
 
 from .state import AgentState
+from .streaming import EventType
+from .streaming.context import emit
 
 logger = logging.getLogger(__name__)
 
@@ -240,3 +242,81 @@ def build_router_node(llm: BaseChatModel):
             return {"router_intent": "fallback"}
 
     return router_node
+
+
+# ═══════════════════════════════════════════════════
+# 异步入口（阶段 1 交付物）
+# ═══════════════════════════════════════════════════
+
+async def _route_via_tool_calling_async(
+    llm: BaseChatModel, history_str: str, user_input: str
+) -> str:
+    """异步版 Tool Calling 路由（对应同步 _route_via_tool_calling）。"""
+    llm_with_tools = llm.bind_tools(ROUTER_TOOLS, tool_choice="required")
+    response = await llm_with_tools.ainvoke([
+        SystemMessage(content=ROUTER_SYSTEM_PROMPT),
+        HumanMessage(content=ROUTER_USER_TEMPLATE.format(history=history_str, user_input=user_input)),
+    ])
+    tool_calls = getattr(response, "tool_calls", None) or []
+    if tool_calls:
+        tool_name = tool_calls[0].get("name", "")
+        intent = _TOOL_INTENT_MAP.get(tool_name, "fallback")
+        logger.info("路由(async tool): intent=%s", intent)
+        return intent
+    logger.warning("异步 Tool Calling 无结果，降级 fallback")
+    return "fallback"
+
+
+async def _route_via_structured_output_async(
+    llm: BaseChatModel, history_str: str, user_input: str
+) -> str:
+    """异步版 structured_output 路由（对应同步 _route_via_structured_output）。"""
+    structured_llm = llm.with_structured_output(RouterDecision)
+    decision: RouterDecision = await structured_llm.ainvoke([
+        SystemMessage(content=ROUTER_SYSTEM_PROMPT),
+        HumanMessage(content=ROUTER_USER_TEMPLATE.format(history=history_str, user_input=user_input)),
+    ])
+    logger.info("路由(async structured): intent=%s", decision.intent)
+    return decision.intent
+
+
+def build_router_node_async(llm: BaseChatModel):
+    """异步路由节点工厂。
+
+    返回的节点函数是 `async def`，可在 LangGraph StateGraph 中与同步业务节点混用。
+    行为与 build_router_node() 完全一致，只是内部调用 LLM 的 ainvoke。
+    """
+    # 用 dict 包装可变状态（与 build_router_node 保持同样的写法）
+    state = {"tool_fallback": False}
+
+    async def router_node_async(agent_state: AgentState) -> dict:
+        messages = agent_state.get("messages", [])
+        if not messages:
+            emit(EventType.STAGE, {"stage": "router_done", "intent": "fallback"})
+            return {"router_intent": "fallback"}
+
+        history_str = _format_history(messages, max_turns=3)
+        user_input = str(messages[-1].content)
+
+        try:
+            if state["tool_fallback"]:
+                intent = await _route_via_tool_calling_async(llm, history_str, user_input)
+            else:
+                try:
+                    intent = await _route_via_structured_output_async(llm, history_str, user_input)
+                except Exception as e:
+                    err = str(e).lower()
+                    if any(k in err for k in ("response_format", "unavailable", "not supported")):
+                        state["tool_fallback"] = True
+                        logger.info("Router(async): 运行时切换到 Tool Calling")
+                        intent = await _route_via_tool_calling_async(llm, history_str, user_input)
+                    else:
+                        raise
+            emit(EventType.STAGE, {"stage": "router_done", "intent": intent})
+            return {"router_intent": intent}
+        except Exception as e:
+            logger.error("异步路由失败 → fallback: %s", e)
+            emit(EventType.STAGE, {"stage": "router_done", "intent": "fallback", "degraded": True})
+            return {"router_intent": "fallback"}
+
+    return router_node_async
