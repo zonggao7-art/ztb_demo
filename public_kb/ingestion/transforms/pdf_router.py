@@ -211,9 +211,6 @@ class PdfRouter:
 
         Tier B 已在上游升级为 Tier C（fallback），此处不再单独处理。
         """
-        # Tier A：并行快路径
-        tier_a_pages = [d for d in decisions if d.tier == _TIER_A]
-
         # Tier C：远程 MinerU 解析
         assert self._miner_u_router is not None
         try:
@@ -232,9 +229,17 @@ class PdfRouter:
             else:
                 raise
 
+        # Tier A：并行快路径。被 Tier C 范围覆盖的页（含边界扩展页）统一使用
+        # MinerU 产物，避免同一页同时出现快路径和 MinerU 内容（计划 §6 T3）。
+        tier_c_page_set = {idx for r in ranges for idx in r.page_idxs}
+        tier_a_pages = [
+            d for d in decisions
+            if d.tier == _TIER_A and d.page_idx not in tier_c_page_set
+        ]
+        tier_a_results = self._dispatch_tier_a(pdf_path, tier_a_pages)
+
         # 合并
         parsed: List[ParsedPage] = []
-        tier_a_results = self._dispatch_tier_a(pdf_path, tier_a_pages)
         for d, md, warnings in tier_a_results:
             parsed.append(
                 ParsedPage(
@@ -245,7 +250,26 @@ class PdfRouter:
                     warnings=tuple(warnings),
                 )
             )
-        parsed.extend(tier_c_results)
+        # Tier C 范围产物：补填路由信息（MinerURouter 返回 route=None，
+        # 由编排器在汇总时填入，保证 manifest 每页可溯源）。
+        range_by_start = {r.start_idx: r for r in ranges}
+        for tp in tier_c_results:
+            r = range_by_start.get(tp.page_idx)
+            if r is not None and tp.route is None:
+                tp = replace(
+                    tp,
+                    route=PageRouteDecision(
+                        page_idx=tp.page_idx,
+                        page_label="tier_c_range",
+                        tier=_TIER_C,
+                        reason="tier_c_range pages="
+                              + ",".join(str(i) for i in r.page_idxs),
+                        confidence=1.0,
+                        parser="mineru",
+                        features={},
+                    ),
+                )
+            parsed.append(tp)
         # 按 page_idx 升序
         parsed.sort(key=lambda p: p.page_idx)
         return parsed

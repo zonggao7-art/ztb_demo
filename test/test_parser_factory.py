@@ -9,8 +9,9 @@ from public_kb.services.mineru_parser import MinerUParser
 
 
 def test_default_switch_returns_mineru_parser():
-    """默认 pdf_tiered_routing_enabled=false → MinerUParser（M1 行为不变）。"""
+    """开关关闭 → MinerUParser（M1 行为不变）；显式关闭，不依赖 .env。"""
     s = Settings()
+    s.pdf_tiered_routing_enabled = False
     assert s.pdf_tiered_routing_enabled is False
     p = build_pdf_parser(s)
     assert isinstance(p, MinerUParser)
@@ -29,6 +30,7 @@ def test_enabled_switch_returns_pdf_router():
 def test_both_parsers_expose_parse_interface():
     """duck-typed：两个 parser 都有 .parse(pdf_path) -> str，PdfSource 不挑食。"""
     s_off = Settings()
+    s_off.pdf_tiered_routing_enabled = False  # 显式关闭，不依赖 .env
     s_on = Settings()
     s_on.pdf_tiered_routing_enabled = True
     p_off = build_pdf_parser(s_off)
