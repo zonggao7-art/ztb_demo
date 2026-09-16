@@ -7,6 +7,7 @@ knowledge_qa — 专业知识问答节点。
 from __future__ import annotations
 
 import logging
+import threading
 from typing import Any
 
 from langchain_core.messages import AIMessage
@@ -17,17 +18,20 @@ logger = logging.getLogger(__name__)
 
 # 全局单例，首次调用时惰性初始化
 _rag_engine: Any = None
+_rag_lock = threading.Lock()
 
 
 def _get_rag():
     """惰性获取 PublicKnowledgeRAG 单例。"""
     global _rag_engine
     if _rag_engine is None:
-        from public_kb import PublicKnowledgeRAG
-        _rag_engine = PublicKnowledgeRAG()
-        # 确保已加载已有集合（不重新入库）并构建问答链
-        _rag_engine.ensure_loaded()
-        logger.info("knowledge_qa: PublicKnowledgeRAG 初始化完成")
+        with _rag_lock:
+            if _rag_engine is None:
+                from public_kb import PublicKnowledgeRAG
+                candidate = PublicKnowledgeRAG()
+                candidate.ensure_loaded()
+                _rag_engine = candidate
+                logger.info("knowledge_qa: PublicKnowledgeRAG 初始化完成")
     return _rag_engine
 
 

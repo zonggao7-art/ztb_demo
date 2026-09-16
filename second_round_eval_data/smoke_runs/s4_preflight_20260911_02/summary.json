@@ -1,0 +1,56 @@
+{
+  "completed_at": "2026-09-11T09:08:51.989529+00:00",
+  "checks": {
+    "four_rows": true,
+    "original_dataset_identity_preserved": true,
+    "all_success": true,
+    "all_have_citations": true,
+    "all_at_most_top5": true,
+    "one_reranker_call_per_question": true,
+    "all_have_private_rerank_trace": true,
+    "trace_contains_no_candidate_text": true,
+    "answer_model_usage_actual": true,
+    "all_dynamic_filters_applied": true,
+    "filter_counts_match_final_citations": true,
+    "at_least_one_filter_change_observed": true
+  },
+  "passed": true,
+  "status_counts": {
+    "success": 4
+  },
+  "latencies_s": [
+    3.972341,
+    1.951837,
+    1.876224,
+    2.566137
+  ],
+  "citation_counts": [
+    5,
+    1,
+    4,
+    2
+  ],
+  "reranker_latencies_s": [
+    0.783585,
+    0.968188,
+    0.764343,
+    0.843099
+  ],
+  "exact_retrieval": {
+    "match_key": "chunk_uid",
+    "sample_count": 4,
+    "expected_chunk_count": 5,
+    "matched_chunk_count": 5,
+    "micro_recall": 1.0,
+    "macro_recall": 1.0,
+    "any_hit_count": 4,
+    "any_hit_rate": 1.0,
+    "all_hit_count": 4,
+    "all_hit_rate": 1.0,
+    "mean_first_hit_rank": 1.0,
+    "duplicate_retrieved_chunk_count": 0,
+    "missed_sample_ids": [],
+    "partial_sample_ids": []
+  },
+  "total_system_tokens": 219609
+}

@@ -58,9 +58,9 @@ class _AssociationChecker:
         uri = f"http://{settings.milvus_host}:{settings.milvus_port}"
         self._collection_name = collection_name
         self._client = MilvusClient(uri=uri)
-        self._cache: dict[int, dict] = {}
+        self._cache: dict[str, dict] = {}
 
-    def _get_entity(self, chunk_id: int):
+    def _get_entity(self, chunk_id: str):
         if chunk_id not in self._cache:
             try:
                 rows = self._client.get(
@@ -93,7 +93,7 @@ class _AssociationChecker:
                     "reason": "missing_chunk_id",
                 })
                 continue
-            entity = self._get_entity(int(cid))
+            entity = self._get_entity(str(cid))
             if entity is None:
                 failed.append({
                     "context_index": c.get("context_index"),

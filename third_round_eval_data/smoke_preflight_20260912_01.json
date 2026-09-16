@@ -1,0 +1,46 @@
+{
+  "schema_version": "third-round-preflight-v1",
+  "status": "passed",
+  "run_kind": "smoke",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "checks": {
+    "manifest_status": "runner_implemented_pending_live_smoke",
+    "manifest_status_valid": true,
+    "artifact_hashes_match": true,
+    "source_hashes_match": true,
+    "review_coverage": {
+      "main_cases": 280,
+      "rag_gold": 110,
+      "sql_truth": 204,
+      "reliability_scenarios": 24
+    },
+    "thresholds_frozen": true,
+    "formal_run_authorized": false,
+    "enabled_required_tools": [
+      "knowledge_qa",
+      "query_company_award_history",
+      "query_company_business_scope",
+      "query_company_penalty",
+      "query_company_registration",
+      "query_project_award"
+    ],
+    "live_configuration": {
+      "llm_model_present": true,
+      "llm_api_key_present": true,
+      "mysql_host_present": true,
+      "mysql_database_present": true,
+      "milvus_host_present": true,
+      "milvus_collection_present": true
+    },
+    "git": {
+      "commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+      "branch": "feat/tool-registry",
+      "worktree_dirty": true,
+      "changed_path_count": 203
+    }
+  },
+  "errors": [],
+  "warnings": [
+    "worktree is dirty; freeze the exact diff before a formal run"
+  ]
+}

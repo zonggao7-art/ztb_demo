@@ -12,13 +12,12 @@ from langchain_core.tools import StructuredTool
 
 from agent.agent_loop import _agent_invoke_config, build_tool_agent
 from agent.tools.base import wrap_sync_tool
-from agent.tools.registry import ToolMeta, ToolRegistry
 from agent.tools.schemas import QueryCompanyPenaltyInput
 from public_kb.config import Settings
 
 
 class _FakeToolLLM(BaseChatModel):
-    """首轮发起一次 tool_call；收到 ToolMessage 后返回最终回答。"""
+    """首轮发起一次 tool_call；收到 ToolMessage 后提交结束动作。"""
 
     final_answer: str = "最终回答：测试公司无行政处罚记录"
 
@@ -29,6 +28,9 @@ class _FakeToolLLM(BaseChatModel):
     def bind_tools(self, tools, **kwargs):
         return self
 
+    def with_structured_output(self, schema, **kwargs):
+        raise AssertionError("unified Agent 不应调用顶层 Router")
+
     def _generate(
         self,
         messages: List[BaseMessage],
@@ -38,7 +40,12 @@ class _FakeToolLLM(BaseChatModel):
     ) -> ChatResult:
         has_tool_result = any(isinstance(m, ToolMessage) for m in messages)
         if has_tool_result:
-            msg = AIMessage(content=self.final_answer)
+            msg = AIMessage(content="", tool_calls=[{
+                "name": "FinishAction",
+                "args": {"status": "complete", "missing_fields": []},
+                "id": "finish",
+                "type": "tool_call",
+            }])
         else:
             msg = AIMessage(
                 content="",
@@ -63,7 +70,7 @@ def _make_penalty_tool(calls: list):
             "ok": True,
             "data": {"records": [{"company_name": company_name, "penalty_result": "无"}]},
             "error": None,
-            "metadata": {"source": "test.company_penalty", "row_count": 1},
+            "metadata": {"source": "test.company_penalty", "row_count": 1, "exact_scope": True},
         }
 
     return StructuredTool.from_function(
@@ -91,13 +98,11 @@ def test_agent_loop_calls_tool_and_answers():
 
     messages = result["messages"]
     assert calls == ["测试有限公司"]  # 工具真实执行了一次
-    assert any(isinstance(m, ToolMessage) for m in messages)
-    assert messages[-1].content == "最终回答：测试公司无行政处罚记录"
-
-    # ToolMessage 双通道：content 为 LLM 可见 JSON，artifact 为完整 ToolResult
-    tool_msg = next(m for m in messages if isinstance(m, ToolMessage))
-    assert tool_msg.artifact["ok"] is True
-    assert tool_msg.artifact["metadata"]["tool"] == "query_company_penalty"
+    # Migrated compatibility entry publishes only verified final messages.
+    assert not any(isinstance(m, ToolMessage) for m in messages)
+    assert messages[-1].content != "最终回答：测试公司无行政处罚记录"
+    assert "测试有限公司" in messages[-1].content
+    assert result["business_result"]["execution_status"] == "complete"
 
 
 def test_agent_mode_requires_enabled_switch():
@@ -122,13 +127,15 @@ def test_enabled_tools_registry_smoke():
     from agent.tools import GLOBAL_TOOL_REGISTRY, get_enabled_tools, register_default_tools
 
     register_default_tools()
-    assert len(GLOBAL_TOOL_REGISTRY) == 6
+    assert len(GLOBAL_TOOL_REGISTRY) == 8
     tools = get_enabled_tools()
     assert {t.name for t in tools} == {
         "search_public_kb",
         "knowledge_qa",
-        "query_company_info",
+        "query_company_registration",
+        "query_company_business_scope",
         "query_company_penalty",
-        "query_bid_records",
+        "query_project_award",
+        "query_company_award_history",
         "search_business_data",
     }

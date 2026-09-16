@@ -1,0 +1,100 @@
+{
+  "audited_at": "2026-09-11T18:56:02.0310492+08:00",
+  "audit_status": "scoring_paused_after_provider_rate_limit",
+  "run_id": "s4_20260911_formal_01",
+  "manifest_status": "scoring_interrupted",
+  "scoring_started_at": "2026-09-11T18:44:57.833365+08:00",
+  "scoring_interrupted_at": "2026-09-11T18:54:39.759525+08:00",
+  "interruption_reason": {
+    "provider": "MiniMax",
+    "http_status": 429,
+    "provider_code": 2062,
+    "message_summary": "Token Plan rate limit reached; provider response recommends upgrading the Token Plan or switching to pay-as-you-go API usage.",
+    "operator_action": "Stopped the scoring process after repeated failures to prevent cascading invalid rows and unnecessary calls."
+  },
+  "checkpoint": {
+    "score_rows": 36,
+    "fully_successful_rows": 32,
+    "rows_with_failed_metrics": 4,
+    "successful_metric_count": 134,
+    "failed_metric_count": 10,
+    "not_attempted_row_count": 164,
+    "not_attempted_metric_count": 656,
+    "last_written_sample_id": "q036"
+  },
+  "metric_status": {
+    "context_recall": {
+      "success": 36,
+      "failed": 0,
+      "not_attempted": 164
+    },
+    "context_precision": {
+      "success": 32,
+      "failed": 4,
+      "not_attempted": 164
+    },
+    "answer_correctness": {
+      "success": 32,
+      "failed": 4,
+      "not_attempted": 164
+    },
+    "faithfulness": {
+      "success": 34,
+      "failed": 2,
+      "not_attempted": 164
+    }
+  },
+  "failed_rows": [
+    {
+      "sample_id": "q033",
+      "failed_metrics": ["context_precision", "answer_correctness"]
+    },
+    {
+      "sample_id": "q034",
+      "failed_metrics": ["context_precision", "answer_correctness"]
+    },
+    {
+      "sample_id": "q035",
+      "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]
+    },
+    {
+      "sample_id": "q036",
+      "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]
+    }
+  ],
+  "scoring_usage_at_interruption": {
+    "calls": 463,
+    "input_tokens": 1087676,
+    "output_tokens": 98206,
+    "total_tokens": 1185882,
+    "api_actual_calls": 453,
+    "rough_estimate_calls": 10,
+    "unknown_outputs": 10
+  },
+  "artifacts": {
+    "manifest.json": {
+      "sha256": "C03948347BAB49C14D6365FD77FD6A21AD22B7ACA8CF9B84A2FB45E99B571E35",
+      "bytes": 11805
+    },
+    "results.jsonl": {
+      "sha256": "1ADEA11AC9AA4E57DDF5F773243272B6B0608B61AC9BCD736E5F0712ED2CF521",
+      "bytes": 13133506
+    },
+    "scores.jsonl": {
+      "sha256": "561505B78E370E29363445215633D8FAE74E4A1EC9C51F884CD6528DBFCFE3CD",
+      "bytes": 16175
+    },
+    "scoring_usage.json": {
+      "sha256": "0EA1A6018FE6AF61CA95D051BE22ABCFF97F50D2A2363AA2B29A5046872DFF98",
+      "bytes": 717
+    }
+  },
+  "safe_continuation": {
+    "automatic_retry_performed": false,
+    "prerequisite": "The external referee provider must accept requests again before resuming.",
+    "resume_command": ".\\.venv-eval\\Scripts\\python.exe scripts\\run_rag_eval.py score --run-dir second_round_eval_data\\runs\\s4_20260911_formal_01 --confirm-paid-scoring",
+    "resume_behavior": "The score command verifies the existing q001-q036 prefix and continues from q037 without recomputing those rows.",
+    "post_resume_expected_state": "After q200 is written, the run should be scoring_incomplete because the 10 failed metrics in q033-q036 remain preserved.",
+    "failed_metric_recovery": "Only after scores.jsonl has 200 rows, a separately authorized recover-scores run can retry the 10 failed metrics without recomputing successful metrics."
+  }
+}

@@ -133,11 +133,78 @@ def cmd_clear() -> None:
         print("❌ 已取消。")
 
 
-def main() -> None:
+def cmd_prepare_handoff(data_dir: str, output_dir: str) -> None:
+    """从三本书 content_list 生成本地、已校验的交接产物。"""
+    from public_kb.book_pipeline import prepare_handoff
+
+    manifest = prepare_handoff(data_dir, output_dir)
+    print(
+        f"交接产物已生成: {output_dir}\n"
+        f"三本书总块数: {manifest['chunk_count']}\n"
+        f"UID digest: {manifest['chunk_uid_digest']}\n"
+        "Milvus 未修改。"
+    )
+
+
+def _initialize_from_documents(documents: list) -> None:
+    from public_kb.handoff_validate import validate_documents
+
+    report = validate_documents(documents)
+    if not report.ok:
+        codes = ", ".join(issue.code for issue in report.issues)
+        raise ValueError(f"入库数据未通过质量门禁: {codes}")
+    rag = PublicKnowledgeRAG()
+    rag._store_manager.initialize_collection(documents)
+    rag._build_qa_chain()
+    print(f"已重建 public_kb，共导入 {len(documents)} 个切块。")
+
+
+def cmd_ingest_jsonl(path: str) -> None:
+    """校验并用 documents.jsonl 重建 public_kb。"""
+    from public_kb.book_pipeline import load_documents_jsonl
+
+    _initialize_from_documents(load_documents_jsonl(path))
+
+
+def cmd_ingest_markdown(markdown_path: str, metadata_jsonl: str) -> None:
+    """校验 Markdown/页码侧车一致性并重建 public_kb。"""
+    from public_kb.book_pipeline import load_markdown_with_sidecar
+
+    _initialize_from_documents(
+        load_markdown_with_sidecar(markdown_path, metadata_jsonl)
+    )
+
+
+def cmd_ingest_handoff(handoff_dir: str, replace_doc: str | None, rebuild: bool) -> None:
+    """校验交接产物（digest + 门禁 + 联合唯一）后按 chunk_uid 主键写入。"""
+    from public_kb.book_pipeline import load_handoff_bundle
+
+    documents = load_handoff_bundle(handoff_dir)
+    rag = PublicKnowledgeRAG()
+    if rebuild:
+        rag._store_manager.initialize_collection(documents)
+    else:
+        rag._store_manager.upsert_documents(documents, replace_doc=replace_doc)
+    rag._store_manager.load_existing()
+    rag._build_qa_chain()
+    if rebuild:
+        mode = "全量重建（drop + 重建集合）"
+    elif replace_doc:
+        mode = f"文档级替换 doc_name={replace_doc!r}（先删旧行再 upsert）"
+    else:
+        mode = "upsert 幂等写入（同 chunk_uid 覆盖，不产生重复行）"
+    print(
+        f"交接产物已入库: {len(documents)} 块（{mode}）\n"
+        f"集合当前总数: {rag._store_manager.row_count()}"
+    )
+
+
+def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="招投标公共知识库 RAG 系统",
     )
-    parser.add_argument(
+    actions = parser.add_mutually_exclusive_group()
+    actions.add_argument(
         "--init", action="store_true",
         help="初始化知识库（批量解析 PDF 并入库）",
     )
@@ -145,18 +212,60 @@ def main() -> None:
         "--pdf-dir", type=str, default=None,
         help="PDF 文件目录（默认: raw_pdfs/）",
     )
-    parser.add_argument(
+    actions.add_argument(
         "--question", "-q", type=str, default=None,
         help="单次问答",
     )
-    parser.add_argument(
+    actions.add_argument(
         "--interactive", "-i", action="store_true",
         help="交互问答模式",
     )
-    parser.add_argument(
+    actions.add_argument(
         "--clear", action="store_true",
         help="清空知识库",
     )
+    actions.add_argument(
+        "--prepare-handoff", action="store_true",
+        help="从 DATA 三本书 content_list 重建并导出已校验交接产物",
+    )
+    actions.add_argument(
+        "--ingest-jsonl", type=str, default=None, metavar="PATH",
+        help="校验 documents.jsonl 后重建 public_kb",
+    )
+    actions.add_argument(
+        "--ingest-markdown", type=str, default=None, metavar="PATH",
+        help="校验 normalized Markdown 及页码侧车后重建 public_kb",
+    )
+    actions.add_argument(
+        "--ingest-handoff", type=str, default=None, metavar="DIR",
+        help="校验交接产物（digest+门禁+联合唯一）后按 chunk_uid 主键写入 public_kb",
+    )
+    parser.add_argument(
+        "--replace-doc", type=str, default=None, metavar="NAME",
+        help="与 --ingest-handoff 连用：先删除指定 doc_name 的旧行再写入（文档级替换）",
+    )
+    parser.add_argument(
+        "--rebuild", action="store_true",
+        help="与 --ingest-handoff 连用：drop 后按混合 schema 全量重建集合",
+    )
+    parser.add_argument(
+        "--data-dir", type=str, default=str(_PROJECT_ROOT / "DATA" / "raw_data"),
+        help="三本书 MinerU 数据根目录",
+    )
+    parser.add_argument(
+        "--output-dir", type=str,
+        default=str(_PROJECT_ROOT / "DATA" / "repaired_knowledge"),
+        help="交接产物输出目录（必须尚不存在）",
+    )
+    parser.add_argument(
+        "--metadata-jsonl", type=str, default=None,
+        help="--ingest-markdown 必需的 normalized.blocks.jsonl",
+    )
+    return parser
+
+
+def main() -> None:
+    parser = _build_parser()
 
     args = parser.parse_args()
 
@@ -170,6 +279,18 @@ def main() -> None:
         cmd_interactive()
     elif args.question:
         cmd_query(args.question)
+    elif args.prepare_handoff:
+        cmd_prepare_handoff(args.data_dir, args.output_dir)
+    elif args.ingest_jsonl:
+        cmd_ingest_jsonl(args.ingest_jsonl)
+    elif args.ingest_markdown:
+        if not args.metadata_jsonl:
+            parser.error("--ingest-markdown 必须同时提供 --metadata-jsonl")
+        cmd_ingest_markdown(args.ingest_markdown, args.metadata_jsonl)
+    elif args.ingest_handoff:
+        if args.replace_doc and args.rebuild:
+            parser.error("--replace-doc 与 --rebuild 不能同时使用")
+        cmd_ingest_handoff(args.ingest_handoff, args.replace_doc, args.rebuild)
     else:
         # 默认：交互模式
         print("未指定操作，进入交互问答模式。")

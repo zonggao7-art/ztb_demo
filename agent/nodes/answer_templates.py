@@ -19,6 +19,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any, Optional
+from string import Formatter
 
 # ═════════════════════════════════════════════════════════
 # 模板数据结构
@@ -295,7 +296,20 @@ def _build_record_context(record: dict[str, Any], template: AnswerTemplate) -> d
     - None 值：显示"未提供"
     - 日期类型：转字符串
     """
-    ctx: dict[str, str] = {}
+    expected = template.source_table.rsplit(".", 1)[-1]
+    source = str(record.get("_source_table") or "").rsplit(".", 1)[-1]
+    if source and source != expected and template.query_type != "mixed":
+        raise ValueError("record_template_source_mismatch")
+    if template.query_type == "penalty_check" and not source and not any(
+        record.get(k) for k in ("penalty_date", "illegal_behavior", "penalty_result")
+    ):
+        raise ValueError("penalty_evidence_required")
+    # Fill optional columns only after checking record provenance.
+    ctx: dict[str, str] = {
+        field: "未提供"
+        for text in (template.single_template, template.item_line, template.multi_template)
+        for _, field, _, _ in Formatter().parse(text) if field
+    }
     # 通用值格式化
     for k, v in record.items():
         if k.startswith("_"):

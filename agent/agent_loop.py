@@ -1,11 +1,7 @@
-"""agent_loop — Agent 自助调用原型（tool-calling 循环）。
+"""--agent-mode compatibility entry for the verified unified Agent pipeline.
 
-P1 工具化的端到端验证交付物：让 LLM 通过 bind_tools 自主选择并调用
-工具库（agent.tools）中的检索工具，验证工具 schema/description 可被
-模型正确理解与使用。默认关闭（.env: AGENT_TOOLS_ENABLED=true 开启）。
-
-复用蓝图既定路线（agent_evolution_comprehensive_blueprint.md §2.2）：
-LangGraph prebuilt create_react_agent + 工具库导出，不自造循环。
+The official loop lives in execution/executor.py (langchain.create_agent).
+Public messages contain verified final replies only, never raw tool traces.
 """
 
 from __future__ import annotations
@@ -18,32 +14,10 @@ from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import BaseTool
 
 from public_kb.config import Settings
-from public_kb.llm_factory import create_llm
 
 from .tools import get_enabled_tools
 
 logger = logging.getLogger(__name__)
-
-AGENT_SYSTEM_PROMPT = """你是招投标智能助手的自主调用 Agent，通过调用工具完成用户任务。
-
-可用工具分两类：
-1. 法规知识类（RAG）：
-   - search_public_kb：检索法规证据片段（推荐；返回原文片段，由你综合作答并注明 doc/chapter 来源）
-   - knowledge_qa：一步到位生成法规问答（内含拒答判断与标准化引用）
-2. 结构化数据类（SQL，入参必须是完整规范的公司全称 / 项目编号）：
-   - query_company_info：企业工商情报查询
-   - query_company_penalty：企业行政处罚/不良记录查询（精确匹配）
-   - query_bid_records：招投标中标记录查询（project_number 或 company_name/purchaser 至少其一）
-   - search_business_data：关键词兜底检索三张核心业务表
-
-使用准则：
-- 涉及法规依据的问题优先 search_public_kb，回答需引用片段的文档/章节来源
-- 涉及企业/项目数据的问题使用对应 SQL 工具，公司名必须使用用户提供的完整全称，不得自行缩写
-- 工具返回 ok=false 且 code=invalid_params 时，按 error.message 纠正参数后重试一次
-- 工具返回空结果时如实告知用户未命中，严禁编造数据
-- 信息足够后立即给出最终回答；单次任务工具调用不超过 {max_steps} 次
-"""
-
 
 def build_tool_agent(
     *,
@@ -56,7 +30,7 @@ def build_tool_agent(
 
     Args:
         llm: 对话模型；None 则按 Settings 自动创建。
-        checkpointer: 会话记忆后端；None 则无持久化。
+        checkpointer: 会话记忆后端；None 使用请求入口的内存后端，不落盘。
         tools: 显式工具列表（测试注入用）；None 则从工具库按白名单取用。
         settings: 配置；None 则从 .env 加载。
 
@@ -69,24 +43,42 @@ def build_tool_agent(
             "Agent 自助调用未启用：请在 .env 设置 AGENT_TOOLS_ENABLED=true 后重试"
         )
     if tools is None:
-        tools = get_enabled_tools()
+        tools = get_enabled_tools(settings=settings)
     if not tools:
         raise RuntimeError(
             "工具库为空：请检查 AGENT_TOOLS_WHITELIST 是否过滤掉了全部工具"
         )
 
-    from langgraph.prebuilt import create_react_agent
+    # Explicit --agent-mode opts this entry into the verified unified path.
+    from dataclasses import replace
+    from .graph import AgentGraph
+    agent = AgentGraph(llm=llm, async_enabled=True, tools=tools,
+                       settings=replace(settings, agent_execution_mode="unified"))
+    if checkpointer is not None:
+        agent._checkpointer = checkpointer
+    return _VerifiedAgentAdapter(agent)
 
-    # 注：LangGraph V1 起该 API 标记迁移至 langchain.agents.create_agent（V2 移除）；
-    # 项目依赖仅含 langchain-core，未安装完整 langchain 包，故继续使用 langgraph.prebuilt。
-    model = llm or create_llm(settings)
-    return create_react_agent(
-        model=model,
-        tools=tools,
-        prompt=AGENT_SYSTEM_PROMPT.format(max_steps=settings.agent_loop_max_steps),
-        checkpointer=checkpointer,
-        name="ztb_tool_agent",
-    )
+
+class _VerifiedAgentAdapter:
+    def __init__(self, agent):
+        self.agent = agent
+
+    async def ainvoke(self, value, config=None):
+        messages = value.get("messages") or []
+        if not messages or not isinstance(messages[-1], HumanMessage):
+            raise ValueError("A final HumanMessage is required")
+        thread_id = (config or {}).get("configurable", {}).get("thread_id", "default")
+        result = await self.agent.ainvoke(str(messages[-1].content), thread_id)
+        return {**result, "messages": [AIMessage(content=result["answer"])]}
+
+    def invoke(self, value, config=None):
+        import asyncio
+        if self.agent._sync_runner is None:
+            self.agent._sync_runner = asyncio.Runner()
+        return self.agent._sync_runner.run(self.ainvoke(value, config))
+
+    def close(self):
+        self.agent.close()
 
 
 def _agent_invoke_config(settings: Settings, thread_id: str) -> dict:
@@ -123,7 +115,8 @@ def run_interactive_agent(compiled: Any, settings: Settings) -> None:
     tools_desc = ", ".join(t.name for t in get_enabled_tools())
     print(f"可用工具: {tools_desc}\n")
 
-    thread_id = "agent-session"
+    from uuid import uuid4
+    thread_id = uuid4().hex
     seen = 0
     turn = 0
     while True:
@@ -138,7 +131,7 @@ def run_interactive_agent(compiled: Any, settings: Settings) -> None:
             print("👋 再见！")
             break
         if question.lower() == "clear":
-            thread_id = f"agent-session-{turn}"
+            thread_id = uuid4().hex
             seen = 0
             print("🔄 已清空会话\n")
             continue
@@ -165,6 +158,9 @@ def run_interactive_agent(compiled: Any, settings: Settings) -> None:
         except Exception as e:
             print(f"❌ 错误: {e}\n")
 
+    if hasattr(compiled, "close"):
+        compiled.close()
+
 
 def run_single_agent(compiled: Any, settings: Settings, question: str) -> None:
     """Agent 自助调用单次问答（--agent-mode --question 入口）。"""
@@ -184,3 +180,6 @@ def run_single_agent(compiled: Any, settings: Settings, question: str) -> None:
         print(f"\n🤖 回答:\n{final or '（未产出回答）'}")
     except Exception as e:
         print(f"❌ 错误: {e}")
+    finally:
+        if hasattr(compiled, "close"):
+            compiled.close()

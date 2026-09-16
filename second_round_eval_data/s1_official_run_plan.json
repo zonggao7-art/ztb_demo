@@ -1,0 +1,206 @@
+{
+  "created_at": "2026-09-12T03:35:35.844507+00:00",
+  "status": "formal_complete",
+  "formal_run_id": "s1_20260912_formal_03_official",
+  "historical_s1_run_id": "s1_20260910_formal_02",
+  "comparison_target_run_id": "s2_20260910_formal_01",
+  "evaluation_interpretation": "Corrected S1 under the final S4-frozen source: dense cosine 30 -> score >= 0.45 -> Top-5, with the same official DeepSeek answer configuration used by S2-S4.",
+  "human_decisions": {
+    "use_current_s4_frozen_source": true,
+    "switch_retrieval_to_s1": true,
+    "use_deepseek_official_api": true,
+    "keep_historical_s1": true,
+    "run_full_200_collection": true,
+    "run_full_800_scoring": true,
+    "preserve_historical_s1_s2_comparison": true
+  },
+  "locked_inputs": {
+    "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+    "question_count": 200,
+    "query_types": {
+      "multi_hop": 70,
+      "single_hop": 130
+    },
+    "collection": "public_kb",
+    "collection_rows": 920,
+    "query_embedding": "BAAI/bge-m3",
+    "answer_model": "deepseek-flash",
+    "answer_host": "api.deepseek.com",
+    "answer_thinking": {
+      "type": "disabled"
+    },
+    "temperature": 0.0,
+    "llm_timeout_s": 60,
+    "llm_max_retries": 1,
+    "retrieval": {
+      "stage": "s1",
+      "dense_limit": 30,
+      "top_k": 5,
+      "nprobe": 32,
+      "dense": true,
+      "sparse": false,
+      "rrf": false,
+      "reranker": false,
+      "dynamic_filter": false,
+      "score_scale": "cosine",
+      "fixed_threshold": 0.45
+    },
+    "referee_model": "MiniMax-M3",
+    "referee_host": "api.minimax.cn",
+    "referee_thinking": {
+      "type": "disabled"
+    },
+    "referee_max_completion_tokens": 4096,
+    "scoring_embedding": "BAAI/bge-m3"
+  },
+  "execution": {
+    "order": "dataset_file_order",
+    "collection_concurrency": 1,
+    "question_timeout_s": 600,
+    "minimum_question_start_interval_s": 0,
+    "latency_scope": "knowledge_qa_call_only",
+    "latency_percentile_method": "nearest_rank",
+    "scoring_concurrency": 4,
+    "metric_timeout_s": 600
+  },
+  "evidence": {
+    "source_snapshot": "second_round_eval_data/s1_official_source_snapshot.json",
+    "source_snapshot_sha256": "F904E57C69E561A624712705DB857F1BB54F67CA669029432073AB2F78DEB57D",
+    "source_file_count": 47,
+    "source_files_equal_s4_snapshot": true,
+    "files_different_from_s2_snapshot": [
+      "evaluation/rag/collector.py",
+      "evaluation/rag/comparison.py",
+      "evaluation/rag/diagnostics.py",
+      "evaluation/rag/preflight.py",
+      "evaluation/rag/report.py",
+      "evaluation/rag/scoring.py",
+      "evaluation/rag/summary.py",
+      "evaluation/rag/tokens.py",
+      "public_kb/config.py",
+      "public_kb/evaluation_context.py",
+      "public_kb/qa_chain.py",
+      "public_kb/qa_chain_async.py",
+      "public_kb/reranker.py",
+      "scripts/run_rag_eval.py"
+    ],
+    "files_different_from_s2_snapshot_count": 14,
+    "preflight_report": "second_round_eval_data/s1_official_preflight_report.json",
+    "preflight_report_sha256": "695E95A2C4978E73A3ED939B667183D2911DAD926C0705FF4D6B9C5553CB4B5D"
+  },
+  "known_limitations": [
+    "The corrected S1 uses the final S4-frozen source. Fourteen source files differ from the historical S2 source snapshot, so comparison with the existing S2 is practical rather than a strict single-source-version causal experiment.",
+    "The historical S1 used a different OpenRouter model identifier and routing path; old-versus-new S1 is not a provider-only experiment."
+  ],
+  "commands": {
+    "collect": ".\\.venv-eval\\Scripts\\python.exe scripts\\run_rag_eval.py collect --stage s1 --run-id s1_20260912_formal_03_official --confirm-live-run",
+    "score": ".\\.venv-eval\\Scripts\\python.exe scripts\\run_rag_eval.py score --run-dir second_round_eval_data\\runs\\s1_20260912_formal_03_official --scoring-concurrency 4 --confirm-paid-scoring"
+  },
+  "collection_result": {
+    "run_id": "s1_20260912_formal_03_official",
+    "completed_at": "2026-09-12T03:40:00.377448+00:00",
+    "verification": "second_round_eval_data/runs/s1_20260912_formal_03_official/collection_verification.json",
+    "verification_sha256": "7718D72ACAD6171E5C8F86E3D22F1F5FDFA8C2174091DB26507A194FAC2A83F8",
+    "p50_s": 1.177373,
+    "p95_s": 2.046747,
+    "max_s": 2.547043
+  },
+  "scoring_events": [
+    {
+      "audit": "second_round_eval_data/runs/s1_20260912_formal_03_official/scoring_interruption_audit.json",
+      "audit_sha256": "0CEFB660EB2DD3F794366C22FD6CD425E658E7661D495D50AF53B53F9A995830",
+      "completed_rows": 24,
+      "failed_metric_count": 1,
+      "resume_concurrency": 1
+    }
+  ],
+  "completed_at": "2026-09-12T06:01:25.102683+00:00",
+  "formal_result": {
+    "manifest": "second_round_eval_data/runs/s1_20260912_formal_03_official/manifest.json",
+    "report": "second_round_eval_data/runs/s1_20260912_formal_03_official/report.md",
+    "summary": "second_round_eval_data/runs/s1_20260912_formal_03_official/summary.json",
+    "collection_success": "200/200",
+    "quality_scores_success": "800/800",
+    "quality_metrics": {
+      "context_recall": {
+        "mean": 0.8858049242424242,
+        "valid_count": 200,
+        "planned_count": 200,
+        "missing_reasons": {}
+      },
+      "context_precision": {
+        "mean": 0.7568194444015188,
+        "valid_count": 200,
+        "planned_count": 200,
+        "missing_reasons": {}
+      },
+      "answer_correctness": {
+        "mean": 0.7507885628969794,
+        "valid_count": 200,
+        "planned_count": 200,
+        "missing_reasons": {}
+      },
+      "faithfulness": {
+        "mean": 0.9515573384807665,
+        "valid_count": 200,
+        "planned_count": 200,
+        "missing_reasons": {}
+      }
+    },
+    "latency": {
+      "method": "nearest_rank",
+      "sample_count": 200,
+      "p50_s": 1.177373,
+      "p95_s": 2.046747
+    },
+    "system_token_usage": {
+      "input_tokens": 1067925,
+      "output_tokens": 22422,
+      "total_tokens": 1090347,
+      "unknown_outputs": 0,
+      "source_counts": {
+        "rough_estimate": 200,
+        "api_actual": 200
+      },
+      "components": {
+        "query_embedding": {
+          "calls": 200,
+          "input_tokens": 8753,
+          "output_tokens": 0,
+          "total_tokens": 8753,
+          "unknown_outputs": 0,
+          "sources": {
+            "rough_estimate": 200
+          }
+        },
+        "answer_model": {
+          "calls": 200,
+          "input_tokens": 1059172,
+          "output_tokens": 22422,
+          "total_tokens": 1081594,
+          "unknown_outputs": 0,
+          "sources": {
+            "api_actual": 200
+          }
+        }
+      },
+      "average_per_planned_question": 5451.735
+    },
+    "comparisons": {
+      "official_s1_to_s2": {
+        "json": "second_round_eval_data/runs/s1_20260912_formal_03_official/paired_comparison_official_s1_to_s2.json",
+        "json_sha256": "4FE49469CBFC3FEFF379CC5E755AB0187F8E96DB6A3736360F025119A555CBEC",
+        "markdown": "second_round_eval_data/runs/s1_20260912_formal_03_official/paired_comparison_official_s1_to_s2.md",
+        "markdown_sha256": "AF1DBD3416A45838857C80202397401D044D7DDBC0FF25D2F13D787E85345D6E"
+      },
+      "historical_s1_to_official_s1": {
+        "json": "second_round_eval_data/runs/s1_20260912_formal_03_official/paired_comparison_openrouter_s1_to_official_s1.json",
+        "json_sha256": "A048DC7200929ED8B7DC9186E7A39D283332BA257363FB6C794E3D957FD6DBBF",
+        "markdown": "second_round_eval_data/runs/s1_20260912_formal_03_official/paired_comparison_openrouter_s1_to_official_s1.md",
+        "markdown_sha256": "E24B1FE507B99D16E850C5B9E54D0E3AA07682EE756F9FFEC54FE651505E8442"
+      }
+    },
+    "historical_s2_comparison_preserved": true
+  },
+  "baseline_snapshot_path": "second_round_eval_data/s1_official_baseline_snapshot.json"
+}

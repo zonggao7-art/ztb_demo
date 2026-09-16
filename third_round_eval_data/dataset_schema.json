@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "third-round-unified-eval-v1",
+  "title": "Third-round unified Agent evaluation artifacts",
+  "description": "The verifier is authoritative; this schema documents stable top-level contracts.",
+  "$defs": {
+    "review_attestation": {
+      "type": "object",
+      "required": [
+        "result",
+        "reviewer",
+        "reviewed_on",
+        "note"
+      ],
+      "properties": {
+        "result": {
+          "const": "passed"
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewed_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "action": {
+      "type": "object",
+      "required": [
+        "node_id",
+        "tool",
+        "args",
+        "arg_sources",
+        "depends_on"
+      ],
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "pattern": "^a[1-6]$"
+        },
+        "tool": {
+          "enum": [
+            "knowledge_qa",
+            "query_company_registration",
+            "query_company_business_scope",
+            "query_company_penalty",
+            "query_project_award",
+            "query_company_award_history"
+          ]
+        },
+        "args": {
+          "type": "object"
+        },
+        "arg_sources": {
+          "type": "object"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "rag_gold_ref": {
+          "type": "string"
+        },
+        "sql_truth_ref": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "main_case": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "id",
+        "split",
+        "category",
+        "query",
+        "history",
+        "expected",
+        "metrics",
+        "source",
+        "review_status",
+        "file_order"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "third-round-unified-eval-v1"
+        },
+        "id": {
+          "type": "string"
+        },
+        "split": {
+          "const": "formal_main"
+        },
+        "category": {
+          "type": "string"
+        },
+        "subcategory": {
+          "type": "string"
+        },
+        "risk_level": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "query": {
+          "type": "string",
+          "minLength": 1
+        },
+        "history": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "expected": {
+          "type": "object"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source": {
+          "type": "object"
+        },
+        "review_status": {
+          "type": "string"
+        },
+        "review": {
+          "$ref": "#/$defs/review_attestation"
+        },
+        "file_order": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

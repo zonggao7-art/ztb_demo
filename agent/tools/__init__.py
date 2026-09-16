@@ -71,7 +71,7 @@ def register_default_tools() -> None:
     _REGISTERED = True
 
 
-def get_enabled_tools(*, tags: set[str] | None = None) -> list[BaseTool]:
+def get_enabled_tools(*, tags: set[str] | None = None, settings=None) -> list[BaseTool]:
     """注册全部工具并按配置白名单过滤，返回可 bind_tools 的工具列表。
 
     Agent 平台/原型的统一取用入口：白名单来自 .env AGENT_TOOLS_WHITELIST
@@ -80,5 +80,5 @@ def get_enabled_tools(*, tags: set[str] | None = None) -> list[BaseTool]:
     register_default_tools()
     return GLOBAL_TOOL_REGISTRY.to_langchain_tools(
         tags=tags,
-        whitelist=get_tool_whitelist(),
+        whitelist=get_tool_whitelist(settings),
     )

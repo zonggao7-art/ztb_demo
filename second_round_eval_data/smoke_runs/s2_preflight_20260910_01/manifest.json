@@ -1,0 +1,40 @@
+{
+  "run_id": "s2_preflight_20260910_01",
+  "purpose": "S2 preflight live smoke only; excluded from formal scores",
+  "stage": "s2",
+  "started_at": "2026-09-10T13:35:37.192773+00:00",
+  "selected_dataset_indexes": [
+    1,
+    14,
+    199,
+    200
+  ],
+  "query_types": [
+    "single_hop",
+    "multi_hop",
+    "single_hop",
+    "multi_hop"
+  ],
+  "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+  "model": "deepseek-flash",
+  "retrieval": {
+    "stage": "s2",
+    "dense_limit": 30,
+    "top_k": 5,
+    "nprobe": 32,
+    "dense": true,
+    "sparse": true,
+    "sparse_limit": 30,
+    "rrf": true,
+    "rrf_k": 60,
+    "fusion_limit": 30,
+    "reranker": false,
+    "dynamic_filter": false,
+    "score_scale": "rrf",
+    "fixed_threshold": null
+  },
+  "concurrency": 1,
+  "question_timeout_s": 120.0,
+  "status": "complete",
+  "completed_at": "2026-09-10T13:35:50.179949+00:00"
+}

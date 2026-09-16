@@ -5,8 +5,8 @@
 通过 config 中的 embedding_api_key / embedding_base_url 切换。
 
 安全机制：
-  - 自动截断超过 _MAX_TEXT_CHARS 字符的文本，防止 bge 系列模型
-    （512 token 上限）对超长文本返回 400 错误。
+  - 自动截断超过 _MAX_TEXT_CHARS 字符的文本，防止超长文本
+    触发 400 错误（维度/token 上限以 .env 实配模型为准）
 """
 
 from __future__ import annotations
@@ -21,8 +21,8 @@ from .config import Settings
 logger = logging.getLogger(__name__)
 
 # bge-m3 模型限制 8192 token，中文约 1 token/字
-# 留足余量设为 2000，确保长文本不被截断
-_MAX_TEXT_CHARS = 2000
+# 4000 字符覆盖"2000 字正文 + 面包屑前缀"的最大 chunk，消除尾部截断
+_MAX_TEXT_CHARS = 4000
 
 
 class _SafeEmbeddings(OpenAIEmbeddings):

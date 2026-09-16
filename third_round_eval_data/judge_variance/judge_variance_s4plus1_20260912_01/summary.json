@@ -1,0 +1,156 @@
+{
+  "schema_version": "third-round-judge-variance-summary-v1",
+  "sample_count": 110,
+  "repeats": 2,
+  "all_scores_complete": true,
+  "every_repeat_meets_frozen_thresholds": true,
+  "status": "passed",
+  "per_repeat": {
+    "1": {
+      "complete": true,
+      "identity_ok": true,
+      "metrics": {
+        "B1": {
+          "ragas_metric": "context_recall",
+          "value": 0.9693939393939395,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        },
+        "B2": {
+          "ragas_metric": "context_precision",
+          "value": 0.8710101009686956,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.85
+          },
+          "passed": true
+        },
+        "B3": {
+          "ragas_metric": "answer_correctness",
+          "value": 0.8178186092656822,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.8
+          },
+          "passed": true
+        },
+        "B4": {
+          "ragas_metric": "faithfulness",
+          "value": 0.9611302440249809,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        }
+      }
+    },
+    "2": {
+      "complete": true,
+      "identity_ok": true,
+      "metrics": {
+        "B1": {
+          "ragas_metric": "context_recall",
+          "value": 0.9806277056277056,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        },
+        "B2": {
+          "ragas_metric": "context_precision",
+          "value": 0.8645707070303975,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.85
+          },
+          "passed": true
+        },
+        "B3": {
+          "ragas_metric": "answer_correctness",
+          "value": 0.8375698075694826,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.8
+          },
+          "passed": true
+        },
+        "B4": {
+          "ragas_metric": "faithfulness",
+          "value": 0.9726117741907215,
+          "valid_count": 110,
+          "expected_count": 110,
+          "failed_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        }
+      }
+    }
+  },
+  "variance": {
+    "B1": {
+      "aggregate_min": 0.9693939393939395,
+      "aggregate_max": 0.9806277056277056,
+      "aggregate_spread": 0.011233766233766151,
+      "per_sample_abs_range_mean": 0.011233766233766235,
+      "per_sample_abs_range_p95": 0.0,
+      "per_sample_abs_range_max": 0.42857142857142855
+    },
+    "B2": {
+      "aggregate_min": 0.8645707070303975,
+      "aggregate_max": 0.8710101009686956,
+      "aggregate_spread": 0.006439393938298066,
+      "per_sample_abs_range_mean": 0.08747474747398631,
+      "per_sample_abs_range_p95": 0.4999999999729166,
+      "per_sample_abs_range_max": 0.9999999999666667
+    },
+    "B3": {
+      "aggregate_min": 0.8178186092656822,
+      "aggregate_max": 0.8375698075694826,
+      "aggregate_spread": 0.019751198303800455,
+      "per_sample_abs_range_mean": 0.06381097747681515,
+      "per_sample_abs_range_p95": 0.242550505050505,
+      "per_sample_abs_range_max": 0.44999999999999996
+    },
+    "B4": {
+      "aggregate_min": 0.9611302440249809,
+      "aggregate_max": 0.9726117741907215,
+      "aggregate_spread": 0.011481530165740605,
+      "per_sample_abs_range_mean": 0.03528737344526818,
+      "per_sample_abs_range_p95": 0.24134615384615377,
+      "per_sample_abs_range_max": 0.5
+    }
+  },
+  "interpretation": {
+    "blocking_rule": "each complete repeat aggregate must meet the frozen B1-B4 threshold",
+    "aggregate_and_per_sample_spread": "reported but no new unapproved numeric gate is invented"
+  }
+}

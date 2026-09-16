@@ -1,0 +1,14 @@
+{
+  "schema_version": "third-round-judge-variance-plan-v1",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "sample_count": 110,
+  "metric_count_per_sample": 4,
+  "tested_system_rerun": false,
+  "source_s4_results": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\runs\\s4_20260911_formal_01\\results.jsonl",
+  "source_s4_results_sha256": "1ADEA11AC9AA4E57DDF5F773243272B6B0608B61AC9BCD736E5F0712ED2CF521",
+  "rag_gold_sha256": "20A8A59815D55C8709460638FBA4CE3A797EB3F096D93A8FCBF66B00B27EA430",
+  "inputs_sha256": "200C0CE085860D91F0F4A1ECDEAEDAD4AC7388E11537458658B33D85977E7FA7",
+  "pass_policy": "every complete repeat aggregate must meet the frozen B1-B4 threshold",
+  "aggregate_spread": "report_only"
+}

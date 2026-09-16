@@ -14,13 +14,11 @@ import pymysql
 from .db import _CLEAN_DB, _get_connection, _get_settings, _release_connection
 from .models import SearchIntent
 from .schema import _get_classification
-from .semantic import _semantic_recall_candidates
 from .sql_builders import (
     _build_candidate_sql,
     _build_constraint_conditions,
     _build_full_scan_sql,
     _build_like_fallback_sql,
-    _build_vector_recall_sql,
     _has_preference_filters,
     _strip_preference_filters,
 )
@@ -153,6 +151,13 @@ def _execute_sql_fetch_rows(
 
 _sql_executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="sql-query")
 
+class SQLWorkerTimeout(TimeoutError):
+    """The connection remains owned by this worker until its future completes."""
+    def __init__(self, future):
+        super().__init__("sql_timeout")
+        self.future = future
+
+
 def _execute_sql_with_timeout(
     conn: pymysql.Connection,
     sql: str,
@@ -162,7 +167,7 @@ def _execute_sql_with_timeout(
 ) -> tuple[list[dict[str, Any]], float]:
     """带超时的 SQL 执行包装器。
 
-    使用 ThreadPoolExecutor 实现跨平台超时控制，超时后返回空结果并记录日志。
+    超时必须保留失败状态，连接在后台语句真正结束后才归还。
     """
     settings = _get_settings()
     timeout = settings.sql_query_timeout
@@ -176,7 +181,7 @@ def _execute_sql_with_timeout(
             "[SQL_TIMEOUT] 查询超时(%ds): table=%s stage=%s sql=%s",
             timeout, table, stage, re.sub(r"\s+", " ", sql)[:200],
         )
-        return [], 0.0
+        raise SQLWorkerTimeout(future) from None
 
 def _execute_recall_chain_core(
     conn: pymysql.Connection,
@@ -215,6 +220,8 @@ def _execute_recall_chain_core(
                     row["_recall_stage_"] = stage
                 logger.info("[RECALL_CHAIN] table=%s stage=%s rows=%d", table_name, label, len(rows))
                 return rows, sql_count, total_sql_time
+        except TimeoutError:
+            raise
         except Exception as e:
             if "fulltext" in str(e).lower():
                 logger.warning("[FULLTEXT_MISSING] db=%s table=%s: %s", _CLEAN_DB, table_name, e)
@@ -242,6 +249,8 @@ def _execute_recall_chain_core(
                             row["_recall_stage_"] = 4
                             split_rows.append(row)
                             seen_ids.add(row_id)
+                except TimeoutError:
+                    raise
                 except Exception as e:
                     logger.debug("逐关键词 FULLTEXT 重试失败 %s.%s: %s", _CLEAN_DB, table_name, e)
 
@@ -261,6 +270,8 @@ def _execute_recall_chain_core(
                             row["_recall_stage_"] = 4
                             split_rows.append(row)
                             seen_ids.add(row_id)
+                except TimeoutError:
+                    raise
                 except Exception as e:
                     logger.debug("逐关键词 LIKE 重试失败 %s.%s: %s", _CLEAN_DB, table_name, e)
 
@@ -279,9 +290,13 @@ def _execute_recall_chain_core(
                     row["_recall_stage_"] = 5
                 logger.info("[RECALL_CHAIN] table=%s stage=FULL_SCAN rows=%d", table_name, len(rows))
                 return rows, sql_count, total_sql_time
+        except TimeoutError:
+            raise
         except Exception as e:
             logger.debug("全表扫描兜底失败 %s.%s: %s", _CLEAN_DB, table_name, e)
 
+    if not sql_count:
+        raise ConnectionError("No recall query completed successfully")
     return [], sql_count, total_sql_time
 
 def _log_recall_funnel(
@@ -349,33 +364,6 @@ def _execute_recall_chain_for_table(
         )
     return relaxed_rows, sql_count + relaxed_sql_count, total_sql_time + relaxed_sql_time
 
-def _query_semantic_rows(
-    conn: pymysql.Connection,
-    table_name: str,
-    classification: dict[str, list[str]],
-    intent: SearchIntent,
-    semantic_ids: dict[str, float],
-) -> tuple[list[dict[str, Any]], int, float]:
-    if not semantic_ids:
-        return [], 0, 0.0
-
-    sql_tuple = _build_vector_recall_sql(
-        table_name, classification, intent, list(semantic_ids.keys())
-    )
-    if sql_tuple is None:
-        return [], 0, 0.0
-
-    try:
-        rows, elapsed = _execute_sql_with_timeout(conn, sql_tuple[0], sql_tuple[1], table_name, "VECTOR_RECALL")
-    except Exception as e:
-        logger.debug("Milvus 回表失败 %s.%s: %s", _CLEAN_DB, table_name, e)
-        return [], 1, 0.0
-
-    for row in rows:
-        row["_vector_score_"] = semantic_ids.get(str(row.get("_id_", "")), 0.0)
-        row["_recall_stage_"] = 0
-    return rows, 1, elapsed
-
 def _enrich_rows_full_columns(
     conn: pymysql.Connection,
     table_name: str,
@@ -384,8 +372,8 @@ def _enrich_rows_full_columns(
 ) -> None:
     """按主键二次回表，用 SELECT * 补齐全部字段。
 
-    召回阶段的三类 SQL 构建器（_build_candidate_sql / _build_full_scan_sql /
-    _build_vector_recall_sql）只取 id + semantic 列用于搜索和排序，
+    召回阶段的两类 SQL 构建器（_build_candidate_sql / _build_full_scan_sql）
+    只取 id + semantic 列用于搜索和排序，
     但输出模板声明的字段（如 credit_code、business_status、legal_person、
     registered_capital 等）分布在 time/exact/text 等其他分类列中，从未被 SELECT。
 
@@ -444,6 +432,8 @@ def _enrich_rows_full_columns(
 def _query_tables(tables: list[str], intent: SearchIntent) -> dict[str, Any]:
     """遍历指定表列表执行检索（通用查询引擎）。"""
     record_map: dict[tuple[str, str], dict[str, Any]] = {}
+    table_status = {table: "failed" for table in tables}
+    release_now = True
     queried_tables: list[str] = []
     sql_count = 0
     total_sql_time = 0.0
@@ -451,9 +441,7 @@ def _query_tables(tables: list[str], intent: SearchIntent) -> dict[str, Any]:
     conn = _get_connection(_CLEAN_DB)
     if conn is None:
         logger.error("无法连接数据库 %s", _CLEAN_DB)
-        return {"records": [], "total_found": 0, "queried_tables": [], "sql_count": 0, "total_sql_time": 0.0}
-
-    semantic_candidates = _semantic_recall_candidates(intent, tables)
+        return {"records": [], "total_found": 0, "queried_tables": [], "table_status": table_status, "sql_count": 0, "total_sql_time": 0.0}
 
     try:
         for table_name in tables:
@@ -462,23 +450,14 @@ def _query_tables(tables: list[str], intent: SearchIntent) -> dict[str, Any]:
                 logger.warning("表 %s 无 schema 定义，跳过", table_name)
                 continue
 
-            semantic_rows, semantic_sql_count, semantic_sql_time = _query_semantic_rows(
-                conn,
-                table_name,
-                classification,
-                intent,
-                semantic_candidates.get(table_name, {}),
-            )
-            sql_count += semantic_sql_count
-            total_sql_time += semantic_sql_time
-
             recall_rows, recall_sql_count, recall_sql_time = _execute_recall_chain_for_table(
                 conn, table_name, classification, intent
             )
             sql_count += recall_sql_count
             total_sql_time += recall_sql_time
 
-            rows = semantic_rows + recall_rows
+            rows = recall_rows
+            table_status[table_name] = "success" if rows else "empty"
             if not rows:
                 continue
 
@@ -492,10 +471,18 @@ def _query_tables(tables: list[str], intent: SearchIntent) -> dict[str, Any]:
                 _merge_result_record(record_map, clean_row)
             queried_tables.append(f"{_CLEAN_DB}.{table_name}")
 
+    except SQLWorkerTimeout as e:
+        table_status[table_name] = "timeout"
+        release_now = False
+        e.future.add_done_callback(lambda _: _release_connection(conn))
+    except TimeoutError:
+        table_status[table_name] = "timeout"
     except Exception as e:
+        table_status[table_name] = "failed"
         logger.debug("查询 %s 时出错: %s", _CLEAN_DB, e)
     finally:
-        _release_connection(conn)
+        if release_now:
+            _release_connection(conn)
 
     results = list(record_map.values())
     ranked = _rank_records(results, intent, top_k=20)
@@ -511,6 +498,7 @@ def _query_tables(tables: list[str], intent: SearchIntent) -> dict[str, Any]:
 
     return {
         "records": ranked,
+        "table_status": table_status,
         "total_found": len(ranked),
         "queried_tables": list(set(queried_tables)),
         "sql_count": sql_count,

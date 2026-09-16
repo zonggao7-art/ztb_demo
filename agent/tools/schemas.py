@@ -6,16 +6,22 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 # SQL 工具可访问的表白名单（蓝图 §5.4 安全边界）
 ALLOWED_TABLES = ("company_info", "company_penalty", "bid_project")
 
 
-class SearchPublicKBInput(BaseModel):
+class ToolInput(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+    task_id: str | None = Field(default=None, pattern=r"^t[1-6]$",
+                               description="混合模式必须关联 Router 批准的 task_id；独立工具调用可省略")
+
+
+class SearchPublicKBInput(ToolInput):
     """search_public_kb 入参。"""
 
-    question: str = Field(description="检索问题，如「招标方式有哪些」「评标委员会如何组成」")
+    question: str = Field(min_length=1, max_length=4000, description="检索问题，如「招标方式有哪些」「评标委员会如何组成」")
     top_k: int | None = Field(
         default=None,
         ge=1,
@@ -24,66 +30,69 @@ class SearchPublicKBInput(BaseModel):
     )
 
 
-class KnowledgeQAInput(BaseModel):
+class KnowledgeQAInput(ToolInput):
     """knowledge_qa 入参。"""
 
-    question: str = Field(description="招投标专业知识问题，将基于权威法规知识库生成带引用的回答")
+    question: str = Field(min_length=1, max_length=4000, description="招投标专业知识问题，将基于权威法规知识库生成带引用的回答")
 
 
-class QueryCompanyInfoInput(BaseModel):
-    """query_company_info 入参。"""
+class QueryCompanyRegistrationInput(ToolInput):
+    """query_company_registration 入参。"""
 
-    company_name: str = Field(description="公司全称（工商主体名称，如「XX有限公司」）")
-    industry: str | None = Field(default=None, description="所属行业（可选）")
-    region: str | None = Field(default=None, description="地区（可选）")
-    province: str | None = Field(default=None, description="省份（可选）")
-    city: str | None = Field(default=None, description="城市（可选）")
-    business_status: str | None = Field(default=None, description="经营状态，如 存续/在业/注销（可选）")
-    time_start: str | None = Field(default=None, description="成立/记录时间范围起点，格式 YYYY-MM-DD（可选）")
-    time_end: str | None = Field(default=None, description="成立/记录时间范围终点，格式 YYYY-MM-DD（可选）")
+    company_name: str = Field(
+        min_length=1,
+        max_length=80,
+        description="用户提供的主体名称，按原文精确查询企业工商登记信息，不查询经营范围",
+    )
     top_k: int | None = Field(default=None, ge=1, le=50, description="返回记录数上限（默认系统配置）")
 
 
-class QueryCompanyPenaltyInput(BaseModel):
+class QueryCompanyBusinessScopeInput(ToolInput):
+    """query_company_business_scope 入参。"""
+
+    company_name: str = Field(
+        min_length=1,
+        max_length=80,
+        description="用户提供的主体名称，按原文精确查询企业经营范围",
+    )
+    top_k: int | None = Field(default=None, ge=1, le=50, description="返回记录数上限（默认系统配置）")
+
+
+class QueryCompanyPenaltyInput(ToolInput):
     """query_company_penalty 入参。"""
 
-    company_name: str = Field(description="公司全称（工商主体名称，精确匹配）")
+    company_name: str = Field(min_length=1, max_length=80, description="用户提供的主体名称，精确匹配，不审核真实性或名称后缀")
     top_k: int | None = Field(default=None, ge=1, le=100, description="返回处罚记录数上限（默认 50）")
 
 
-class QueryBidRecordsInput(BaseModel):
-    """query_bid_records 入参。"""
+class QueryProjectAwardInput(ToolInput):
+    """query_project_award 入参。"""
 
-    project_number: str | None = Field(
-        default=None,
-        description="项目编号（字母+数字编码，如 AH2024-001）；提供时按项目精确查询",
-    )
-    company_name: str | None = Field(
-        default=None,
-        description="中标供应商/投标人公司全称；与 purchaser 至少提供其一（无 project_number 时）",
-    )
-    purchaser: str | None = Field(
-        default=None,
-        description="采购人（招标方）公司全称；与 company_name 至少提供其一（无 project_number 时）",
-    )
-    time_start: str | None = Field(default=None, description="中标日期范围起点，格式 YYYY-MM-DD（可选）")
-    time_end: str | None = Field(default=None, description="中标日期范围终点，格式 YYYY-MM-DD（可选）")
-    region: str | None = Field(default=None, description="地区（可选）")
-    province: str | None = Field(default=None, description="省份（可选）")
-    winning_amount_min: float | None = Field(default=None, description="中标金额下限（万元/元，与库内单位一致）（可选）")
-    winning_amount_max: float | None = Field(default=None, description="中标金额上限（可选）")
-    sort_by: str | None = Field(
-        default=None,
-        description="排序字段（可选）：winning_amount_desc / winning_amount_asc / winning_date_desc",
+    project_number: str = Field(
+        min_length=1,
+        max_length=50,
+        description="用户本轮原文或已核验前序记录中的项目编号；仅按项目编号精确查询，不接受项目名称或采购人",
     )
     top_k: int | None = Field(default=None, ge=1, le=50, description="返回记录数上限（默认系统配置）")
 
 
-class SearchBusinessDataInput(BaseModel):
+class QueryCompanyAwardHistoryInput(ToolInput):
+    """query_company_award_history 入参。"""
+
+    company_name: str = Field(
+        min_length=1,
+        max_length=80,
+        description="用户明确要查询其作为中标企业/供应商时的主体名称；不得填入采购人、招标人或发包人",
+    )
+    top_k: int | None = Field(default=None, ge=1, le=50, description="返回记录数上限（默认系统配置）")
+
+
+class SearchBusinessDataInput(ToolInput):
     """search_business_data 入参。"""
 
     keywords: list[str] = Field(
-        description="检索关键词列表（1~5 个），将走语义+全文多级降级召回",
+        min_length=1, max_length=5,
+        description="检索关键词列表（1~5 个），全文/LIKE 候选检索；不具备日期或金额硬过滤",
     )
     exact_tokens: list[str] | None = Field(
         default=None,

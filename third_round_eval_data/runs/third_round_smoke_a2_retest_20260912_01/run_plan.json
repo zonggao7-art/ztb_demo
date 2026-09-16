@@ -1,0 +1,107 @@
+{
+  "schema_version": "third-round-run-plan-v1",
+  "run_id": "third_round_smoke_a2_retest_20260912_01",
+  "run_kind": "smoke",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "case_ids": [
+    "TR-CROSS-005"
+  ],
+  "repeats": 3,
+  "planned_attempts": 3,
+  "execution": {
+    "mode": "unified",
+    "model": "deepseek-flash",
+    "request_timeout_s": 90.0,
+    "tool_timeout_s": 20.0,
+    "max_model_calls": 8,
+    "max_tool_calls": 6,
+    "concurrency": 1
+  },
+  "code_snapshot": {
+    "git_commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+    "git_branch": "feat/tool-registry",
+    "worktree_dirty": true,
+    "git_status_sha256": "AB43B938EF393EFCE33F4E1F0DE345F0210092F47DB48607EA697A5F944B1B9F",
+    "tracked_diff_sha256": "B9393038CB545189D278CF31A800B204F46E5BBA589C16D7987C544D60692166",
+    "source_hashes": {
+      "scripts/run_third_round_eval.py": "EC123EEF2082FB4D590DCCEEC0DDF4B28B476AC4E1B57C4B05C792C7DEF91341",
+      "evaluation/unified/dataset.py": "577A035947D4376650F8DBD9ECB9033FAAE516A86F8E58865F4AFE8F588FFDB4",
+      "evaluation/unified/collector.py": "5CB8908DAE8079A6D5DC6CDF538D462A7DCF9922FDCB8C940C53C610BA9DC7B5",
+      "evaluation/unified/scoring.py": "916A5A9FDD4F1152017FD482C08EC60B65A8707BE3EB8020221E01E852A2D71D",
+      "evaluation/unified/reliability.py": "68603A81981AD3133C52E8C8775F099627BED6850C326C26D77EB8056DFD7D48",
+      "evaluation/unified/report.py": "8F6A2638BCDFAA3DC18D5860C2B955CC18296EC2129CACE626C41E6A94B8D760",
+      "agent/execution/unified.py": "C3803E4EFA8CE23F6E0B16A3AFA2FF23AE3D21057D8453D7A2AD1D7EA0189AFD",
+      "agent/execution/context.py": "C886E4C36C40BDD46384599730F4D2EF99DAA8927902401815F6F2799E176ADB",
+      "agent/execution/contracts.py": "1DB30A6110EC0DD4B86E42FD0E97BD59430023A62D243A6AF61F045D8BBBFCE3",
+      "agent/execution/evidence.py": "625D1A0FB37EBD455797207B2B2162FFA6944CE22F43ABB0C4F3794354F8AAE2",
+      "agent/execution/output.py": "CCC7EFAF8C73F5BE07C344C98A67542334AE26A780FE526645BECAAA4729115A",
+      "agent/execution/policy.py": "9C52ECE3A6C0D14D69A253E3119F1FF451AB8421B3603F69DCA99F89ED0BBD73",
+      "agent/tools/schemas.py": "0A230BB1EC4621050FD58DCA3CE2ECD425C2C71947A8A10DE575F0ED32F5999C",
+      "agent/tools/knowledge.py": "8843C7C04715F50B802AE195ADAD41D34BA4D09F6A746E263A6AE6B3CF292B3C",
+      "agent/tools/price_db.py": "CB666FAE7B5592C78C06E105461F06B4C43EB4F5F1B0E8D85E1BC1FFE9850F2F",
+      "agent/tools/strict_sql.py": "65747A127ED384D1050FC2E8CD1C673EC19246446208CF6C7333D2625D1D91E5",
+      "public_kb/config.py": "852BB577D4B402B07D3F3E09955477533AEC29CC8500C228926B90639D544B1F",
+      "requirements.txt": "52B39A300665E67B34142109B302C6236D97619B92DD5CD979001FF8DCE08599",
+      "requirements-eval.txt": "7861E270B4C82BCF931955247BD2D8E0CB869FC0233756B68D994EEA321D6F85"
+    }
+  },
+  "contract_snapshot": {
+    "unified_prompt_sha256": "971ED0CC9FB1E6FC875EF1DD8CC99DB2FA0A84EE69C1EFB79E7B3BBD97DEAC52",
+    "finish_action_schema_sha256": "342D49FCA620A9571625E06FC05BFAD8A97627E690F9DC5D306AD5EB0556DABE",
+    "model_visible_tool_schema_sha256": {
+      "knowledge_qa": "BC5CDE6367F9A7CD372DC8786108FF9D397BD6E1830300A0D5253F74C8E82E54",
+      "query_company_registration": "201B88B794FC481CA7561CA720A1FCB41F6B17F54D39763037DFC25F52944E18",
+      "query_company_business_scope": "151DEF718E8BE1A49EF43DC22F057E686EA7C621235DECEDB8BE1C9C2112B5F2",
+      "query_project_award": "0B2A32CC8656D1F3F390971BCAF6DD49E8B2C12C001F1A39834F24DE5A94A4C4",
+      "query_company_award_history": "4FF50F528DF61018AB38629F32D52215EFBA64B9CFE924B8244C3DB1498299A4",
+      "query_company_penalty": "13F58E4DE13D786A14FF4644526C9AA897722C1AF7F3B50690AE2BBAD65A5E15"
+    }
+  },
+  "data_snapshot": {
+    "sql": {
+      "unique_query_count": 204,
+      "database": "ztb_clean",
+      "captured_at": "2026-09-12T10:51:27+00:00",
+      "default_top_k": 20,
+      "database_identity": {
+        "company_info": {
+          "row_count": 38911,
+          "max_id": 38911,
+          "max_created_at": "2026-09-04T05:49:41"
+        },
+        "company_penalty": {
+          "row_count": 1805,
+          "max_id": 1805,
+          "max_created_at": "2026-09-04T05:49:41"
+        },
+        "bid_project": {
+          "row_count": 17742,
+          "max_id": 17742,
+          "max_created_at": "2026-09-04T05:49:46"
+        }
+      }
+    },
+    "rag": {
+      "count": 110,
+      "anchor_count": 70,
+      "cross_tool_count": 40,
+      "query_types": {
+        "single_hop": 55,
+        "multi_hop": 55
+      },
+      "source": "second_round_eval_data/testset_200.jsonl"
+    },
+    "milvus_collection": "public_kb"
+  },
+  "dataset_artifact_hashes": {
+    "main_cases.jsonl": "B0401FB2D20FFDFF994E409C9CBE378538CDE02A0AB03A97C549AD42F90764F7",
+    "rag_gold.jsonl": "20A8A59815D55C8709460638FBA4CE3A797EB3F096D93A8FCBF66B00B27EA430",
+    "sql_truth_snapshot.jsonl": "8F8237A238766F55E31E7740753C1F3D4F12B6A811D3C369DA7BF39697B77443",
+    "reliability_scenarios.jsonl": "8C89EA1C224D0A56501B2FD040CBEBD62DDA8D8420D314C9DAC5DAD921D8E8DB",
+    "dataset_schema.json": "B96BE33F070AB91B1A82B2EF31884111BA4EA0EE8172022ECA1D6C9D84649468",
+    "human_review_record.json": "15A0E578C9424D6CE2120051BD53726F858C58A305CCFC0AD6DFFC71EFF78916",
+    "formal_thresholds.json": "B1C5E43A8753E6911BC144DA29D0566BD34EEDF76E52A6ED272521DA02525B22"
+  },
+  "created_at": "2026-09-12T14:20:54+00:00"
+}

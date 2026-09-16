@@ -1,0 +1,107 @@
+{
+  "formal_complete": true,
+  "collection_complete": true,
+  "scoring_complete": true,
+  "planned_count": 200,
+  "completed_attempts": 200,
+  "status_counts": {
+    "success": 200
+  },
+  "latency": {
+    "method": "nearest_rank",
+    "sample_count": 200,
+    "p50_s": 8.495227,
+    "p95_s": 38.520949
+  },
+  "system_token_usage": {
+    "input_tokens": 1082585,
+    "output_tokens": 74711,
+    "total_tokens": 1157296,
+    "unknown_outputs": 0,
+    "source_counts": {
+      "rough_estimate": 200,
+      "api_actual": 200
+    },
+    "components": {
+      "query_embedding": {
+        "calls": 200,
+        "input_tokens": 8753,
+        "output_tokens": 0,
+        "total_tokens": 8753,
+        "unknown_outputs": 0,
+        "sources": {
+          "rough_estimate": 200
+        }
+      },
+      "answer_model": {
+        "calls": 200,
+        "input_tokens": 1073832,
+        "output_tokens": 74711,
+        "total_tokens": 1148543,
+        "unknown_outputs": 0,
+        "sources": {
+          "api_actual": 200
+        }
+      }
+    },
+    "average_per_planned_question": 5786.48
+  },
+  "quality_metrics": {
+    "context_recall": {
+      "mean": 0.8940400641025641,
+      "valid_count": 200,
+      "planned_count": 200,
+      "missing_reasons": {}
+    },
+    "context_precision": {
+      "mean": 0.762118055513827,
+      "valid_count": 200,
+      "planned_count": 200,
+      "missing_reasons": {}
+    },
+    "answer_correctness": {
+      "mean": 0.7250767836064823,
+      "valid_count": 200,
+      "planned_count": 200,
+      "missing_reasons": {}
+    },
+    "faithfulness": {
+      "mean": 0.9505103376156008,
+      "valid_count": 200,
+      "planned_count": 200,
+      "missing_reasons": {}
+    }
+  },
+  "scoring_token_usage": {
+    "calls": 2854,
+    "input_tokens": 6883758,
+    "output_tokens": 680220,
+    "total_tokens": 7563978,
+    "source_counts": {
+      "api_actual": 2854
+    },
+    "unknown_outputs": 0,
+    "components": {
+      "referee": {
+        "calls": 2454,
+        "input_tokens": 6839221,
+        "output_tokens": 680220,
+        "total_tokens": 7519441,
+        "sources": {
+          "api_actual": 2454
+        },
+        "unknown_outputs": 0
+      },
+      "scoring_embedding": {
+        "calls": 400,
+        "input_tokens": 44537,
+        "output_tokens": 0,
+        "total_tokens": 44537,
+        "sources": {
+          "api_actual": 400
+        },
+        "unknown_outputs": 0
+      }
+    }
+  }
+}

@@ -3,7 +3,8 @@
 
 覆盖手册 §阶段2 测试要求：
   - 正常精排（分数降序）
-  - 超时/传输错误 → 重试后仍失败 → 降级为原始顺序 + 0.5 分（不抛错）
+  - 超时/传输错误 → 同配置重试耗尽 → 异常上抛（零降级，2026-09 整改 D3：
+    原"原始顺序 + 0.5 假分数"回退已移除）
   - 429/5xx → 指数退避重试后成功
   - 并发受 "rerank" 信号量约束
 """
@@ -87,8 +88,6 @@ def test_rerank_success_sorted_desc():
 
 
 def test_rerank_empty_documents_short_circuits():
-    calls: list[int] = []
-
     async def _never(request):  # pragma: no cover — 不应被调用
         raise AssertionError("空文档不应发起请求")
 
@@ -98,19 +97,16 @@ def test_rerank_empty_documents_short_circuits():
     asyncio.run(rr.aclose())
 
 
-def test_rerank_timeout_degrades_to_original_order():
-    """超时重试耗尽 → 与同步版一致的降级：原始顺序 + relevance_score=0.5。"""
+def test_rerank_timeout_raises_after_retries_exhausted():
+    """超时重试耗尽 → 异常上抛（零降级：不再返回 0.5 假分数）。"""
 
     def handler(request: httpx.Request) -> httpx.Response:
         raise httpx.ConnectTimeout("slow upstream", request=request)
 
     rr = AsyncSiliconFlowReranker("m", "k", "https://fake.rerank/v1",
                                   max_retries=2, client=_client(handler))
-    out = asyncio.run(rr.rerank("q", ["d0", "d1", "d2"], top_k=2))
-    assert out == [
-        {"index": 0, "relevance_score": 0.5},
-        {"index": 1, "relevance_score": 0.5},
-    ]
+    with pytest.raises(httpx.ConnectTimeout, match="slow upstream"):
+        asyncio.run(rr.rerank("q", ["d0", "d1", "d2"], top_k=2))
     asyncio.run(rr.aclose())
 
 
@@ -139,10 +135,10 @@ def test_rerank_no_retry_on_business_4xx():
 
     rr = AsyncSiliconFlowReranker("m", "k", "https://fake.rerank/v1",
                                   max_retries=3, client=_client(handler))
-    # 400 不应重试 → 直接走降级
-    out = asyncio.run(rr.rerank("q", ["d0"], top_k=1))
+    # 400 业务性错误不重试 → 异常直接上抛（零降级）
+    with pytest.raises(httpx.HTTPStatusError):
+        asyncio.run(rr.rerank("q", ["d0"], top_k=1))
     assert len(counter) == 1
-    assert out == [{"index": 0, "relevance_score": 0.5}]
     asyncio.run(rr.aclose())
 
 

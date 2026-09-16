@@ -9,7 +9,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 ## Commands
 
 ```bash
-# Install dependencies (setuptools must be <70 for pymilvus 2.4.x)
+# Install dependencies (validated LangChain 1.x / pymilvus 3.x baseline)
 pip install -r requirements.txt
 
 # Single Q&A
@@ -50,7 +50,7 @@ The system has two independent packages connected by a thin contract:
 - **`graph.py`**: Builds and compiles the StateGraph. All business nodes are wrapped in `_with_fallback()` — any unhandled exception returns a friendly degradation message instead of crashing. The `AgentGraph` class is the public entry point.
 - **`state.py`**: Single `AgentState(TypedDict)` with three fields: `messages` (Annotated list with `add_messages` reducer for ID dedup), `router_intent` (str enum), `business_result` (generic dict). All branches share this same state — new branches do NOT add fields.
 - **`router.py`**: LLM-based intent classifier. Tries `with_structured_output(RouterDecision)` first; falls back to Tool Calling if the API doesn't support it. Carries the last 3 conversation turns for context-aware routing. All failures → `fallback`.
-- **`nodes/`**: Business nodes, each following the signature `(AgentState) → dict`. `price_inquiry/` is a package (split 2026-08-15): `node.py` (entry + guards + guidance), `queries.py` (table-specific query paths), `recall.py` (multi-stage retrieval chain: Milvus semantic → FULLTEXT → LIKE → full scan with descending weights), `sql_builders.py`, `intent.py` (unified intent parsing), `semantic.py` (Milvus semantic collection bootstrap/recall), `enum_norm.py`, `db.py` (connection pool), `schema.py`, `models.py`. The package `__init__.py` re-exports all symbols, so `from agent.nodes.price_inquiry import ...` is unchanged for external callers.
+- **`nodes/`**: Business nodes, each following the signature `(AgentState) → dict`. `price_inquiry/` is a package (split 2026-08-15): `node.py` (entry + guards + guidance), `queries.py` (table-specific query paths), `recall.py` (multi-stage retrieval chain: FULLTEXT → LIKE → full scan with descending weights), `sql_builders.py`, `intent.py` (unified intent parsing), `enum_norm.py`, `db.py` (connection pool), `schema.py`, `models.py`. The package `__init__.py` re-exports all symbols, so `from agent.nodes.price_inquiry import ...` is unchanged for external callers.
 - **`checkpointer.py`**: Factory that returns `MemorySaver` (default, ephemeral). Supports `sqlite`/`postgres`/`redis` backends via the same interface — one-line change, zero business code impact.
 
 ### `public_kb/` — RAG engine
@@ -63,7 +63,7 @@ The system has two independent packages connected by a thin contract:
 ### Data sources
 
 - **MySQL `ztb_clean`**: Cleaned structured data (company info, penalties, bid projects, products). Module-level connection pool with reuse (no fixed cap). Uses FULLTEXT indexes with ngram parser (ngram_token_size=2) for Chinese text search.
-- **Milvus**: Two collections — `public_kb` (law/regulation chunks) and `mysql_price_semantic` (structured data semantic recall). IVF_FLAT index, COSINE metric, nlist=128, nprobe=32.
+- **Milvus**: Single active collection `public_kb` (law/regulation chunks); `mysql_price_semantic` was fully retired on 2026-09-04 (collection + code removed).
 
 ### Node interface contract
 
@@ -79,7 +79,7 @@ When adding a new branch: (1) create `agent/nodes/new_branch.py`, (2) add the Li
 
 ## Key constraints
 
-- `setuptools` **must be <70**. pymilvus 2.4.x depends on the removed `pkg_resources` module.
+- The approved ReAct baseline uses `pymilvus==3.0.1`; the obsolete pymilvus 2.4.x `setuptools<70` constraint no longer applies. Preserve the existing Milvus service and collection. See `requirements.txt` for the validated framework versions.
 - `public_kb` is **read-only** after initialization; only batch import or admin `clear_kb()`.
 - All SQL queries prioritize indexable exact matches (`=`, `>=`, `<=`) and FULLTEXT over `LIKE '%...%'`.
 - Router LLM uses `temperature=0` for deterministic classification.
@@ -97,7 +97,7 @@ The `test/` directory contains both diagnostic scripts and pytest-compatible tes
 - `test/_diag_common.py` — shared MySQL connection helper for the active diag scripts
 
 **Archived one-off scripts**（历史数据准备/迁移工具，冻结保留）:
-- `archive/` — migrate_milvus_cloud.py, rebuild_and_verify.py
+- `archive/` — rebuild_and_verify.py
 - `scripts/archive/` — run_evaluation.py, generate_report.py, csv_to_mysql.py
 - `test/legacy/` — _step* 迁移步骤、scan_tables / inspect_price_dbs / export_samples 等数据诊断工具
 
@@ -115,4 +115,4 @@ Run all with: `python -m pytest test/ -v`
 
 ## Reference docs
 
-`docs/project_overview.md` is the comprehensive reference (v2.0, ~1100 lines). It covers architecture, setup, deployment, troubleshooting, technical debt register, and architecture decision records. Consult it for detailed explanations before modifying core flows.
+`analysis_docs/project_overview.md` is the comprehensive legacy architecture reference. Consult it before modifying core flows. The constrained hybrid implementation is in `agent/execution/`; its current boundaries and production acceptance gates are documented in `work_docs/ReAct实施记录_20260904.md`. Hybrid is now the default (100% session admission, not 100% ReAct execution); explicit configuration can select legacy or restrict admission. Legacy is retained for rollback. Placeholder document Q&A is not enabled in hybrid mode, and raw model/tool outputs must never bypass `execution/output.py` for hybrid requests.

@@ -22,14 +22,18 @@ import argparse
 import asyncio
 import logging
 import sys
+from contextlib import aclosing
 from pathlib import Path
 from typing import Any
+from dataclasses import replace
+from uuid import uuid4
 
 # 将项目根目录加入 path
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_PROJECT_ROOT))
 
 from agent import AgentGraph
+from agent.nodes.general_chat import GENERAL_GUIDANCE
 from agent.streaming import EventType, StreamEvent
 from public_kb.citations import format_citations
 
@@ -81,7 +85,7 @@ def main() -> None:
     parser.add_argument(
         "--stream",
         action="store_true",
-        help="启用分帧流式输出（需搭配 --async 或流式能力）",
+        help="token 级流式输出（自动启用异步图；可与 --question 或 --interactive 搭配）",
     )
     parser.add_argument(
         "--timeout",
@@ -101,7 +105,14 @@ def main() -> None:
         help="Agent 自助调用模式：LLM 通过 tool-calling 自主调用工具库（需 AGENT_TOOLS_ENABLED=true）",
     )
 
+    parser.add_argument("--execution-mode", choices=["legacy", "hybrid", "unified"],
+                        help="仅覆盖本次 CLI 进程；hybrid 仅放行本会话，不修改 .env")
+    parser.add_argument("--thread-id", help="指定测试会话 ID；clear 后生成新 ID")
     args = parser.parse_args()
+    if args.thread_id is not None and (not args.thread_id.strip() or "," in args.thread_id):
+        parser.error("--thread-id 不能为空或包含逗号")
+    if args.agent_mode and (args.execution_mode or args.thread_id or args.stream or args.timeout):
+        parser.error("这些选项请使用 --execution-mode unified 入口，不要同时使用 --agent-mode")
     setup_logging(args.verbose)
 
     if args.list_tools:
@@ -116,25 +127,62 @@ def main() -> None:
         parser.print_help()
         return
 
+    # token 级流式事件只在异步节点链路（rag.astream → knowledge_qa_async）产出，
+    # 同步节点的 rag.query() 是阻塞调用，不带 --async 时 --stream 只会一次性出全文。
+    if args.stream and not args.use_async:
+        args.use_async = True
+        print("💡 --stream 已自动启用异步图（token 级流式仅在异步节点链路可用）")
+
     # 初始化 Agent
     mode = "async" if args.use_async else "sync"
     print(f"正在初始化招投标智能助手 (mode={mode})...")
     try:
-        agent = AgentGraph(async_enabled=args.use_async)
+        from public_kb.config import Settings
+        thread_id = args.thread_id or (uuid4().hex if args.interactive else "default")
+        settings = Settings()
+        if args.execution_mode:
+            settings = replace(settings, agent_execution_mode=args.execution_mode,
+                               agent_react_rollout_percent=0,
+                               agent_react_thread_allowlist=thread_id if args.execution_mode == "hybrid" else "")
+        agent = AgentGraph(async_enabled=args.use_async, settings=settings)
+        agent._cli_execution_mode = args.execution_mode
+        _describe_session(agent, thread_id)
         print("✅ 助手就绪！\n")
     except Exception as e:
         print(f"❌ 初始化失败: {e}")
         sys.exit(1)
 
-    if args.interactive:
-        if args.stream:
-            print("⚠️ 交互模式暂不启用 --stream，已回退同步模式。")
-        run_interactive(agent)
-    elif args.question:
-        if args.stream:
-            run_single_stream(agent, args.question, deadline_s=args.timeout)
-        else:
-            run_single(agent, args.question)
+    try:
+        if args.interactive:
+            if args.stream:
+                run_interactive_stream(agent, deadline_s=args.timeout, thread_id=thread_id)
+            else:
+                run_interactive(agent, thread_id=thread_id, deadline_s=args.timeout)
+        elif args.question:
+            if args.stream:
+                run_single_stream(agent, args.question, deadline_s=args.timeout, thread_id=thread_id)
+            else:
+                run_single(agent, args.question, thread_id=thread_id, deadline_s=args.timeout)
+    finally:
+        agent.close()
+
+
+def _describe_session(agent, thread_id):
+    from agent.execution.service import execution_path
+    settings = getattr(agent, "_settings", None)
+    if settings is None:
+        return
+    if getattr(agent, "_cli_execution_mode", None) == "hybrid":
+        # clear creates a fresh history while preserving the explicit CLI choice.
+        agent._settings = replace(settings, agent_react_thread_allowlist=thread_id)
+        settings = agent._settings
+    path = execution_path(settings, thread_id)
+    reason = ("本次 CLI 显式选择" if getattr(agent, "_cli_execution_mode", None) else
+              "默认统一主 Agent" if path == "unified" else
+              "命中白名单/灰度" if path == "hybrid" else
+              "配置为 legacy" if settings.agent_execution_mode == "legacy" else "未命中白名单/灰度")
+    labels = {"unified": "unified（统一主 Agent）", "hybrid": "hybrid（受控分流）", "legacy": "legacy（旧流程）"}
+    print(f"执行入口：{labels[path]}；{reason}；会话：{thread_id}")
 
 
 def run_list_tools() -> None:
@@ -202,10 +250,14 @@ def _render_business_data(data: Any) -> None:
     """
     if not isinstance(data, dict):
         return
+    execution = data.get("execution")
+    if execution:
+        print(f"执行结果：{execution.get('actual_branch')}；状态：{data.get('status')}；"
+              f"工具：{', '.join(execution.get('tools', [])) or '无'}")
 
     citations = data.get("citations")
     if citations:
-        block = format_citations(citations)
+        block = format_citations(citations, include_text=data.get("citation_display") != "compact")
         if block:
             print(block + "\n")
         return
@@ -216,13 +268,13 @@ def _render_business_data(data: Any) -> None:
         print(f"查询记录: {len(data.get('records', []))} 条")
 
 
-def run_single(agent: AgentGraph, question: str) -> None:
+def run_single(agent: AgentGraph, question: str, *, thread_id="default", deadline_s=None) -> None:
     """单次问答。"""
     print(f"🙋 问题: {question}\n")
     print("⏳ 思考中...\n")
 
     try:
-        result = agent.invoke(question)
+        result = agent.invoke(question, thread_id=thread_id, deadline_s=deadline_s)
         print(f"🤖 回答:\n{result['answer']}\n")
 
         biz = result.get("business_result", {})
@@ -236,6 +288,8 @@ def run_single(agent: AgentGraph, question: str) -> None:
 
 
 def _render_stream_event(event: StreamEvent) -> str:
+    if event.type is EventType.META:
+        return f"\n执行链路：{event.payload.get('mode', 'legacy')}\n"
     if event.type is EventType.STAGE:
         stage = event.payload.get("stage", "")
         icons = {
@@ -246,7 +300,23 @@ def _render_stream_event(event: StreamEvent) -> str:
             "doc_qa_placeholder": "📄",
             "fallback": "🧯",
         }
-        return f"\n{icons.get(stage, '⚙️')} {stage}\n"
+        labels = {"router_start": "正在理解任务", "router_done": "任务分流完成",
+                  "execution_start": "开始执行", "validation_start": "正在核验证据",
+                  "validation_done": "证据核验完成", "tool_call": "工具执行",
+                  "execution_degraded": "执行未完整完成", "router_rejected": "分流方案未通过校验",
+                  "model_repair": "申请不符合规则，正在纠正一次",
+                  "request_failed": "请求未通过核验", "input_limit": "输入容量达到上限"}
+        details = []
+        for key in ("mode", "reason", "task_id", "tool", "status", "ok", "code", "attempt", "bytes", "limit"):
+            if key in event.payload:
+                details.append(f"{key}={event.payload[key]}")
+        if event.payload.get("issues"):
+            details.append("错误位置=" + ", ".join(
+                f"{issue['path']} ({issue['type']})" for issue in event.payload["issues"]))
+        tasks = event.payload.get("tasks", [])
+        if tasks:
+            details.append("任务=" + ", ".join(f"{t['task_id']}:{t['capability']}" for t in tasks))
+        return f"\n{icons.get(stage, '⚙️')} {labels.get(stage, stage)} {'；'.join(details)}\n"
     if event.type is EventType.TOKEN:
         return str(event.payload.get("delta", ""))
     if event.type is EventType.TABLE and not event.payload.get("synthetic_quiet"):
@@ -254,68 +324,150 @@ def _render_stream_event(event: StreamEvent) -> str:
     return ""
 
 
-def run_single_stream(agent: AgentGraph, question: str, *, deadline_s: float | None = None) -> None:
-    """单次分帧问答。"""
-    print(f"🙋 问题: {question}\n")
+def _consume_astream_turn(
+    agent: AgentGraph,
+    question: str,
+    thread_id: str = "default",
+    *,
+    deadline_s: float | None = None,
+    runner: asyncio.Runner | None = None,
+) -> StreamEvent | None:
+    """消费一次流式问答：token/stage 实时打印，返回终态事件（中断返回 None）。"""
     terminal_types = {EventType.FINAL, EventType.ERROR, EventType.CANCELLED}
     final_event = None
+    rendered_parts: list[str] = []
 
     async def consume():
         nonlocal final_event
-        try:
-            async for event in agent.astream(question, deadline_s=deadline_s):
+        async with aclosing(agent.astream(
+            question, thread_id=thread_id, deadline_s=deadline_s,
+        )) as events:
+            async for event in events:
                 output = _render_stream_event(event)
                 if output:
                     sys.stdout.write(output)
                     sys.stdout.flush()
-                if event.type is EventType.CITATIONS:
-                    pass
+                if event.type is EventType.TOKEN:
+                    rendered_parts.append(str(event.payload.get("delta", "")))
                 if event.type in terminal_types:
                     final_event = event
-        except KeyboardInterrupt:
-            print("\n⏹️ 已取消")
+                if event.type is EventType.FINAL:
+                    answer = str(event.payload.get("answer", ""))
+                    rendered = "".join(rendered_parts)
+                    if answer and answer != rendered.strip():
+                        if answer.startswith(rendered):
+                            sys.stdout.write(answer[len(rendered):])
+                        else:
+                            sys.stdout.write(f"\n{answer}")
+                        sys.stdout.flush()
 
     try:
-        asyncio.run(consume())
-    except KeyboardInterrupt:
+        if runner is None:
+            with asyncio.Runner() as single_runner:
+                try:
+                    single_runner.run(consume())
+                finally:
+                    if hasattr(agent, "_exit_stack"):
+                        single_runner.run(agent.aclose())
+        else:
+            runner.run(consume())
+    except (KeyboardInterrupt, asyncio.CancelledError):
         print("\n⏹️ 已取消")
+        return None
 
-    if not final_event or final_event.type not in terminal_types:
-        print("\n❌ 流式请求未正常结束")
+    if final_event and final_event.type not in terminal_types:
+        return None
+    return final_event
+
+
+def run_single_stream(agent: AgentGraph, question: str, *, deadline_s: float | None = None, thread_id="default") -> None:
+    """单次分帧问答。"""
+    print(f"🙋 问题: {question}\n")
+    final_event = _consume_astream_turn(agent, question, thread_id, deadline_s=deadline_s)
+
+    if not final_event or final_event.type is not EventType.FINAL:
+        payload = final_event.payload if final_event else {}
+        print(f"\n❌ 终态[{getattr(final_event, 'type', 'none')}]: "
+              f"{payload.get('message', payload.get('reason', '流式请求未正常结束'))}")
         return
-    if final_event.type is not EventType.FINAL:
-        payload = final_event.payload
-        print(f"\n❌ 终态[{final_event.type.value}]: {payload.get('message', payload.get('reason', ''))}")
-        return
 
-    answer = str(final_event.payload.get("answer", ""))
-    if answer:
-        print(f"\n🤖 回答:\n{answer}")
-
-    biz = (agent.get_state("default") or {}).get("business_result", {})
+    biz = final_event.payload.get("business_result") or {}
+    if "data" not in biz:
+        biz = (agent.get_state(thread_id) or {}).get("business_result", {})
     branch = biz.get("branch", "unknown")
-    print(f"── 分支: {branch} ──")
+    print(f"\n── 分支: {branch} ──")
     _render_business_data(biz.get("data"))
 
 
-def run_interactive(agent: AgentGraph) -> None:
+def run_interactive_stream(agent: AgentGraph, *, deadline_s: float | None = None, thread_id=None) -> None:
+    """交互问答模式（流式：token 实时上屏）。"""
+    with asyncio.Runner() as runner:
+        try:
+            _run_interactive_stream(agent, runner, deadline_s=deadline_s, thread_id=thread_id)
+        finally:
+            if hasattr(agent, "_exit_stack"):
+                runner.run(agent.aclose())
+
+
+def _run_interactive_stream(
+    agent: AgentGraph, runner: asyncio.Runner, *, deadline_s: float | None = None, thread_id=None,
+) -> None:
+    """整段交互会话复用同一事件循环，避免 HTTP 连接池跨循环复用。"""
+    print("💬 交互问答模式 — 流式输出 (输入 'quit' 或 'exit' 退出，'clear' 清空会话)")
+    print("─" * 60 + "\n")
+
+    from uuid import uuid4
+    thread_id = thread_id or uuid4().hex
+    turn = 0
+
+    while True:
+        try:
+            question = input(f"[{turn}] 🙋 您: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\n👋 再见！")
+            break
+
+        if not question:
+            continue
+        if question.lower() in ("quit", "exit"):
+            print("👋 再见！")
+            break
+        if question.lower() == "clear":
+            thread_id = uuid4().hex
+            _describe_session(agent, thread_id)
+            print("🔄 已清空对话历史\n")
+            continue
+
+        final_event = _consume_astream_turn(
+            agent, question, thread_id=thread_id, deadline_s=deadline_s, runner=runner,
+        )
+        turn += 1
+        if final_event is None:
+            continue
+        if final_event.type is not EventType.FINAL:
+            payload = final_event.payload
+            print(f"\n❌ 终态[{final_event.type.value}]: "
+                  f"{payload.get('message', payload.get('reason', ''))}")
+            continue
+
+        # token 已实时上屏，这里只补分支与引用信息
+        print()
+        biz = final_event.payload.get("business_result") or {}
+        if "data" not in biz:
+            biz = (agent.get_state(thread_id) or {}).get("business_result", {})
+        print(f"── 分支: {biz.get('branch', 'unknown')} ──")
+        _render_business_data(biz.get("data"))
+        print()
+
+
+def run_interactive(agent: AgentGraph, *, thread_id=None, deadline_s=None) -> None:
     """交互问答模式。"""
     print("💬 交互问答模式 (输入 'quit' 或 'exit' 退出，'clear' 清空会话)")
     print("─" * 60)
-    print("👋 您好！我是「招投标智能助手」，很高兴为您服务！\n")
-    print("   我可以帮您处理以下事务：\n")
-    print("   1️⃣  专业知识问答")
-    print("       招投标法律法规、招标方式、评标规则、采购流程等专业问题")
-    print("   2️⃣  中标情报获取")
-    print("       查询历史中标项目、产品中标价格、中标公司等市场情报")
-    print("   3️⃣  企业工商信息查询")
-    print("       查询公司基本信息、经营范围、注册资本等工商数据")
-    print("   4️⃣  企业风险排查")
-    print("       查询公司不良记录、行政处罚、经营异常等风险信息\n")
-    print("   直接输入您的问题，我会尽力为您解答！\n")
+    print(GENERAL_GUIDANCE + "\n")
     print("─" * 60 + "\n")
 
-    thread_id = "interactive-session"
+    thread_id = thread_id or uuid4().hex
     turn = 0
 
     while True:
@@ -333,14 +485,15 @@ def run_interactive(agent: AgentGraph) -> None:
             break
 
         if question.lower() == "clear":
-            thread_id = f"interactive-session-{turn}"
+            thread_id = uuid4().hex
+            _describe_session(agent, thread_id)
             print("🔄 已清空对话历史\n")
             continue
 
         print("⏳ ...")
 
         try:
-            result = agent.invoke(question, thread_id=thread_id)
+            result = agent.invoke(question, thread_id=thread_id, deadline_s=deadline_s)
             print(f"🤖 助手: {result['answer']}\n")
             _render_business_data(
                 (result.get("business_result") or {}).get("data")

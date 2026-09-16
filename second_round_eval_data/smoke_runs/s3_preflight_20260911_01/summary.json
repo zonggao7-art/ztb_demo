@@ -1,0 +1,54 @@
+{
+  "completed_at": "2026-09-10T23:48:50.180695+00:00",
+  "checks": {
+    "four_rows": true,
+    "all_success": true,
+    "all_have_citations": true,
+    "all_at_most_top5": true,
+    "one_reranker_call_per_question": true,
+    "all_have_private_rerank_trace": true,
+    "trace_contains_no_candidate_text": true,
+    "answer_model_usage_actual": true
+  },
+  "passed": true,
+  "status_counts": {
+    "success": 4
+  },
+  "latencies_s": [
+    3.599287,
+    1.849512,
+    1.911704,
+    1.577138
+  ],
+  "citation_counts": [
+    5,
+    5,
+    5,
+    5
+  ],
+  "reranker_latencies_s": [
+    0.754041,
+    0.678038,
+    0.650449,
+    0.630697
+  ],
+  "exact_retrieval": {
+    "match_key": "chunk_uid",
+    "sample_count": 4,
+    "expected_chunk_count": 6,
+    "matched_chunk_count": 5,
+    "micro_recall": 0.8333333333333334,
+    "macro_recall": 0.875,
+    "any_hit_count": 4,
+    "any_hit_rate": 1.0,
+    "all_hit_count": 3,
+    "all_hit_rate": 0.75,
+    "mean_first_hit_rank": 1.25,
+    "duplicate_retrieved_chunk_count": 0,
+    "missed_sample_ids": [],
+    "partial_sample_ids": [
+      "q002"
+    ]
+  },
+  "total_system_tokens": 226987
+}

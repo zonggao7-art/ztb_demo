@@ -1,0 +1,90 @@
+{
+  "verified_at": "2026-09-11T17:11:10.8200172+08:00",
+  "verification_status": "accepted_for_s4_readiness_gate",
+  "formal_evidence_eligible": true,
+  "run_id": "s4_preflight_20260911_02",
+  "stage": "s4",
+  "paid_api_called": true,
+  "ragas_called": false,
+  "original_artifacts": {
+    "manifest.json": {
+      "sha256": "927B4B8B631ED9CCC9EF6EBBF95E46DC18CEDEF2731443980B83F08E4FB88E24",
+      "bytes": 7422
+    },
+    "results.jsonl": {
+      "sha256": "CD07043045150BBC1D39E680BF2C75F5E1031259AD218BD9A6D9976C777DDBCF",
+      "bytes": 173109
+    },
+    "summary.json": {
+      "sha256": "BA8DF4CF856C346455BB2609A90CFAD1CA9EC0DFCA8B49F3312D28D4BA94F42B",
+      "bytes": 1339
+    }
+  },
+  "identity_checks": [
+    {
+      "position": 1,
+      "sample_id": "q001",
+      "dataset_index": 1,
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    },
+    {
+      "position": 2,
+      "sample_id": "q079",
+      "dataset_index": 79,
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    },
+    {
+      "position": 3,
+      "sample_id": "q088",
+      "dataset_index": 88,
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    },
+    {
+      "position": 4,
+      "sample_id": "q098",
+      "dataset_index": 98,
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    }
+  ],
+  "functional_checks": {
+    "collection_success": "4/4",
+    "all_reranker_outcomes_success": true,
+    "reranker_http_error_count": 0,
+    "citation_counts_in_selected_order": [5, 1, 4, 2],
+    "dynamic_filter_changed_count": 3,
+    "dynamic_filter_thresholds": [0.4, 0.4, 0.4, 0.4],
+    "dynamic_filter_retained_counts": [5, 1, 4, 2],
+    "dynamic_filter_removed_counts": [0, 4, 1, 3],
+    "filter_counts_match_final_citations": true,
+    "trace_contains_candidate_text": false,
+    "exact_chunk_expected_count": 5,
+    "exact_chunk_matched_count": 5,
+    "exact_chunk_micro_recall": 1.0,
+    "exact_chunk_macro_recall": 1.0,
+    "exact_chunk_all_hit_rate": 1.0,
+    "latencies_s": [3.972341, 1.951837, 1.876224, 2.566137],
+    "reranker_latencies_s": [0.783585, 0.968188, 0.764343, 0.843099],
+    "total_system_tokens": 219609,
+    "score_artifacts_absent": true
+  },
+  "manual_answer_check": {
+    "reviewed_sample_ids": ["q001", "q079", "q088", "q098"],
+    "obvious_off_topic_count": 0,
+    "refusal_count": 0,
+    "unsupported_citation_mapping_observed": false,
+    "scope": "Compatibility smoke review only; this is not a substitute for formal Ragas scoring or full manual quality acceptance."
+  },
+  "disposition": "The corrected smoke run passes the final S4 preparation gate. Formal 200-question collection and Ragas scoring remain separate human decisions."
+}

@@ -189,6 +189,17 @@ def _route_via_structured_output(
     return decision.intent
 
 
+def _router_failure_result() -> dict:
+    return {
+        "router_intent": "fallback",
+        "business_result": {
+            "branch": "fallback",
+            "answer": "抱歉，模型路由服务调用失败，请检查模型接口配置或稍后重试。这并不表示您的问题超纲。",
+            "data": {"failed_branch": "router", "error_code": "router_model_failed"},
+        },
+    }
+
+
 def build_router_node(llm: BaseChatModel):
     """构建路由节点。
 
@@ -203,8 +214,7 @@ def build_router_node(llm: BaseChatModel):
     # 预检测 structured_output 支持性
     tool_fallback = False
     try:
-        test_llm = llm.with_structured_output(RouterDecision)
-        test_llm.invoke("测试")
+        llm.with_structured_output(RouterDecision)
     except Exception as e:
         err = str(e).lower()
         if any(k in err for k in ("response_format", "unavailable", "not supported")):
@@ -238,8 +248,9 @@ def build_router_node(llm: BaseChatModel):
                         raise
             return {"router_intent": intent}
         except Exception as e:
-            logger.error("路由失败 → fallback: %s", e)
-            return {"router_intent": "fallback"}
+            state["tool_fallback"] = False
+            logger.error("路由失败 → fallback: %s", type(e).__name__)
+            return _router_failure_result()
 
     return router_node
 
@@ -315,8 +326,9 @@ def build_router_node_async(llm: BaseChatModel):
             emit(EventType.STAGE, {"stage": "router_done", "intent": intent})
             return {"router_intent": intent}
         except Exception as e:
-            logger.error("异步路由失败 → fallback: %s", e)
+            state["tool_fallback"] = False
+            logger.error("异步路由失败 → fallback: %s", type(e).__name__)
             emit(EventType.STAGE, {"stage": "router_done", "intent": "fallback", "degraded": True})
-            return {"router_intent": "fallback"}
+            return _router_failure_result()
 
     return router_node_async

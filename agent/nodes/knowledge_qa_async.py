@@ -13,8 +13,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from contextlib import aclosing
 
 from langchain_core.messages import AIMessage
+from public_kb.exceptions import KnowledgeBaseNotReadyError
 
 from ..runtime.async_bridge import run_blocking
 from ..streaming import EventType
@@ -42,6 +44,7 @@ async def node_knowledge_qa_async(state: AgentState) -> dict:
     answer = ""
     citations: list[dict] = []
     sources: list[dict] = []
+    citation_validation: dict | None = None
     if not messages:
         return {
             "business_result": {
@@ -58,8 +61,6 @@ async def node_knowledge_qa_async(state: AgentState) -> dict:
     from .knowledge_qa import _get_rag
 
     try:
-        emit(EventType.STAGE, {"stage": "retrieval_start"})
-
         rag = await run_blocking(_get_rag)  # 首次初始化桥接到线程池
         parts: list[str] = []
         citations: list[dict] = []
@@ -68,52 +69,48 @@ async def node_knowledge_qa_async(state: AgentState) -> dict:
         answer = ""
 
         if not hasattr(rag, "astream"):
+            emit(EventType.STAGE, {"stage": "retrieval_start"})
             result = await rag.aquery(question)
             answer = result.get("answer", "抱歉，无法回答该问题。")
             sources = result.get("sources", [])
             citations = result.get("citations", [])
             citation_validation = result.get("citation_validation")
         else:
-            async for event in rag.astream(question):
-                if event.type is EventType.STAGE:
-                    emit(EventType.STAGE, event.payload)
-                elif event.type is EventType.RETRIEVAL:
-                    emit(EventType.RETRIEVAL, event.payload)
-                elif event.type is EventType.TOKEN:
-                    delta = str(event.payload.get("delta", ""))
-                    parts.append(delta)
-                    emit(EventType.TOKEN, {"delta": delta})
-                elif event.type is EventType.CITATIONS:
-                    citations = event.payload.get("citations", [])
-                    emit(EventType.CITATIONS, {"citations": citations})
-                elif event.type is EventType.FINAL:
-                    final_result = event.payload.get("result") or {}
-                    sources = final_result.get("sources", [])
-                    citation_validation = final_result.get("citation_validation")
-                    citations = final_result.get("citations", citations)
-                    answer = final_result.get(
-                        "answer",
-                        "".join(parts).strip() or "抱歉，无法回答该问题。",
-                    )
-                    break
-            if not answer:
-                answer = "".join(parts).strip() or "抱歉，无法回答该问题。"
+            completed = False
+            async with aclosing(rag.astream(question)) as events:
+                async for event in events:
+                    if event.type in {EventType.STAGE, EventType.RETRIEVAL}:
+                        emit(event.type, event.payload)
+                    elif event.type is EventType.TOKEN:
+                        delta = str(event.payload.get("delta", ""))
+                        parts.append(delta)
+                        emit(EventType.TOKEN, {"delta": delta})
+                    elif event.type is EventType.CITATIONS:
+                        citations = event.payload.get("citations", [])
+                        emit(EventType.CITATIONS, {"citations": citations})
+                    elif event.type is EventType.FINAL:
+                        final_result = event.payload.get("result") or {}
+                        sources = final_result.get("sources", [])
+                        citation_validation = final_result.get("citation_validation")
+                        citations = final_result.get("citations", citations)
+                        answer = final_result.get(
+                            "answer", "".join(parts).strip() or "抱歉，无法回答该问题。",
+                        )
+                        completed = True
+                        break
+                    elif event.type in {EventType.ERROR, EventType.CANCELLED}:
+                        raise RuntimeError("知识库流式请求未完整结束")
+            if not completed:
+                raise RuntimeError("知识库流缺少 final 事件，拒绝保存不完整答案")
 
     except asyncio.CancelledError:
         logger.warning("knowledge_qa(async): 流式任务取消 question=%.80s", question)
         raise
 
-    except RuntimeError as e:
+    except KnowledgeBaseNotReadyError as e:
         # 知识库未初始化
         logger.warning("knowledge_qa(async): RAG 未就绪 — %s", e)
-        return {
-            "business_result": {
-                "branch": "knowledge_qa",
-                "answer": "知识库尚未初始化，请先执行入库操作。",
-                "data": {"sources": [], "error": str(e)},
-            },
-            "messages": [AIMessage(content="⚠️ 知识库尚未初始化，请联系管理员。")],
-        }
+        answer = "⚠️ 知识库尚未初始化，请先执行入库操作。"
 
     if _STREAM_ACTIVE.get():
         emit(EventType.FINAL, {

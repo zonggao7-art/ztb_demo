@@ -1,0 +1,87 @@
+{
+  "created_at": "2026-09-12T06:05:44.463349+00:00",
+  "algorithm": "SHA256",
+  "run_id": "s1_20260912_formal_03_official",
+  "stage": "s1",
+  "status": "formal_complete",
+  "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+  "source_snapshot": {
+    "path": "second_round_eval_data/s1_official_source_snapshot.json",
+    "sha256": "F904E57C69E561A624712705DB857F1BB54F67CA669029432073AB2F78DEB57D",
+    "file_count": 47
+  },
+  "known_reproducibility_limit": "Uses final S4-frozen source; 14 files differ from historical S2 source snapshot. The official S1/S2 comparison is practical rather than a strict single-source-version causal experiment.",
+  "known_cost_record_limit": "scoring_usage.json includes completed scoring batches and four recovery calls, but does not include any paid calls made inside manually interrupted in-flight batches before their next checkpoint.",
+  "artifacts": {
+    "manifest.json": {
+      "sha256": "217A92C0F7E35881B64C863347AA6F10299A17DDC69D066BB547195036982194",
+      "bytes": 7133
+    },
+    "results.jsonl": {
+      "sha256": "56810407BA0AE62B79C5A65AB10126B325B07710C0625C8E8988AC8EBA8A1DD8",
+      "bytes": 12674945
+    },
+    "scores.jsonl": {
+      "sha256": "784B215F456F7211CC98C6D60911D5D9410C6DCAFF098892E70D480ACD28E5E0",
+      "bytes": 73134
+    },
+    "scoring_usage.json": {
+      "sha256": "9CAA97BC0D358CB31E54203839D63556BFC62C226E2C7E748CEAB67FE99FCED9",
+      "bytes": 723
+    },
+    "summary.json": {
+      "sha256": "A79786B78C48F5AE1CDE2C26FA654FE66952698026F1DFD3F20BB58CAB78F59B",
+      "bytes": 13882
+    },
+    "report.md": {
+      "sha256": "250E6C3A998F96C0115E5052CDD31FB46B2F729E7B4E7C392BE2B4DB2DF53204",
+      "bytes": 3180
+    },
+    "collection_verification.json": {
+      "sha256": "7718D72ACAD6171E5C8F86E3D22F1F5FDFA8C2174091DB26507A194FAC2A83F8",
+      "bytes": 1243
+    },
+    "scoring_interruption_audit.json": {
+      "sha256": "0CEFB660EB2DD3F794366C22FD6CD425E658E7661D495D50AF53B53F9A995830",
+      "bytes": 1302
+    },
+    "run_failed_metric_recovery.py": {
+      "sha256": "7F925941F0B298702EA1D66C1FBD8ABC91293A2369B628778EEE65AC751EC528",
+      "bytes": 3776
+    },
+    "paired_comparison_official_s1_to_s2.json": {
+      "sha256": "4FE49469CBFC3FEFF379CC5E755AB0187F8E96DB6A3736360F025119A555CBEC",
+      "bytes": 466069
+    },
+    "paired_comparison_official_s1_to_s2.md": {
+      "sha256": "AF1DBD3416A45838857C80202397401D044D7DDBC0FF25D2F13D787E85345D6E",
+      "bytes": 4026
+    },
+    "paired_comparison_openrouter_s1_to_official_s1.json": {
+      "sha256": "A048DC7200929ED8B7DC9186E7A39D283332BA257363FB6C794E3D957FD6DBBF",
+      "bytes": 464296
+    },
+    "paired_comparison_openrouter_s1_to_official_s1.md": {
+      "sha256": "E24B1FE507B99D16E850C5B9E54D0E3AA07682EE756F9FFEC54FE651505E8442",
+      "bytes": 4000
+    },
+    "scoring_recovery_attempts/recovery_20260912T055841Z/attempts.jsonl": {
+      "sha256": "BDBC506FAC4E9B9EE50CCC2DF31715AE0D85A5DCECABAACC4EB6505EABF4A401",
+      "bytes": 1352
+    },
+    "scoring_recovery_attempts/recovery_20260912T055841Z/manifest.json": {
+      "sha256": "0EDDAC77F3BCAB7DE4CD0F29DEC05592982D9316E31292BD794E0B944ACCF730",
+      "bytes": 2249
+    },
+    "scoring_recovery_attempts/recovery_20260912T055841Z/scores.jsonl": {
+      "sha256": "499FC2B00F53CE73DCA55EF3E6EEC7A9436AADBE03A6D0BE534A59E151F41667",
+      "bytes": 73511
+    },
+    "scoring_recovery_attempts/recovery_20260912T055841Z/scoring_usage.json": {
+      "sha256": "54E893AFC5E34D3CAD743E576848C9191FFC5B59B9E97FD54E97534BEF9D4BE6",
+      "bytes": 723
+    }
+  },
+  "updated_at": "2026-09-12T06:10:03.173645+00:00",
+  "update_reason": "Refreshed the run-local recovery-script hash after adding direct-execution project-root path setup; formal results and scores were unchanged."
+}

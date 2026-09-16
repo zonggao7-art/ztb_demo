@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from contextlib import aclosing
 from pathlib import Path
 from typing import Any, AsyncIterator, Dict, List, Optional
 
@@ -27,6 +28,7 @@ from langchain_openai import OpenAIEmbeddings
 from .chunker import SemanticChunker
 from .config import Settings
 from .embedding_service import create_embeddings
+from .exceptions import KnowledgeBaseNotReadyError
 from .llm_factory import create_llm
 from .milvus_store import MilvusStoreManager
 from .mineru_parser import MinerUParser
@@ -181,7 +183,7 @@ class PublicKnowledgeRAG:
             RuntimeError: 知识库尚未初始化。
         """
         if self._qa_chain is None:
-            raise RuntimeError(
+            raise KnowledgeBaseNotReadyError(
                 "知识库尚未初始化，请先调用 init_knowledge_base() 入库。"
             )
 
@@ -202,7 +204,7 @@ class PublicKnowledgeRAG:
             RuntimeError: 知识库尚未初始化。
         """
         if self._qa_chain is None:
-            raise RuntimeError(
+            raise KnowledgeBaseNotReadyError(
                 "知识库尚未初始化，请先调用 init_knowledge_base() 入库。"
             )
 
@@ -235,7 +237,7 @@ class PublicKnowledgeRAG:
         from agent.streaming.events import EventType, StreamEvent
 
         if self._qa_chain is None:
-            raise RuntimeError(
+            raise KnowledgeBaseNotReadyError(
                 "知识库尚未初始化，请先调用 init_knowledge_base() 入库。"
             )
 
@@ -271,9 +273,10 @@ class PublicKnowledgeRAG:
 
         # 逐 token 推流；引用必须晚于正文生成（风险 R-07）
         parts: List[str] = []
-        async for delta in pipeline.stream_answer(docs_with_scores, question):
-            parts.append(delta)
-            yield _event(EventType.TOKEN, {"delta": delta})
+        async with aclosing(pipeline.stream_answer(docs_with_scores, question)) as tokens:
+            async for delta in tokens:
+                parts.append(delta)
+                yield _event(EventType.TOKEN, {"delta": delta})
 
         answer = "".join(parts).strip()
         result = pipeline.build_answer_result(docs_with_scores, question, answer)
@@ -302,7 +305,7 @@ class PublicKnowledgeRAG:
             RuntimeError: 知识库尚未初始化。
         """
         if self._qa_chain is None:
-            raise RuntimeError(
+            raise KnowledgeBaseNotReadyError(
                 "知识库尚未初始化，请先调用 init_knowledge_base() 入库。"
             )
 
@@ -429,17 +432,15 @@ class PublicKnowledgeRAG:
 
     def _create_llm(self) -> BaseChatModel:
         """根据配置创建 ChatOpenAI 实例（统一走 llm_factory）。"""
-        return create_llm(self._settings)
+        return create_llm(self._settings, input_budget_scope="rag")
 
     def _build_qa_chain(self) -> None:
-        """基于当前 vector_store 构建 LCEL 问答链。"""
-        # 尝试获取 MilvusClient（用于混合检索）
-        try:
-            collection = self._store_manager.collection
-        except RuntimeError:
-            collection = None
-            logger.info("MilvusClient 不可用，问答链将使用纯稠密检索")
+        """基于当前 vector_store 构建 LCEL 问答链。
 
+        零降级（D3）：MilvusClient / 集合不可用时异常直接上抛
+        （MilvusStoreManager.collection 的 RuntimeError），不再回退纯稠密检索。
+        """
+        collection = self._store_manager.collection
         self._qa_chain = build_qa_chain(
             vector_store=self._store_manager.store,
             llm=self._llm,
@@ -451,22 +452,19 @@ class PublicKnowledgeRAG:
         self._async_pipeline = None
 
     def _ensure_async_pipeline(self) -> Any:
-        """懒建异步 RAG 流水线（与同步链共享 vector_store/llm/collection/embeddings）。"""
+        """懒建异步 RAG 流水线（与同步链共享 vector_store/llm/collection/embeddings）。
+
+        零降级（D3）：MilvusClient / 集合不可用时异常直接上抛。
+        """
         if self._async_pipeline is not None:
             return self._async_pipeline
         from .qa_chain_async import AsyncRAGPipeline
-
-        try:
-            collection = self._store_manager.collection
-        except RuntimeError:
-            collection = None
-            logger.info("MilvusClient 不可用，异步问答链将使用纯稠密检索")
 
         self._async_pipeline = AsyncRAGPipeline(
             vector_store=self._store_manager.store,
             llm=self._llm,
             settings=self._settings,
-            collection=collection,
+            collection=self._store_manager.collection,
             embeddings=self._embeddings,
         )
         return self._async_pipeline

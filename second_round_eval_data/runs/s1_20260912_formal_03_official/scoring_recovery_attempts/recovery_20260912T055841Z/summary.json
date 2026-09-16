@@ -1,0 +1,574 @@
+{
+  "formal_complete": false,
+  "collection_complete": true,
+  "scoring_complete": false,
+  "planned_count": 200,
+  "completed_attempts": 200,
+  "status_counts": {
+    "success": 200
+  },
+  "latency": {
+    "method": "nearest_rank",
+    "sample_count": 200,
+    "p50_s": 1.177373,
+    "p95_s": 2.046747
+  },
+  "reranker": {
+    "sample_count": 0,
+    "outcome_counts": {},
+    "latency": {
+      "method": "nearest_rank",
+      "sample_count": 0,
+      "p50_s": null,
+      "p95_s": null
+    }
+  },
+  "dynamic_filter": {
+    "sample_count": 0,
+    "policy_ids": [],
+    "changed_count": 0,
+    "unchanged_count": 0,
+    "changed_sample_ids": [],
+    "empty_count": 0,
+    "input_total": 0,
+    "retained_total": 0,
+    "removed_total": 0,
+    "retained_count_distribution": {},
+    "threshold_distribution": {},
+    "removed_ground_truth_count": 0,
+    "removed_ground_truth": []
+  },
+  "request_throttle": {
+    "sample_count": 200,
+    "total_wait_s": 0.0,
+    "wait_included_in_question_latency": false,
+    "observed_start_interval_count": 199,
+    "min_observed_start_interval_s": 0.50959
+  },
+  "system_token_usage": {
+    "input_tokens": 1067925,
+    "output_tokens": 22422,
+    "total_tokens": 1090347,
+    "unknown_outputs": 0,
+    "source_counts": {
+      "rough_estimate": 200,
+      "api_actual": 200
+    },
+    "components": {
+      "query_embedding": {
+        "calls": 200,
+        "input_tokens": 8753,
+        "output_tokens": 0,
+        "total_tokens": 8753,
+        "unknown_outputs": 0,
+        "sources": {
+          "rough_estimate": 200
+        }
+      },
+      "answer_model": {
+        "calls": 200,
+        "input_tokens": 1059172,
+        "output_tokens": 22422,
+        "total_tokens": 1081594,
+        "unknown_outputs": 0,
+        "sources": {
+          "api_actual": 200
+        }
+      }
+    },
+    "average_per_planned_question": 5451.735
+  },
+  "quality_metrics": {
+    "context_recall": {
+      "mean": 0.8858049242424242,
+      "valid_count": 200,
+      "planned_count": 200,
+      "missing_reasons": {}
+    },
+    "context_precision": {
+      "mean": 0.7557388606449845,
+      "valid_count": 197,
+      "planned_count": 200,
+      "missing_reasons": {
+        "TimeoutError": 3
+      }
+    },
+    "answer_correctness": {
+      "mean": 0.7507885628969794,
+      "valid_count": 200,
+      "planned_count": 200,
+      "missing_reasons": {}
+    },
+    "faithfulness": {
+      "mean": 0.9513139080208709,
+      "valid_count": 199,
+      "planned_count": 200,
+      "missing_reasons": {
+        "InstructorRetryException": 1
+      }
+    }
+  },
+  "exact_retrieval": {
+    "match_key": "chunk_uid",
+    "sample_count": 200,
+    "expected_chunk_count": 270,
+    "matched_chunk_count": 179,
+    "micro_recall": 0.662962962962963,
+    "macro_recall": 0.68,
+    "any_hit_count": 149,
+    "any_hit_rate": 0.745,
+    "all_hit_count": 123,
+    "all_hit_rate": 0.615,
+    "mean_first_hit_rank": 1.7583892617449663,
+    "duplicate_retrieved_chunk_count": 0,
+    "missed_sample_ids": [
+      "q011",
+      "q013",
+      "q022",
+      "q026",
+      "q031",
+      "q033",
+      "q036",
+      "q043",
+      "q046",
+      "q049",
+      "q052",
+      "q054",
+      "q055",
+      "q061",
+      "q063",
+      "q069",
+      "q073",
+      "q075",
+      "q078",
+      "q079",
+      "q082",
+      "q083",
+      "q084",
+      "q086",
+      "q087",
+      "q106",
+      "q107",
+      "q108",
+      "q109",
+      "q113",
+      "q115",
+      "q117",
+      "q119",
+      "q121",
+      "q125",
+      "q126",
+      "q129",
+      "q131",
+      "q132",
+      "q133",
+      "q137",
+      "q143",
+      "q150",
+      "q151",
+      "q155",
+      "q172",
+      "q184",
+      "q188",
+      "q189",
+      "q192",
+      "q198"
+    ],
+    "partial_sample_ids": [
+      "q014",
+      "q060",
+      "q062",
+      "q074",
+      "q076",
+      "q080",
+      "q094",
+      "q110",
+      "q116",
+      "q120",
+      "q122",
+      "q124",
+      "q130",
+      "q136",
+      "q138",
+      "q140",
+      "q142",
+      "q144",
+      "q146",
+      "q148",
+      "q152",
+      "q154",
+      "q164",
+      "q176",
+      "q182",
+      "q190"
+    ]
+  },
+  "scoring_token_usage": {
+    "calls": 2834,
+    "input_tokens": 6884587,
+    "output_tokens": 654281,
+    "total_tokens": 7538868,
+    "source_counts": {
+      "api_actual": 2830,
+      "rough_estimate": 4
+    },
+    "unknown_outputs": 1,
+    "components": {
+      "referee": {
+        "calls": 2434,
+        "input_tokens": 6840746,
+        "output_tokens": 654281,
+        "total_tokens": 7495027,
+        "sources": {
+          "api_actual": 2430,
+          "rough_estimate": 4
+        },
+        "unknown_outputs": 1
+      },
+      "scoring_embedding": {
+        "calls": 400,
+        "input_tokens": 43841,
+        "output_tokens": 0,
+        "total_tokens": 43841,
+        "sources": {
+          "api_actual": 400
+        },
+        "unknown_outputs": 0
+      }
+    }
+  },
+  "strata": {
+    "multi_hop": {
+      "formal_complete": true,
+      "collection_complete": true,
+      "scoring_complete": true,
+      "planned_count": 70,
+      "completed_attempts": 70,
+      "status_counts": {
+        "success": 70
+      },
+      "latency": {
+        "method": "nearest_rank",
+        "sample_count": 70,
+        "p50_s": 1.364529,
+        "p95_s": 2.120742
+      },
+      "reranker": {
+        "sample_count": 0,
+        "outcome_counts": {},
+        "latency": {
+          "method": "nearest_rank",
+          "sample_count": 0,
+          "p50_s": null,
+          "p95_s": null
+        }
+      },
+      "dynamic_filter": {
+        "sample_count": 0,
+        "policy_ids": [],
+        "changed_count": 0,
+        "unchanged_count": 0,
+        "changed_sample_ids": [],
+        "empty_count": 0,
+        "input_total": 0,
+        "retained_total": 0,
+        "removed_total": 0,
+        "retained_count_distribution": {},
+        "threshold_distribution": {},
+        "removed_ground_truth_count": 0,
+        "removed_ground_truth": []
+      },
+      "request_throttle": {
+        "sample_count": 70,
+        "total_wait_s": 0.0,
+        "wait_included_in_question_latency": false,
+        "observed_start_interval_count": 70,
+        "min_observed_start_interval_s": 0.50959
+      },
+      "system_token_usage": {
+        "input_tokens": 379058,
+        "output_tokens": 10494,
+        "total_tokens": 389552,
+        "unknown_outputs": 0,
+        "source_counts": {
+          "rough_estimate": 70,
+          "api_actual": 70
+        },
+        "components": {
+          "query_embedding": {
+            "calls": 70,
+            "input_tokens": 3580,
+            "output_tokens": 0,
+            "total_tokens": 3580,
+            "unknown_outputs": 0,
+            "sources": {
+              "rough_estimate": 70
+            }
+          },
+          "answer_model": {
+            "calls": 70,
+            "input_tokens": 375478,
+            "output_tokens": 10494,
+            "total_tokens": 385972,
+            "unknown_outputs": 0,
+            "sources": {
+              "api_actual": 70
+            }
+          }
+        },
+        "average_per_planned_question": 5565.028571428571
+      },
+      "quality_metrics": {
+        "context_recall": {
+          "mean": 0.8058712121212122,
+          "valid_count": 70,
+          "planned_count": 70,
+          "missing_reasons": {}
+        },
+        "context_precision": {
+          "mean": 0.7195436507534899,
+          "valid_count": 70,
+          "planned_count": 70,
+          "missing_reasons": {}
+        },
+        "answer_correctness": {
+          "mean": 0.7485350193028925,
+          "valid_count": 70,
+          "planned_count": 70,
+          "missing_reasons": {}
+        },
+        "faithfulness": {
+          "mean": 0.9735453249110236,
+          "valid_count": 70,
+          "planned_count": 70,
+          "missing_reasons": {}
+        }
+      },
+      "exact_retrieval": {
+        "match_key": "chunk_uid",
+        "sample_count": 70,
+        "expected_chunk_count": 140,
+        "matched_chunk_count": 86,
+        "micro_recall": 0.6142857142857143,
+        "macro_recall": 0.6142857142857143,
+        "any_hit_count": 56,
+        "any_hit_rate": 0.8,
+        "all_hit_count": 30,
+        "all_hit_rate": 0.42857142857142855,
+        "mean_first_hit_rank": 1.5178571428571428,
+        "duplicate_retrieved_chunk_count": 0,
+        "missed_sample_ids": [
+          "q078",
+          "q082",
+          "q084",
+          "q087",
+          "q106",
+          "q108",
+          "q126",
+          "q132",
+          "q150",
+          "q172",
+          "q184",
+          "q188",
+          "q192",
+          "q198"
+        ],
+        "partial_sample_ids": [
+          "q014",
+          "q060",
+          "q062",
+          "q074",
+          "q076",
+          "q080",
+          "q094",
+          "q110",
+          "q116",
+          "q120",
+          "q122",
+          "q124",
+          "q130",
+          "q136",
+          "q138",
+          "q140",
+          "q142",
+          "q144",
+          "q146",
+          "q148",
+          "q152",
+          "q154",
+          "q164",
+          "q176",
+          "q182",
+          "q190"
+        ]
+      },
+      "scoring_token_usage": null
+    },
+    "single_hop": {
+      "formal_complete": false,
+      "collection_complete": true,
+      "scoring_complete": false,
+      "planned_count": 130,
+      "completed_attempts": 130,
+      "status_counts": {
+        "success": 130
+      },
+      "latency": {
+        "method": "nearest_rank",
+        "sample_count": 130,
+        "p50_s": 1.081821,
+        "p95_s": 1.960707
+      },
+      "reranker": {
+        "sample_count": 0,
+        "outcome_counts": {},
+        "latency": {
+          "method": "nearest_rank",
+          "sample_count": 0,
+          "p50_s": null,
+          "p95_s": null
+        }
+      },
+      "dynamic_filter": {
+        "sample_count": 0,
+        "policy_ids": [],
+        "changed_count": 0,
+        "unchanged_count": 0,
+        "changed_sample_ids": [],
+        "empty_count": 0,
+        "input_total": 0,
+        "retained_total": 0,
+        "removed_total": 0,
+        "retained_count_distribution": {},
+        "threshold_distribution": {},
+        "removed_ground_truth_count": 0,
+        "removed_ground_truth": []
+      },
+      "request_throttle": {
+        "sample_count": 130,
+        "total_wait_s": 0.0,
+        "wait_included_in_question_latency": false,
+        "observed_start_interval_count": 129,
+        "min_observed_start_interval_s": 0.517716
+      },
+      "system_token_usage": {
+        "input_tokens": 688867,
+        "output_tokens": 11928,
+        "total_tokens": 700795,
+        "unknown_outputs": 0,
+        "source_counts": {
+          "rough_estimate": 130,
+          "api_actual": 130
+        },
+        "components": {
+          "query_embedding": {
+            "calls": 130,
+            "input_tokens": 5173,
+            "output_tokens": 0,
+            "total_tokens": 5173,
+            "unknown_outputs": 0,
+            "sources": {
+              "rough_estimate": 130
+            }
+          },
+          "answer_model": {
+            "calls": 130,
+            "input_tokens": 683694,
+            "output_tokens": 11928,
+            "total_tokens": 695622,
+            "unknown_outputs": 0,
+            "sources": {
+              "api_actual": 130
+            }
+          }
+        },
+        "average_per_planned_question": 5390.7307692307695
+      },
+      "quality_metrics": {
+        "context_recall": {
+          "mean": 0.9288461538461539,
+          "valid_count": 130,
+          "planned_count": 130,
+          "missing_reasons": {}
+        },
+        "context_precision": {
+          "mean": 0.7756889763332101,
+          "valid_count": 127,
+          "planned_count": 130,
+          "missing_reasons": {
+            "TimeoutError": 3
+          }
+        },
+        "answer_correctness": {
+          "mean": 0.7520020094476416,
+          "valid_count": 130,
+          "planned_count": 130,
+          "missing_reasons": {}
+        },
+        "faithfulness": {
+          "mean": 0.9392503484680746,
+          "valid_count": 129,
+          "planned_count": 130,
+          "missing_reasons": {
+            "InstructorRetryException": 1
+          }
+        }
+      },
+      "exact_retrieval": {
+        "match_key": "chunk_uid",
+        "sample_count": 130,
+        "expected_chunk_count": 130,
+        "matched_chunk_count": 93,
+        "micro_recall": 0.7153846153846154,
+        "macro_recall": 0.7153846153846154,
+        "any_hit_count": 93,
+        "any_hit_rate": 0.7153846153846154,
+        "all_hit_count": 93,
+        "all_hit_rate": 0.7153846153846154,
+        "mean_first_hit_rank": 1.903225806451613,
+        "duplicate_retrieved_chunk_count": 0,
+        "missed_sample_ids": [
+          "q011",
+          "q013",
+          "q022",
+          "q026",
+          "q031",
+          "q033",
+          "q036",
+          "q043",
+          "q046",
+          "q049",
+          "q052",
+          "q054",
+          "q055",
+          "q061",
+          "q063",
+          "q069",
+          "q073",
+          "q075",
+          "q079",
+          "q083",
+          "q086",
+          "q107",
+          "q109",
+          "q113",
+          "q115",
+          "q117",
+          "q119",
+          "q121",
+          "q125",
+          "q129",
+          "q131",
+          "q133",
+          "q137",
+          "q143",
+          "q151",
+          "q155",
+          "q189"
+        ],
+        "partial_sample_ids": []
+      },
+      "scoring_token_usage": null
+    }
+  }
+}

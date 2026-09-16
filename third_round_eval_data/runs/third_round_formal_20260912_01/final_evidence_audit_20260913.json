@@ -1,0 +1,83 @@
+{
+  "schema_version": "third-round-final-evidence-audit-v1",
+  "evaluation_id": "third_round_react_formal_20260912_01",
+  "completed_at": "2026-09-13T19:17:12+08:00",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "evaluation_execution_status": "complete",
+  "formal_acceptance_decision": "failed",
+  "main_run": {
+    "run_id": "third_round_formal_20260912_01",
+    "planned_attempts": 840,
+    "recorded_attempts": 840,
+    "harness_errors": 0,
+    "ragas_units": 330,
+    "ragas_metric_values": 1320,
+    "ragas_complete": true,
+    "decision": "failed",
+    "failed_thresholds_each_repeat": [
+      "A1",
+      "A2",
+      "A4",
+      "A6",
+      "A7",
+      "A10",
+      "C1",
+      "C4",
+      "C5"
+    ]
+  },
+  "failed_metric_recovery": {
+    "authorization": "explicit_user_authorization_in_current_thread",
+    "recovery_id": "recovery_20260913T110742Z",
+    "preflight_status": "passed",
+    "attempted_metric_count": 15,
+    "recovered_metric_count": 15,
+    "remaining_failed_metric_count": 0,
+    "original_success_metric_count": 1305,
+    "original_success_metrics_unchanged": 1305,
+    "original_success_metrics_changed": 0,
+    "recovery_api_call_delta": 60,
+    "recovery_token_delta": 163747,
+    "post_recovery_total_api_calls": 4580,
+    "post_recovery_total_tokens": 12084974,
+    "frozen_api_call_ceiling": 5500,
+    "frozen_token_ceiling": 15000000
+  },
+  "reliability_run": {
+    "run_id": "third_round_reliability_formal_20260912_01",
+    "planned_scenario_attempts": 72,
+    "recorded_scenario_attempts": 72,
+    "passed_scenario_attempts": 69,
+    "failed_scenario_attempts": 3,
+    "decision": "failed",
+    "consistent_failure": {
+      "scenario_id": "TR-REL-DEP-002",
+      "failed_repeats": [1, 2, 3],
+      "redline_event": "dependency_or_budget_assertion_failed"
+    },
+    "E6_consecutive_passing_runs": 0,
+    "E6_required_consecutive_passing_runs": 3
+  },
+  "artifact_hashes": {
+    "score_summary.json": "73E7E0EC6ACB11A33697A7FA0AE157C4E2F111AA5614B773798EF48A40B127A3",
+    "report.md": "AC56E93EFD8C41C651C8A30FE361525EBB3B8E1E46AC15BA8C656EBE3DCA665A",
+    "ragas_scores.jsonl": "523A44E564A424DBFB6F5F5E45978A5BB5905471C4694F11197E098FB9C688A4",
+    "ragas_scoring_usage.json": "6EEC18C74E0A9922D30559889E773AB1E4721F557F880F1808D943197544B509",
+    "scoring_recovery_attempts/recovery_20260913T110742Z/attempts.jsonl": "5A10781AA613ACC10DE02E87250D0A615C3A70E8DC0D8EC27B6B94A4CCE595BF",
+    "../third_round_reliability_formal_20260912_01/reliability_summary.json": "047ED9ECE1CDDDEEFB0D2CDD7F16D60FB756C4BF9B0669B7E2DB4E561E1FE2E8",
+    "../third_round_reliability_formal_20260912_01/reliability_results.jsonl": "F1BEB01790478E85234B3697C178249E993621A0A270470B6523531529A1C123"
+  },
+  "interpretation": {
+    "rag_layer": "passed_all_B1_to_B6_thresholds_in_all_three_repeats",
+    "sql_layer": "failed_C1_C4_C5_despite_C2_C3_passing",
+    "react_core": "failed_negative_handling_dependency_and_action_control_thresholds",
+    "release_gate": "blocked"
+  },
+  "limitations": [
+    "D1_to_D6_are_report_only_for_the_first_formal_run",
+    "D5_is_unavailable_from_the_current_unified_runtime_contract",
+    "A9_checks_deterministic_evidence_association_while_B4_checks_semantic_support",
+    "reliability_is_reported_from_a_separate_frozen_run"
+  ]
+}

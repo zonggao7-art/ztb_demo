@@ -2,6 +2,15 @@
 -- ztb_clean 纯净数据库 — DDL 脚本（Docker 初始化自动执行）
 -- 数据库：ztb_clean（由 docker-compose MYSQL_DATABASE 自动创建）
 -- ============================================================
+-- 表清单（2026-09-04 定稿，仅 3 张在用业务表）：
+--   company_info / company_penalty / bid_project
+--   product_info 已随产品查询功能线下线（2026-08-10），不再建表；
+--   其数据以 raw_tables/product_info.csv 留档作回滚资产。
+-- 索引策略：本脚本仅建 BTREE + UNIQUE；FULLTEXT（ngram）在数据导入
+-- 后统一构建，规格见文末注释（与 agent/nodes/price_inquiry/schema.py
+-- 的 _HARDCODED_SCHEMA semantic 列集合严格一致，MATCH 列集合必须与
+-- FULLTEXT 索引定义完全一致）。
+-- ============================================================
 
 USE `ztb_clean`;
 
@@ -37,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `company_info` (
     INDEX `idx_registered_capital_amount` (`registered_capital_amount_cny`),
     INDEX `idx_company_name` (`company_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='企业工商信息表';
+  COMMENT='企业工商信息表（来源：raw_tables/company_info.csv）';
 
 -- ============================================================
 -- 2. company_penalty（企业处罚信息表）
@@ -54,42 +63,12 @@ CREATE TABLE IF NOT EXISTS `company_penalty` (
     `created_at`            DATETIME      DEFAULT CURRENT_TIMESTAMP,
     INDEX `idx_company_name` (`company_name`),
     INDEX `idx_credit_code` (`credit_code`),
-    INDEX `idx_penalty_date` (`penalty_date`),
-    FULLTEXT INDEX `ft_penalty_semantic` (`company_name`, `illegal_behavior`, `penalty_result`)
+    INDEX `idx_penalty_date` (`penalty_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='企业处罚信息表';
+  COMMENT='企业处罚信息表（来源：raw_tables/company_penalty.csv）';
 
 -- ============================================================
--- 3. product_info（产品市场行情表）
--- ============================================================
-CREATE TABLE IF NOT EXISTS `product_info` (
-    `id`                  BIGINT AUTO_INCREMENT PRIMARY KEY,
-    `product_name`        VARCHAR(500)  DEFAULT NULL COMMENT '产品名称',
-    `supplier_name`       VARCHAR(256)  DEFAULT NULL COMMENT '供应商名称',
-    `price`               DECIMAL(20,2) DEFAULT NULL COMMENT '报价（元）',
-    `price_unit`          VARCHAR(32)   DEFAULT NULL COMMENT '计价单位',
-    `currency`            VARCHAR(16)   DEFAULT 'CNY' COMMENT '货币',
-    `category`            VARCHAR(256)  DEFAULT NULL COMMENT '产品大类',
-    `subcategory`         VARCHAR(256)  DEFAULT NULL COMMENT '产品小类',
-    `product_parameters`  TEXT          DEFAULT NULL COMMENT '产品参数',
-    `min_order_qty`       INT           DEFAULT NULL COMMENT '起订量',
-    `province`            VARCHAR(64)   DEFAULT NULL COMMENT '省份',
-    `city`                VARCHAR(64)   DEFAULT NULL COMMENT '城市',
-    `supplier_address`    VARCHAR(512)  DEFAULT NULL COMMENT '供应商地址',
-    `contact_person`      VARCHAR(64)   DEFAULT NULL COMMENT '联系人',
-    `contact_info`        VARCHAR(128)  DEFAULT NULL COMMENT '联系方式（电话）',
-    `source_file`         VARCHAR(256)  DEFAULT NULL COMMENT '来源文件名',
-    `created_at`          DATETIME      DEFAULT CURRENT_TIMESTAMP,
-    INDEX `idx_product_name` (`product_name`),
-    INDEX `idx_supplier_name` (`supplier_name`),
-    INDEX `idx_price` (`price`),
-    INDEX `idx_category` (`category`),
-    INDEX `idx_province` (`province`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='产品市场行情表';
-
--- ============================================================
--- 4. bid_project（招标项目交易记录表）
+-- 3. bid_project（招标项目交易记录表）
 -- ============================================================
 CREATE TABLE IF NOT EXISTS `bid_project` (
     `id`                 BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -122,4 +101,17 @@ CREATE TABLE IF NOT EXISTS `bid_project` (
     INDEX `idx_project_category` (`project_category`),
     INDEX `idx_project_name` (`project_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-  COMMENT='招标项目交易记录表';
+  COMMENT='招标项目交易记录表（来源：raw_tables/bid_project.csv）';
+
+-- ============================================================
+-- FULLTEXT 索引（数据导入后由导入流程统一执行，勿在本脚本中创建）
+-- 规格 = _HARDCODED_SCHEMA[table]["semantic"]，全部 WITH PARSER ngram：
+-- ALTER TABLE `company_info`
+--   ADD FULLTEXT INDEX `ft_company_info` (`company_name`, `business_scope`, `industry`, `address`) WITH PARSER ngram;
+-- ALTER TABLE `company_penalty`
+--   ADD FULLTEXT INDEX `ft_penalty` (`company_name`, `illegal_behavior`, `penalty_result`) WITH PARSER ngram;
+-- ALTER TABLE `bid_project`
+--   ADD FULLTEXT INDEX `ft_semantic` (`purchaser`, `successful_bidder`) WITH PARSER ngram;
+--   ^ P0-11：bid_project 恰好 2 列；若含 project_name/subject_matter 等列，
+--     MATCH(purchaser, successful_bidder) 将无法命中该索引。
+-- ============================================================

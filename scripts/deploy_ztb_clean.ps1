@@ -147,14 +147,12 @@ function Build-FulltextIndexes {
     Write-Step "构建 FULLTEXT 索引（ngram 分词器）"
     
     $fulltextDDL = @"
-ALTER TABLE `company_info`
-  ADD FULLTEXT INDEX `ft_company_info` (`company_name`, `business_scope`, `industry`, `address`) WITH PARSER ngram;
-ALTER TABLE `company_penalty`
-  ADD FULLTEXT INDEX `ft_penalty` (`company_name`, `illegal_behavior`, `penalty_result`) WITH PARSER ngram;
-ALTER TABLE `product_info`
-  ADD FULLTEXT INDEX `ft_product` (`product_name`, `supplier_name`, `product_parameters`, `category`) WITH PARSER ngram;
-ALTER TABLE `bid_project`
-  ADD FULLTEXT INDEX `ft_bid_project` (`project_name`, `purchaser`, `successful_bidder`, `subject_matter`) WITH PARSER ngram;
+ALTER TABLE company_info
+  ADD FULLTEXT INDEX ft_company_info (company_name, business_scope, industry, address) WITH PARSER ngram;
+ALTER TABLE company_penalty
+  ADD FULLTEXT INDEX ft_penalty (company_name, illegal_behavior, penalty_result) WITH PARSER ngram;
+ALTER TABLE bid_project
+  ADD FULLTEXT INDEX ft_semantic (purchaser, successful_bidder) WITH PARSER ngram;
 "@
     
     # 检查 FULLTEXT 索引是否已存在

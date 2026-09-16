@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import logging
+from copy import deepcopy
 from typing import Any
 
 from langchain_core.tools import StructuredTool
@@ -32,9 +33,11 @@ from .base import ERR_INVALID_PARAMS, make_error_result, make_tool_result, wrap_
 from .registry import GLOBAL_TOOL_REGISTRY, ToolMeta
 from .schemas import (
     ALLOWED_TABLES,
-    QueryBidRecordsInput,
-    QueryCompanyInfoInput,
+    QueryCompanyAwardHistoryInput,
+    QueryCompanyBusinessScopeInput,
     QueryCompanyPenaltyInput,
+    QueryCompanyRegistrationInput,
+    QueryProjectAwardInput,
     SearchBusinessDataInput,
 )
 
@@ -98,6 +101,19 @@ def _records_result(result: dict[str, Any], top_k: int) -> dict:
     )
 
 
+def _select_record_fields(result: dict[str, Any], fields: tuple[str, ...]) -> dict[str, Any]:
+    """为业务工具裁剪返回字段，避免共享数据表扩大对模型的可见范围。"""
+    selected = deepcopy(result)
+    records = (selected.get("data") or {}).get("records")
+    if isinstance(records, list):
+        selected["data"]["records"] = [
+            {field: row[field] for field in fields if field in row}
+            for row in records
+            if isinstance(row, dict)
+        ]
+    return selected
+
+
 def _validate_company_name(name: str, field_label: str) -> str | None:
     """P0-11 校验下沉：公司名必须通过工商主体名称格式校验。"""
     if not name or not name.strip():
@@ -110,24 +126,84 @@ def _validate_company_name(name: str, field_label: str) -> str | None:
     return None
 
 
-# ── query_company_info ──
+# ── 六条稳定业务线中的 SQL 工具 ──
 
-QUERY_COMPANY_INFO_DESC = (
-    "企业工商情报查询：按公司全称查询企业基本信息（注册资本、法定代表、"
-    "行业、经营状态、经营范围等）。必须提供完整工商全称；"
-    "支持按行业/地区/经营状态/时间范围缩小结果。"
+QUERY_COMPANY_REGISTRATION_DESC = (
+    "企业工商信息查询：按用户提供的主体名称精确查询统一社会信用代码、法定代表人、"
+    "注册资本、成立日期、经营状态、行业和所在地区。只用于工商信息，不返回经营范围。"
 )
+
+_REGISTRATION_FIELDS = (
+    "company_name", "credit_code", "legal_person", "registered_capital",
+    "establish_date", "business_status", "industry", "province", "city",
+)
+
+
+def _query_company_registration_impl(company_name: str, top_k: int | None = None) -> dict:
+    result = _query_company_info_impl(company_name=company_name, top_k=top_k)
+    return _select_record_fields(result, _REGISTRATION_FIELDS)
+
+
+async def _query_company_registration_async_impl(*args: Any, **kwargs: Any) -> dict:
+    from ..runtime import run_blocking
+
+    return await run_blocking(_query_company_registration_impl, *args, **kwargs)
+
+
+QUERY_COMPANY_BUSINESS_SCOPE_DESC = (
+    "企业经营范围查询：按用户提供的主体名称精确查询经营范围。"
+    "只返回企业名称和经营范围，不返回其他工商字段。"
+)
+
+_BUSINESS_SCOPE_FIELDS = ("company_name", "business_scope")
+
+
+def _query_company_business_scope_impl(company_name: str, top_k: int | None = None) -> dict:
+    result = _query_company_info_impl(company_name=company_name, top_k=top_k)
+    return _select_record_fields(result, _BUSINESS_SCOPE_FIELDS)
+
+
+async def _query_company_business_scope_async_impl(*args: Any, **kwargs: Any) -> dict:
+    from ..runtime import run_blocking
+
+    return await run_blocking(_query_company_business_scope_impl, *args, **kwargs)
+
+
+QUERY_PROJECT_AWARD_DESC = (
+    "项目中标情况查询：仅按用户本轮提供或前一步工具明确返回的项目编号精确查询项目名称、采购人、中标供应商、"
+    "中标金额和中标日期。不接受项目名称、企业名称或采购人作为检索条件。"
+)
+
+
+def _query_project_award_impl(project_number: str, top_k: int | None = None) -> dict:
+    return _query_bid_records_impl(project_number=project_number, top_k=top_k)
+
+
+async def _query_project_award_async_impl(*args: Any, **kwargs: Any) -> dict:
+    from ..runtime import run_blocking
+
+    return await run_blocking(_query_project_award_impl, *args, **kwargs)
+
+
+QUERY_COMPANY_AWARD_HISTORY_DESC = (
+    "企业中标历史查询：仅当用户明确查询某主体作为中标企业/供应商的历史时使用，"
+    "按主体名称精确查询历史中标项目。不得用于查询采购人、招标人或发包人的历史，"
+    "不接受项目编号作为检索条件。"
+)
+
+
+def _query_company_award_history_impl(company_name: str, top_k: int | None = None) -> dict:
+    return _query_bid_records_impl(company_name=company_name, top_k=top_k)
+
+
+async def _query_company_award_history_async_impl(*args: Any, **kwargs: Any) -> dict:
+    from ..runtime import run_blocking
+
+    return await run_blocking(_query_company_award_history_impl, *args, **kwargs)
 
 
 def _query_company_info_impl(
     company_name: str,
-    industry: str | None = None,
-    region: str | None = None,
-    province: str | None = None,
-    city: str | None = None,
-    business_status: str | None = None,
-    time_start: str | None = None,
-    time_end: str | None = None,
     top_k: int | None = None,
 ) -> dict:
     bad = _validate_company_name(company_name, "company_name")
@@ -135,18 +211,6 @@ def _query_company_info_impl(
         return _invalid(bad)
 
     hard_filters: dict[str, Any] = {"company_name": company_name.strip()}
-    if industry:
-        hard_filters["industry"] = industry
-    if region:
-        hard_filters["region"] = region
-    if province:
-        hard_filters["province"] = province
-    if city:
-        hard_filters["city"] = city
-    if business_status:
-        hard_filters["business_status"] = business_status
-    if time_start or time_end:
-        hard_filters["time_range"] = {"start": time_start, "end": time_end}
 
     intent = _build_intent(
         sub_route="company_query",
@@ -169,8 +233,8 @@ async def _query_company_info_async_impl(*args: Any, **kwargs: Any) -> dict:
 # ── query_company_penalty ──
 
 QUERY_COMPANY_PENALTY_DESC = (
-    "企业风控黑名单查询：按公司全称精确查询行政处罚/不良记录"
-    "（处罚日期、违法行为、处罚结果、执法单位等）。必须提供完整工商全称。"
+    "企业风控黑名单查询：按用户提供的主体名称精确查询行政处罚/不良记录"
+    "（处罚日期、违法行为、处罚结果、执法单位等）。hybrid不审核主体真实性或名称后缀。"
 )
 
 
@@ -200,16 +264,6 @@ async def _query_company_penalty_async_impl(company_name: str, top_k: int | None
     from ..runtime import run_blocking
 
     return await run_blocking(_query_company_penalty_impl, company_name, top_k)
-
-
-# ── query_bid_records ──
-
-QUERY_BID_RECORDS_DESC = (
-    "招投标中标情报查询：查询历史中标记录（项目名称、采购人、中标供应商、"
-    "中标金额、中标日期等）。两种模式：提供 project_number 按项目精确查询；"
-    "或提供 company_name（中标供应商）/ purchaser（采购人）按主体查询。"
-    "支持时间/地区/金额区间过滤与排序。"
-)
 
 
 def _query_bid_records_impl(
@@ -287,8 +341,8 @@ async def _query_bid_records_async_impl(*args: Any, **kwargs: Any) -> dict:
 
 SEARCH_BUSINESS_DATA_DESC = (
     "业务数据通用检索（长尾查询兜底）：对 company_info / company_penalty / bid_project "
-    "三张核心表执行语义+全文多级降级召回并混合重排序。"
-    "适用于其他 SQL 工具无法覆盖的自由组合查询；keywords 提供 1~5 个关键词。"
+    "三张核心表执行全文/LIKE 候选检索。"
+    "仅返回候选，不保证精确条件或完整覆盖；不能替代带日期/金额硬过滤的精确查询；keywords 提供 1~5 个关键词。"
 )
 
 
@@ -339,12 +393,36 @@ def register_price_db_tools(registry=GLOBAL_TOOL_REGISTRY) -> None:
     """向注册中心注册 SQL 检索工具。"""
     specs = [
         (
-            "query_company_info",
-            QUERY_COMPANY_INFO_DESC,
-            QueryCompanyInfoInput,
-            _query_company_info_impl,
-            _query_company_info_async_impl,
-            {"price", "sql", "company"},
+            "query_company_registration",
+            QUERY_COMPANY_REGISTRATION_DESC,
+            QueryCompanyRegistrationInput,
+            _query_company_registration_impl,
+            _query_company_registration_async_impl,
+            {"price", "sql", "company", "baseline"},
+        ),
+        (
+            "query_company_business_scope",
+            QUERY_COMPANY_BUSINESS_SCOPE_DESC,
+            QueryCompanyBusinessScopeInput,
+            _query_company_business_scope_impl,
+            _query_company_business_scope_async_impl,
+            {"price", "sql", "company", "baseline"},
+        ),
+        (
+            "query_project_award",
+            QUERY_PROJECT_AWARD_DESC,
+            QueryProjectAwardInput,
+            _query_project_award_impl,
+            _query_project_award_async_impl,
+            {"price", "sql", "bidding", "baseline"},
+        ),
+        (
+            "query_company_award_history",
+            QUERY_COMPANY_AWARD_HISTORY_DESC,
+            QueryCompanyAwardHistoryInput,
+            _query_company_award_history_impl,
+            _query_company_award_history_async_impl,
+            {"price", "sql", "bidding", "baseline"},
         ),
         (
             "query_company_penalty",
@@ -353,14 +431,6 @@ def register_price_db_tools(registry=GLOBAL_TOOL_REGISTRY) -> None:
             _query_company_penalty_impl,
             _query_company_penalty_async_impl,
             {"price", "sql", "risk"},
-        ),
-        (
-            "query_bid_records",
-            QUERY_BID_RECORDS_DESC,
-            QueryBidRecordsInput,
-            _query_bid_records_impl,
-            _query_bid_records_async_impl,
-            {"price", "sql", "bidding"},
         ),
         (
             "search_business_data",
