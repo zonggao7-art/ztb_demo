@@ -1,0 +1,17 @@
+{
+  "schema_version": "third-round-judge-variance-config-v1",
+  "run_id": "judge_variance_s4plus1_20260912_01",
+  "repeats": 2,
+  "repeat_1_source": "frozen_s4_formal_scores",
+  "repeat_1_scores_sha256": "5972784E68DAE28D3C67EE6143D84527A961038134888C78C60972464B33EBE2",
+  "repeat_1_source_scores_sha256": "635A5C673D1578D70E62BAB29269A36EE582A9BEF39358CBE8A1ADF037ACF13C",
+  "metric_timeout_s": 600.0,
+  "concurrency": 2,
+  "referee_model": "MiniMax-M3",
+  "referee_base_url": "https://api.minimax.cn/v1",
+  "embedding_model": "BAAI/bge-m3",
+  "embedding_base_url": "https://api.siliconflow.cn/v1",
+  "scoring_source_sha256": "AC522E80EF2C44057136471D50A32F8881B04A13841F96497994340BCF33BC9D",
+  "judge_variance_source_sha256": "A3B57D6887AB2F2256B8B3E0A51847BAC0EABCC233C25CD65B7BB8AB8894DC87",
+  "api_keys_recorded": false
+}

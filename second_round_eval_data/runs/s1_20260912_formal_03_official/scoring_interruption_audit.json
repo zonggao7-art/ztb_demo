@@ -1,0 +1,25 @@
+{
+  "audited_at": "2026-09-12T03:56:55.042866+00:00",
+  "run_id": "s1_20260912_formal_03_official",
+  "event": "first_scoring_pass_interrupted_after_first_429",
+  "completed_score_rows": 24,
+  "successful_metric_count": 95,
+  "failed_metrics": [
+    {
+      "sample_id": "q024",
+      "index": 24,
+      "metric": "faithfulness",
+      "status": "scoring_failure",
+      "value": null,
+      "reason": "InstructorRetryException",
+      "message": "Error code: 429 - {'type': 'error', 'error': {'type': 'rate_limit_error', 'message': '已达到 Token Plan 速率限制：请升级 Token Plan 套餐或切换为按量付费 API 使用。 (2062)', 'http_code': '429'}, 'request_id': '06f4001c5db80f34813c5b33eb1a9e4d'}"
+    }
+  ],
+  "decision": "resume remaining rows with scoring_concurrency=1 after cooldown; recover failed metrics only after all 200 rows exist",
+  "reason": "avoid further MiniMax Token Plan 429 errors; scoring concurrency does not affect collected query latency or answers",
+  "artifact_hashes": {
+    "scores": "197C3F57023317B9FA99244CF82E00D08347D164E7FFC20A13F9D9C5CCB889E0",
+    "scoring_usage": "6BF9C4CC8B3512188C06BFFD2F4EC06211C16187A693CB51C5814781799AA03C",
+    "manifest": "E9C67D231C2768FEEDEDB6CC5285DC5A936A11CA64F7254216E3DB054D15E941"
+  }
+}

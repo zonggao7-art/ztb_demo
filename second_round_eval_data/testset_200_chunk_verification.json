@@ -1,0 +1,3686 @@
+{
+  "generated_on": "2026-09-08T19:40:07",
+  "testset": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\testset_200.jsonl",
+  "corpus": "D:\\DEMO\\zhaotoubiao_demo_copy\\DATA\\repaired_knowledge",
+  "manifest_issues": [],
+  "summary": {
+    "items": 200,
+    "uid_all_exist": 200,
+    "text_all_match": 200,
+    "reference_containment_mean": 0.9719,
+    "question_bigram_mean": 0.6135,
+    "flags": {}
+  },
+  "details": [
+    {
+      "index": 0,
+      "query_type": "single_hop",
+      "question": "招标文件在招标投标活动中扮演什么角色？它通常包含哪些基本内容？",
+      "chunk_ids": [
+        "ck-8f5349c25db6409be7ec7cac5e63d18b"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.992,
+      "reference_longest_verbatim": 108,
+      "question_containment": 0.4516,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.3448,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 1,
+      "query_type": "single_hop",
+      "question": "根据《招标投标法》及《民法典》的相关规定，如何界定“招标人”这一概念？请结合不同采购类型说明招标人的具体身份。",
+      "chunk_ids": [
+        "ck-5dd127e41f26107cdb49f4cb79cb63b6"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9747,
+      "reference_longest_verbatim": 58,
+      "question_containment": 0.4909,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.4118,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 2,
+      "query_type": "single_hop",
+      "question": "在招标投标活动中，签订合同阶段通常包括哪些步骤？请结合资料内容简要说明。",
+      "chunk_ids": [
+        "ck-61c4b051b6cc94e910b9d082e7e9a0ca"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9685,
+      "reference_longest_verbatim": 85,
+      "question_containment": 0.3056,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.4571,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 3,
+      "query_type": "single_hop",
+      "question": "某项目建设单位在招标时，未经原审批部门同意，擅自将核准的公开招标改为邀请招标。请问该行为应如何处理？依据是什么？",
+      "chunk_ids": [
+        "ck-aefa8616fd367c3e510160977ae64f92"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8261,
+      "reference_longest_verbatim": 75,
+      "question_containment": 0.5,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.3585,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 4,
+      "query_type": "single_hop",
+      "question": "在政府采购项目中，若中标结果被认定无效，但政府采购合同已经履行，应如何处理？",
+      "chunk_ids": [
+        "ck-33220d235b5d50d5ddfbf642f78b9850"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9831,
+      "reference_longest_verbatim": 26,
+      "question_containment": 0.7895,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.7353,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 5,
+      "query_type": "single_hop",
+      "question": "在评标过程中，评标委员会应如何把握否决投标的条件？请结合法律规定和招标文件要求，说明否决投标应遵循的原则及法定情形。",
+      "chunk_ids": [
+        "ck-a50bbe5530612799c4284633bd5c4a7e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8732,
+      "reference_longest_verbatim": 42,
+      "question_containment": 0.5517,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.566,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 6,
+      "query_type": "single_hop",
+      "question": "在评标过程中，评标委员会发现某投标文件未对招标文件中的实质性要求和条件作出响应，应当如何处理？依据是什么？",
+      "chunk_ids": [
+        "ck-58c7ecaf81156641c02166334ed3f7e2"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8098,
+      "reference_longest_verbatim": 90,
+      "question_containment": 0.6038,
+      "question_longest_verbatim": 13,
+      "question_bigram_containment": 0.6735,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 7,
+      "query_type": "single_hop",
+      "question": "某国有企业计划进行一项依法必须招标的工程建设项目，拟采用公开招标方式。在编制招标公告时，应当载明哪些内容？若该项目采用电子招标投标方式，还应当在公告中载明什么信息？请结合相关规定说明。",
+      "chunk_ids": [
+        "ck-e34f65e13e8032f4d751368dcb5cc011"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9185,
+      "reference_longest_verbatim": 181,
+      "question_containment": 0.5435,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.4691,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 8,
+      "query_type": "single_hop",
+      "question": "某依法必须进行招标的项目中，招标人与投标人就投标价格进行了谈判，但尚未影响中标结果。请问招标人将面临何种法律责任？若该谈判行为最终影响了中标结果，中标效力又如何？",
+      "chunk_ids": [
+        "ck-ce8b1d04375323c9369936d766aa3e66"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.746,
+      "reference_longest_verbatim": 27,
+      "question_containment": 0.5062,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.4412,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 9,
+      "query_type": "single_hop",
+      "question": "采购人、采购代理机构及其工作人员在哪些情形下可能构成犯罪并追究刑事责任？请列举法律规定的四种情形。",
+      "chunk_ids": [
+        "ck-777ceb6460378d98bb75d5e3a98aea5a"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.907,
+      "reference_longest_verbatim": 23,
+      "question_containment": 0.6735,
+      "question_longest_verbatim": 16,
+      "question_bigram_containment": 0.6087,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 10,
+      "query_type": "single_hop",
+      "question": "在电子招标投标中，招标人确定中标人后，应当如何向中标人和未中标人发出通知？",
+      "chunk_ids": [
+        "ck-4173a3b3721a6741ce499cbe9e2e1572"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 59,
+      "question_containment": 0.8919,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.7667,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 11,
+      "query_type": "single_hop",
+      "question": "某招标人在招标过程中，利用其优势地位，以中标条件要挟中标人，直接指定一家不具备相应资质的企业分包中标项目的部分主体工程。请问：该招标人的行为属于何种性质？其违法分包行为具体表现在哪些方面？依据相关法律规定，该分包合同效力如何？",
+      "chunk_ids": [
+        "ck-3c84110fe6afb3d7e4a6aeea51d657a8"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8854,
+      "reference_longest_verbatim": 63,
+      "question_containment": 0.5044,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.534,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 12,
+      "query_type": "single_hop",
+      "question": "供应商在认为采购文件、采购过程或中标、成交结果损害其权益时，应在多长时间内、以何种形式向谁提出质疑？",
+      "chunk_ids": [
+        "ck-ab0037413c1565772b91140bd84a9952"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9767,
+      "reference_longest_verbatim": 25,
+      "question_containment": 0.72,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.6042,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 13,
+      "query_type": "multi_hop",
+      "question": "根据《招标投标法》的相关规定，招标人采用邀请招标方式时，应当向多少个具备何种条件的特定对象发出投标邀请书？投标邀请书需要载明哪些事项？",
+      "chunk_ids": [
+        "ck-e7d66ff8d8148ed6bc9f70428457d9c3",
+        "ck-1807916ad81b318b855502b6367834b2"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9279,
+      "reference_longest_verbatim": 28,
+      "question_containment": 0.6567,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.5862,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 14,
+      "query_type": "single_hop",
+      "question": "在国有资金占控股或者主导地位的依法必须招标项目中，排名第一的中标候选人未出现法定例外情形时，招标人能否直接确定第三名为中标人？",
+      "chunk_ids": [
+        "ck-559c8ffcc31a813504bf5e6627162a60"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9412,
+      "reference_longest_verbatim": 33,
+      "question_containment": 0.8413,
+      "question_longest_verbatim": 18,
+      "question_bigram_containment": 0.7458,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 15,
+      "query_type": "single_hop",
+      "question": "国家公共资源交易电子服务系统的建设主体是谁？该系统与哪些系统实现互联互通，并共享哪些信息？",
+      "chunk_ids": [
+        "ck-0cee6973937f7103e52b3852058159a1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9684,
+      "reference_longest_verbatim": 63,
+      "question_containment": 0.6444,
+      "question_longest_verbatim": 14,
+      "question_bigram_containment": 0.5854,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 16,
+      "query_type": "single_hop",
+      "question": "评标委员会完成评标后，应当向谁提交什么文件？其中关于中标候选人的推荐数量和排序有何规定？",
+      "chunk_ids": [
+        "ck-01d5bea1951e00171079ccbcb3f89216"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9091,
+      "reference_longest_verbatim": 28,
+      "question_containment": 0.5455,
+      "question_longest_verbatim": 13,
+      "question_bigram_containment": 0.5714,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 17,
+      "query_type": "single_hop",
+      "question": "某政府采购项目评审结束后，采购代理机构将评审报告送交采购人，采购人随后确定了中标供应商。请根据相关规定，说明从评审结束到发出中标通知书，各环节的法定期限分别是多少？",
+      "chunk_ids": [
+        "ck-ed36b96c3bc93b57e3dbb35d98161b43"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9773,
+      "reference_longest_verbatim": 53,
+      "question_containment": 0.4878,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.5211,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 18,
+      "query_type": "single_hop",
+      "question": "在电子开标过程中，若某投标人的投标文件未能成功解密，应如何认定其法律后果？请结合相关法规说明。",
+      "chunk_ids": [
+        "ck-9fff6b8e791ca2602f25927f2cda21aa"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 106,
+      "question_containment": 0.4043,
+      "question_longest_verbatim": 5,
+      "question_bigram_containment": 0.4222,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 19,
+      "query_type": "single_hop",
+      "question": "某大型复杂工程项目招标，招标人考虑到项目难度和潜在投标人能力，拟接受联合体投标。请问招标人在决定是否接受联合体投标时，应遵循哪些法律要求？若招标公告中明确“不接受联合体投标”，投标人组成联合体投标会有什么后果？",
+      "chunk_ids": [
+        "ck-2fd57ca23d1aedc12cee71c9aab2c286"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9524,
+      "reference_longest_verbatim": 43,
+      "question_containment": 0.5619,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.5316,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 20,
+      "query_type": "single_hop",
+      "question": "在招标投标活动中，定标环节常见的违法违规行为有哪些？它们分别会产生什么影响？",
+      "chunk_ids": [
+        "ck-6fc2bfca87fe2ed233686cd4b246e83f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.7725,
+      "reference_longest_verbatim": 14,
+      "question_containment": 0.5263,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.4595,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 21,
+      "query_type": "single_hop",
+      "question": "依法必须进行招标的项目，其招标文件在编制时有什么特殊要求？请结合相关法规说明。",
+      "chunk_ids": [
+        "ck-35ea6eb177e28cc81c2734c4860b3fe7"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8738,
+      "reference_longest_verbatim": 57,
+      "question_containment": 0.7179,
+      "question_longest_verbatim": 17,
+      "question_bigram_containment": 0.5405,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 22,
+      "query_type": "single_hop",
+      "question": "政府采购项目的采购合同签订后，采购人应在多长时间内完成合同副本的备案？向哪些部门备案？",
+      "chunk_ids": [
+        "ck-ab0037413c1565772b91140bd84a9952"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9375,
+      "reference_longest_verbatim": 26,
+      "question_containment": 0.6047,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.5946,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 23,
+      "query_type": "single_hop",
+      "question": "某依法必须进行招标的项目，中标通知书发出后，招标人无正当理由不与中标人订立合同。请问根据《招标投标法实施条例》，招标人应承担哪些法律责任？",
+      "chunk_ids": [
+        "ck-eb17afbba22b4ae005c8bf24e7784c85"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8966,
+      "reference_longest_verbatim": 79,
+      "question_containment": 0.7681,
+      "question_longest_verbatim": 14,
+      "question_bigram_containment": 0.8361,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 24,
+      "query_type": "single_hop",
+      "question": "在招投标活动中，哪些主体有权对招标文件内容提出异议？他们提出异议的期限有何规定？",
+      "chunk_ids": [
+        "ck-6508074dc1ff815d62323333c4a69057"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9104,
+      "reference_longest_verbatim": 32,
+      "question_containment": 0.775,
+      "question_longest_verbatim": 13,
+      "question_bigram_containment": 0.5833,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 25,
+      "query_type": "single_hop",
+      "question": "行政监督部门在处理投诉过程中，是否可以收取费用？",
+      "chunk_ids": [
+        "ck-e26973a8b9cb5827e0902157f4087617"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 33,
+      "question_containment": 0.875,
+      "question_longest_verbatim": 15,
+      "question_bigram_containment": 0.7391,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 26,
+      "query_type": "single_hop",
+      "question": "招标代理机构在招标投标活动中享有哪些权利？又应当履行哪些义务？",
+      "chunk_ids": [
+        "ck-f96739fd8088d5f08f37b5916b7aa0e8"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9838,
+      "reference_longest_verbatim": 92,
+      "question_containment": 0.7097,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5357,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 27,
+      "query_type": "single_hop",
+      "question": "公开招标与邀请招标在发布招标信息的方式上有何不同？",
+      "chunk_ids": [
+        "ck-0bbfe2a144b14e4b6e3b92e88b00cec3"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 33,
+      "question_containment": 0.8,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6818,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 28,
+      "query_type": "single_hop",
+      "question": "某生产企业中标后，能否直接交由与其关联的销售公司签署合同？请结合《招标投标法》的相关规定说明理由。",
+      "chunk_ids": [
+        "ck-d0580239a5bc434c35682cc05e521b54"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.6319,
+      "reference_longest_verbatim": 36,
+      "question_containment": 0.6531,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5625,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 29,
+      "query_type": "single_hop",
+      "question": "根据《招标投标法》的规定，中标人的投标需要满足哪些条件？请列举并简要说明。",
+      "chunk_ids": [
+        "ck-dec8df8f367a0eebf4915162ef9e43d8"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9341,
+      "reference_longest_verbatim": 26,
+      "question_containment": 0.5946,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.4,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 30,
+      "query_type": "single_hop",
+      "question": "国家在招标投标领域建立了什么制度？有关行政监督部门应当依法公告哪些当事人的违法行为行政处理决定？",
+      "chunk_ids": [
+        "ck-1cfbcb0163690de71fd1a36d967c8873"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 66,
+      "question_containment": 0.7292,
+      "question_longest_verbatim": 14,
+      "question_bigram_containment": 0.6304,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 31,
+      "query_type": "single_hop",
+      "question": "在电子合同签署过程中，若一方主张合同已采用书面形式订立，但另一方质疑其效力，依据相关法律规定，判断该数据电文是否构成书面形式的关键标准是什么？",
+      "chunk_ids": [
+        "ck-0fa13fac247e731052c2760980c120a0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.6721,
+      "reference_longest_verbatim": 21,
+      "question_containment": 0.4085,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.3846,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 32,
+      "query_type": "single_hop",
+      "question": "《政府采购法实施条例》如何解释竞争性谈判适用情形中的“时间不能满足用户紧急需要”和“不能事先计算出价格总额”？",
+      "chunk_ids": [
+        "ck-4db8835b5034fa24f6e5ca9fac422ed8"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.7778,
+      "reference_longest_verbatim": 32,
+      "question_containment": 0.5818,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.5094,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 33,
+      "query_type": "single_hop",
+      "question": "在政府采购货物和服务招标项目中，评标报告应当包括哪些内容？请结合《政府采购货物和服务招标投标管理办法》的相关规定进行说明。",
+      "chunk_ids": [
+        "ck-1a01682977f6cbc0cf8f8682dedb4aa7"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9862,
+      "reference_longest_verbatim": 189,
+      "question_containment": 0.8197,
+      "question_longest_verbatim": 19,
+      "question_bigram_containment": 0.74,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 34,
+      "query_type": "single_hop",
+      "question": "电子招标投标交易平台应当具备哪些基本功能？请结合其定义和具体功能要求进行说明。",
+      "chunk_ids": [
+        "ck-905566ea0ed0a1671626b02ee23a5fe8"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9349,
+      "reference_longest_verbatim": 119,
+      "question_containment": 0.5897,
+      "question_longest_verbatim": 13,
+      "question_bigram_containment": 0.4054,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 35,
+      "query_type": "single_hop",
+      "question": "某投标人提交的投标文件未按照招标文件规定的格式制作，而是自行设计了格式，导致评标委员会无法从中辨别评审所需的关键信息。请问，根据相关规定，该投标文件应如何处理？",
+      "chunk_ids": [
+        "ck-6797a378e3c01183376f7ae3ee663ae7"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8395,
+      "reference_longest_verbatim": 25,
+      "question_containment": 0.575,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.6197,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 36,
+      "query_type": "single_hop",
+      "question": "《招标公告发布暂行办法》和《国家计委关于指定发布依法必须招标项目招标公告的媒介的通知》这两份文件，在什么时间被废止？",
+      "chunk_ids": [
+        "ck-4af6393a2882fa33751af80bf01c1b01"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.4909,
+      "reference_longest_verbatim": 16,
+      "question_containment": 0.7931,
+      "question_longest_verbatim": 31,
+      "question_bigram_containment": 0.7308,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 37,
+      "query_type": "single_hop",
+      "question": "某投标人在开标现场对开标过程提出异议，但招标人未当场答复。该投标人若想就此事项向行政监督部门投诉，应当满足哪些条件？若招标人未答复异议且继续进行招投标活动，将承担何种法律后果？",
+      "chunk_ids": [
+        "ck-a700119eaa11b420aae775dcbbeb5fe6"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8012,
+      "reference_longest_verbatim": 31,
+      "question_containment": 0.7159,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.5974,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 38,
+      "query_type": "single_hop",
+      "question": "在评标过程中，评标委员会能否采用招标文件中未列明的评标标准或方法？为什么？",
+      "chunk_ids": [
+        "ck-3c3f59f6dc7236868035c8371a90f085"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9205,
+      "reference_longest_verbatim": 71,
+      "question_containment": 0.7297,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.7059,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 39,
+      "query_type": "single_hop",
+      "question": "公共资源交易平台运行服务机构未公开服务内容、服务流程、工作规范、收费标准和监督渠道，将面临怎样的处理？",
+      "chunk_ids": [
+        "ck-90ea1e8b18557f1c89046a1402d4e0d3"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 27,
+      "question_containment": 0.8824,
+      "question_longest_verbatim": 41,
+      "question_bigram_containment": 0.8125,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 40,
+      "query_type": "single_hop",
+      "question": "《招标投标法律解读与风险防范实务》将招标投标相关法律法规分为哪五个层级？每个层级有哪些代表性文件？",
+      "chunk_ids": [
+        "ck-477a5eabf219ebe7c30eb8bf69f28188"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9824,
+      "reference_longest_verbatim": 61,
+      "question_containment": 0.5714,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.4286,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 41,
+      "query_type": "single_hop",
+      "question": "根据《招标投标法》及其实施条例，招标项目依法应具备哪些先决条件？请简要说明。",
+      "chunk_ids": [
+        "ck-b8c01c2f3da94572080c63206819d637"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.6977,
+      "reference_longest_verbatim": 16,
+      "question_containment": 0.7368,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.6944,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 42,
+      "query_type": "single_hop",
+      "question": "在采用经评审的最低投标价法时，评标委员会对投标报价和商务部分应如何处理？对技术部分又应如何处理？",
+      "chunk_ids": [
+        "ck-42f80314feac555f00e87107fc649497"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9727,
+      "reference_longest_verbatim": 57,
+      "question_containment": 0.75,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.7,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 43,
+      "query_type": "single_hop",
+      "question": "当投标人认为电子招标投标活动不符合有关规定时，应通过何种途径进行投诉？",
+      "chunk_ids": [
+        "ck-82cbc187da58bba98dd59d2a6af44782"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 46,
+      "question_containment": 0.7714,
+      "question_longest_verbatim": 18,
+      "question_bigram_containment": 0.6667,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 44,
+      "query_type": "single_hop",
+      "question": "在招标投标实践中，地方政府可能通过哪些方式设置歧视性条款限制、排斥外地企业参与公平竞争？请结合资料列举至少三种具体表现。",
+      "chunk_ids": [
+        "ck-e096e9c97c743adcb32f6db9c2ebd7e0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8701,
+      "reference_longest_verbatim": 44,
+      "question_containment": 0.5833,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.5254,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 45,
+      "query_type": "single_hop",
+      "question": "招标投标活动涉及哪些法律关系？其法律责任为何呈现多样性？",
+      "chunk_ids": [
+        "ck-62d626f62f3e975d989939cbfe9eaba8"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.7905,
+      "reference_longest_verbatim": 24,
+      "question_containment": 0.7143,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5385,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 46,
+      "query_type": "single_hop",
+      "question": "在民航专业工程建设项目中，资格预审专家的评审要求按什么规定执行？评审专家在接触投标人、收受财物和接受倾向性要求方面有哪些禁止性规定？",
+      "chunk_ids": [
+        "ck-c8a7b53e1005a202bf8a4235657bde4c"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.896,
+      "reference_longest_verbatim": 72,
+      "question_containment": 0.6212,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.5,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 47,
+      "query_type": "single_hop",
+      "question": "政府采购投诉处理中，中小企业资格由哪个部门认定？该部门收到协助认定函后应在多长时间内作出答复？",
+      "chunk_ids": [
+        "ck-81f65b0a26c168d9540829778164b84c"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9794,
+      "reference_longest_verbatim": 46,
+      "question_containment": 0.6383,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.4318,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 48,
+      "query_type": "single_hop",
+      "question": "采用两阶段招标时，投标保证金应在哪个阶段提出？其金额上限、有效期，以及依法必须招标项目的境内投标单位以现金或支票缴纳时的账户要求分别是什么？",
+      "chunk_ids": [
+        "ck-cafa470de08df5a9088b118db79b5f16"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.87,
+      "reference_longest_verbatim": 21,
+      "question_containment": 0.5857,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.5303,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 49,
+      "query_type": "multi_hop",
+      "question": "某政府采购项目在评审过程中，一名评审专家因与供应商存在利害关系而主动回避，导致现场评审专家数量不符合规定。采购代理机构尝试补抽专家但未能及时补足。此时，采购代理机构应当如何处理？此外，若该项目最终重新组建评审小组并完成评审，那么评审专家名单的保密和公开要求是什么？请结合相关规定说明。",
+      "chunk_ids": [
+        "ck-658147274ff1121897b12df71ad55577",
+        "ck-603f2a1229b0e07fb997f210f0462164"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9634,
+      "reference_longest_verbatim": 31,
+      "question_containment": 0.4225,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.5041,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 50,
+      "query_type": "single_hop",
+      "question": "对依法必须招标项目的评标结果有异议，应在什么时候提出？招标人应在多久内答复，答复前是否应暂停招标投标活动？",
+      "chunk_ids": [
+        "ck-b545d6f5047fb9325691ef2b111b84cd"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9636,
+      "reference_longest_verbatim": 33,
+      "question_containment": 0.7925,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.5833,
+      "chunk_books": [
+        "book1"
+      ]
+    },
+    {
+      "index": 51,
+      "query_type": "single_hop",
+      "question": "某铁路工程招标项目中，一家施工企业准备参与投标并计划中标后将部分非主体工程分包给专业队伍。请问，该企业作为投标人需要满足哪些基本条件？在投标文件中，它必须对分包事项作出怎样的安排？请结合相关规定说明。",
+      "chunk_ids": [
+        "ck-4671d500ec38874d616d15066e04e171"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.8833,
+      "reference_longest_verbatim": 26,
+      "question_containment": 0.34,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.3011,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 52,
+      "query_type": "single_hop",
+      "question": "某市水利局计划实施一项应急防汛抢险工程，其中部分施工内容拟使用农民投工投劳完成，同时该局希望自行组织招标。请问：该工程是否必须进行招标？若该局申请自行办理招标事宜，需要向项目主管部门报送哪些书面材料？请结合相关规定说明。",
+      "chunk_ids": [
+        "ck-44dee3c6ad4cdbabcd1d189af681d25a"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.717,
+      "reference_longest_verbatim": 45,
+      "question_containment": 0.4909,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.4808,
+      "chunk_books": [
+        "book3"
+      ]
+    },
+    {
+      "index": 53,
+      "query_type": "single_hop",
+      "question": "制定《政府采购法》主要是为了实现哪些目的？",
+      "chunk_ids": [
+        "ck-df872bed87864a899a93461ec60142f0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 70,
+      "question_containment": 0.619,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.55,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 54,
+      "query_type": "single_hop",
+      "question": "政府采购中的财政性资金如何界定？财政性与非财政性资金无法分割采购时适用什么规定？",
+      "chunk_ids": [
+        "ck-df872bed87864a899a93461ec60142f0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 160,
+      "question_containment": 0.75,
+      "question_longest_verbatim": 13,
+      "question_bigram_containment": 0.6452,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 55,
+      "query_type": "single_hop",
+      "question": "政府采购当事人包括哪些主体，他们在采购活动中处于什么地位？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 50,
+      "question_containment": 0.5862,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5185,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 56,
+      "query_type": "single_hop",
+      "question": "政府采购所称的供应商可以是哪些类型的主体？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 32,
+      "question_containment": 0.7143,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.4,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 57,
+      "query_type": "single_hop",
+      "question": "供应商参加政府采购活动，需要满足哪些基本资格条件？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 118,
+      "question_containment": 0.72,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.75,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 58,
+      "query_type": "single_hop",
+      "question": "政府采购人员与供应商存在什么利害关系时应当回避？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 182,
+      "question_containment": 0.7917,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.8696,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 59,
+      "query_type": "multi_hop",
+      "question": "政府采购在什么情况下可以采购本国以外的货物、工程或服务？采购进口产品时，论证专家的组成和任职限制有哪些要求？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e",
+        "ck-e4f842fbeea94fc513074925cbfa7b05"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 89,
+      "question_containment": 0.7037,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6863,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 60,
+      "query_type": "single_hop",
+      "question": "依法应当公开的政府采购信息主要包括哪些项目和监管信息？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 117,
+      "question_containment": 0.7037,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.68,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 61,
+      "query_type": "multi_hop",
+      "question": "政府采购信息发布应遵循哪些基本原则？采用电子交易等现代化采购手段时，应遵循哪些原则、避免哪些做法？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e",
+        "ck-a7cd6a76d481a074daebc715c225a498"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.993,
+      "reference_longest_verbatim": 80,
+      "question_containment": 0.6122,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5854,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 62,
+      "query_type": "single_hop",
+      "question": "中央预算单位和地方预算单位应分别在哪些网站发布政府采购信息？",
+      "chunk_ids": [
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 107,
+      "question_containment": 0.5,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6154,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 63,
+      "query_type": "single_hop",
+      "question": "中国政府采购网或其省级分网收到政府采购信息后，应在多长时间内发布？",
+      "chunk_ids": [
+        "ck-753caa6ae81129e6423fbbc153d38d80"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 35,
+      "question_containment": 0.7576,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6552,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 64,
+      "query_type": "single_hop",
+      "question": "同一政府采购信息在不同媒体上内容不一致，应以哪个渠道发布的为准？",
+      "chunk_ids": [
+        "ck-753caa6ae81129e6423fbbc153d38d80"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 61,
+      "question_containment": 0.6875,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6452,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 65,
+      "query_type": "single_hop",
+      "question": "政府采购项目预算金额是否需要在采购文件中公开？",
+      "chunk_ids": [
+        "ck-753caa6ae81129e6423fbbc153d38d80"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 41,
+      "question_containment": 0.6087,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.7619,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 66,
+      "query_type": "single_hop",
+      "question": "政府采购进口产品主要依据哪一管理办法？涉及进口机电产品时还应注意什么？",
+      "chunk_ids": [
+        "ck-e4f842fbeea94fc513074925cbfa7b05"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 46,
+      "question_containment": 0.7143,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.5625,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 67,
+      "query_type": "multi_hop",
+      "question": "政府采购进口产品通常应采用什么采购方式，特殊情况如何处理？公开招标方式有哪些优点和缺点？",
+      "chunk_ids": [
+        "ck-a7cd6a76d481a074daebc715c225a498",
+        "ck-19e229259af60d66911a4299f831e8d9"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.996,
+      "reference_longest_verbatim": 212,
+      "question_containment": 0.6818,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6585,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 68,
+      "query_type": "single_hop",
+      "question": "列入集中采购目录的哪些项目可以不采用批量集中采购？",
+      "chunk_ids": [
+        "ck-cb1e50e190c9dcc7d6d9385f46c78324"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 37,
+      "question_containment": 0.84,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.8095,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 69,
+      "query_type": "multi_hop",
+      "question": "哪些货物采购项目可以采用询价方式？询价采购出现哪些情况时应终止采购活动？",
+      "chunk_ids": [
+        "ck-df07138af347b5709681e798417935db",
+        "ck-0d5464ddc667c858485f70be19161171"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 105,
+      "question_containment": 0.5278,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.5484,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 70,
+      "query_type": "single_hop",
+      "question": "政府采购货物或服务满足哪些条件时，可以采用单一来源采购？",
+      "chunk_ids": [
+        "ck-0d5464ddc667c858485f70be19161171"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 173,
+      "question_containment": 0.75,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.7308,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 71,
+      "query_type": "multi_hop",
+      "question": "哪些货物或服务可以采用单一来源采购？单一来源公示收到异议后，应在何时补充论证，并如何处理和告知结论？",
+      "chunk_ids": [
+        "ck-2c579be19a4da03894ccfa011f8d0f03",
+        "ck-0d5464ddc667c858485f70be19161171"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.997,
+      "reference_longest_verbatim": 173,
+      "question_containment": 0.62,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6522,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 72,
+      "query_type": "single_hop",
+      "question": "竞争性谈判文件应列明哪些内容，哪些可能发生实质性变动的事项应事先明确？",
+      "chunk_ids": [
+        "ck-2c579be19a4da03894ccfa011f8d0f03"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 147,
+      "question_containment": 0.6857,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6061,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 73,
+      "query_type": "multi_hop",
+      "question": "编制采购文件时，应依据哪些因素划分标包？技术要求和评审标准应如何细化，避免含糊或评分区间重叠？",
+      "chunk_ids": [
+        "ck-066f898c8dd96f66f402ee90d123f835",
+        "ck-3e004c32a591a961aa3b062e7c626021"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 274,
+      "question_containment": 0.5745,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.587,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 74,
+      "query_type": "single_hop",
+      "question": "竞争性谈判文件发生必要的实质性变动后，应如何保障供应商的最后报价机会？",
+      "chunk_ids": [
+        "ck-ee55c01a9c4456458703671a614a12d1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 28,
+      "question_containment": 0.8571,
+      "question_longest_verbatim": 5,
+      "question_bigram_containment": 0.6765,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 75,
+      "query_type": "multi_hop",
+      "question": "采购文本采用标准范本有什么作用？采购单件仪器设备时，对易损配件、操作培训和安装调试还应写明哪些要求？",
+      "chunk_ids": [
+        "ck-e8540a09b885a0a1ee4c973ea7c8e932",
+        "ck-3e004c32a591a961aa3b062e7c626021"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 114,
+      "question_containment": 0.72,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.5625,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 76,
+      "query_type": "single_hop",
+      "question": "投标企业成立专门的投标小组有什么作用？",
+      "chunk_ids": [
+        "ck-fa1488b5b962f14a21b27ab528b2df9f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 50,
+      "question_containment": 0.6842,
+      "question_longest_verbatim": 5,
+      "question_bigram_containment": 0.4706,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 77,
+      "query_type": "multi_hop",
+      "question": "投标前应如何阅读招标文件中的技术、合同和价格要求？编制投标文件时，如何说明技术规格或供货日期的偏离？",
+      "chunk_ids": [
+        "ck-7e08964ecc8af776a3575fbac3099001",
+        "ck-fa1488b5b962f14a21b27ab528b2df9f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.992,
+      "reference_longest_verbatim": 70,
+      "question_containment": 0.52,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.6818,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 78,
+      "query_type": "single_hop",
+      "question": "投标企业在递交文件前进行预打分有什么用途？",
+      "chunk_ids": [
+        "ck-c71371720b55c450899c389870fe9009"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 30,
+      "question_containment": 0.6667,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.5,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 79,
+      "query_type": "multi_hop",
+      "question": "哪些中小企业可以享受政府采购扶持政策，哪些关联情形被排除？供应商享受扶持政策需要出具什么材料，采购人能否要求额外身份证明？",
+      "chunk_ids": [
+        "ck-4aeaf2d6532417fad52b32cb5e25141e",
+        "ck-584dbbe432cde95af139fef99c733d3a"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 116,
+      "question_containment": 0.3279,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.463,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 80,
+      "query_type": "single_hop",
+      "question": "由小微企业组成的联合体，是否仍可按小微企业享受政府采购优惠？",
+      "chunk_ids": [
+        "ck-d27d0c128ef4bf8d4d766c3146682bdf"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 37,
+      "question_containment": 0.7667,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 81,
+      "query_type": "multi_hop",
+      "question": "政府采购的资格性检查主要检查什么？资格条件中的“重大违法记录”具体包括哪些处罚记录？",
+      "chunk_ids": [
+        "ck-12a7bf7b6ca47374f67ed987cf3dda4a",
+        "ck-38fba42ae576f0a6acd36a2d5b7dbf71"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 47,
+      "question_containment": 0.5476,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6316,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 82,
+      "query_type": "single_hop",
+      "question": "政府采购评标时，投标人提交澄清或纠正材料应采用什么形式，由谁签字？",
+      "chunk_ids": [
+        "ck-91e82ba42c45de872e3ec71a2eb8973c"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 25,
+      "question_containment": 0.6061,
+      "question_longest_verbatim": 5,
+      "question_bigram_containment": 0.5625,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 83,
+      "query_type": "multi_hop",
+      "question": "政府采购监督检查主要检查哪些内容？对政府向社会公众提供的公共服务项目，履约验收应邀请谁参加，结果如何公开？",
+      "chunk_ids": [
+        "ck-a691f4f4573ddbb84b09be7d8b586bb3",
+        "ck-cc43c8a8a8f2f7c63b1b1a98c5699dab"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 62,
+      "question_containment": 0.6226,
+      "question_longest_verbatim": 17,
+      "question_bigram_containment": 0.72,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 84,
+      "query_type": "single_hop",
+      "question": "继续履行政府采购合同将损害国家利益和社会公共利益时，应如何处理？",
+      "chunk_ids": [
+        "ck-a691f4f4573ddbb84b09be7d8b586bb3"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 39,
+      "question_containment": 0.8438,
+      "question_longest_verbatim": 14,
+      "question_bigram_containment": 0.9,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 85,
+      "query_type": "single_hop",
+      "question": "依法终止政府采购活动时，采购人或代理机构应如何公告？",
+      "chunk_ids": [
+        "ck-32f9553a4a5d49f5e232e5e9f2499417"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 61,
+      "question_containment": 0.8846,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.7083,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 86,
+      "query_type": "multi_hop",
+      "question": "政府采购合同签订后应在多久内公告，有哪些保密例外？大型或复杂货物项目验收时，应邀请什么机构，验收成员承担什么责任？",
+      "chunk_ids": [
+        "ck-cc43c8a8a8f2f7c63b1b1a98c5699dab",
+        "ck-a691f4f4573ddbb84b09be7d8b586bb3"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 76,
+      "question_containment": 0.7018,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.537,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 87,
+      "query_type": "single_hop",
+      "question": "科技项目招标旨在实现哪些目标？",
+      "chunk_ids": [
+        "ck-77a07c2196ea49508f1c04996e711f54"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 39,
+      "question_containment": 0.9333,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5714,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 88,
+      "query_type": "single_hop",
+      "question": "科技项目分段招标的第一段和第二段分别完成什么任务？",
+      "chunk_ids": [
+        "ck-77a07c2196ea49508f1c04996e711f54"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 62,
+      "question_containment": 0.84,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.5417,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 89,
+      "query_type": "multi_hop",
+      "question": "科技项目的招标文件和投标文件分别应包含哪些主要内容？",
+      "chunk_ids": [
+        "ck-1d25458776a3fe4b2cf390cbdd4a9cb1",
+        "ck-77a07c2196ea49508f1c04996e711f54"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9974,
+      "reference_longest_verbatim": 233,
+      "question_containment": 0.8462,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6522,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 90,
+      "query_type": "single_hop",
+      "question": "科技项目以联合体投标时，应提交什么协议，协议应明确哪些事项？",
+      "chunk_ids": [
+        "ck-1d25458776a3fe4b2cf390cbdd4a9cb1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 37,
+      "question_containment": 0.8667,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.6071,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 91,
+      "query_type": "single_hop",
+      "question": "科技评估通常覆盖哪些对象和工作范围？",
+      "chunk_ids": [
+        "ck-99b4b7441a426b05ab169fc7af2522dd"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 132,
+      "question_containment": 0.7222,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.4706,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 92,
+      "query_type": "multi_hop",
+      "question": "科技项目投标人应具备哪些条件？从事科技项目评估的人员又应具备哪些知识、经验和培训条件？",
+      "chunk_ids": [
+        "ck-99b4b7441a426b05ab169fc7af2522dd",
+        "ck-77a07c2196ea49508f1c04996e711f54"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 179,
+      "question_containment": 0.5116,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5758,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 93,
+      "query_type": "multi_hop",
+      "question": "国家科研计划课题在什么条件下属于招标范围，又有哪些可以不招标的情形？",
+      "chunk_ids": [
+        "ck-4909a319920e6032d5b5fc1683b3dde6",
+        "ck-99b4b7441a426b05ab169fc7af2522dd"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9889,
+      "reference_longest_verbatim": 53,
+      "question_containment": 0.6471,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6562,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 94,
+      "query_type": "single_hop",
+      "question": "国家科研计划课题投标人提供虚假材料或串通投标，会承担哪些责任？",
+      "chunk_ids": [
+        "ck-38b8527a1150d6c3d6ac1f5774274e6d"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 63,
+      "question_containment": 0.9032,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.7586,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 95,
+      "query_type": "multi_hop",
+      "question": "国家科研计划课题投标文件应如何围绕评审因素组织内容？评标时的澄清、答辩和补充材料有哪些限制？",
+      "chunk_ids": [
+        "ck-38b8527a1150d6c3d6ac1f5774274e6d",
+        "ck-4909a319920e6032d5b5fc1683b3dde6"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9902,
+      "reference_longest_verbatim": 55,
+      "question_containment": 0.6522,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6222,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 96,
+      "query_type": "single_hop",
+      "question": "政府采购代理机构资质等级认定取消后，应通过哪个网站渠道进行登记？",
+      "chunk_ids": [
+        "ck-a85e0decc8d314ede19536f10787ed5f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 101,
+      "question_containment": 0.7188,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6774,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 97,
+      "query_type": "multi_hop",
+      "question": "代建单位与总承包商、项目管理企业在法人地位上有什么区别？代建与监理在工作范围、管理地位和取费方式上又有什么区别？",
+      "chunk_ids": [
+        "ck-638a5a063032dc120e3d56a4cf20a44d",
+        "ck-a85e0decc8d314ede19536f10787ed5f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9974,
+      "reference_longest_verbatim": 293,
+      "question_containment": 0.6429,
+      "question_longest_verbatim": 16,
+      "question_bigram_containment": 0.5957,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 98,
+      "query_type": "single_hop",
+      "question": "与业主自建相比，实行代建制有哪些管理方面的优势？",
+      "chunk_ids": [
+        "ck-638a5a063032dc120e3d56a4cf20a44d"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 38,
+      "question_containment": 0.75,
+      "question_longest_verbatim": 5,
+      "question_bigram_containment": 0.4348,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 99,
+      "query_type": "multi_hop",
+      "question": "按照建设性质，建设工程分为哪五类，各有什么特点？工程建设中的勘察、设计和施工通常按什么顺序进行？",
+      "chunk_ids": [
+        "ck-9f68e7b14094c2d3ba28c9e2d65f6f77",
+        "ck-55f6316c75e43b82ae48b41905ff7f70"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 259,
+      "question_containment": 0.6458,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.5814,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 100,
+      "query_type": "single_hop",
+      "question": "狭义建筑市场与广义建筑市场分别指什么？",
+      "chunk_ids": [
+        "ck-55f6316c75e43b82ae48b41905ff7f70"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 83,
+      "question_containment": 0.7895,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.5,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 101,
+      "query_type": "multi_hop",
+      "question": "工程建设中，勘察、设计单位应承担哪些质量安全责任？监理单位对安全措施审查和事故隐患处理有哪些职责？",
+      "chunk_ids": [
+        "ck-e4631445f15af58179383e4a0c36c09e",
+        "ck-c6c5a83ddfa3dffed493b31720eab4f0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9978,
+      "reference_longest_verbatim": 274,
+      "question_containment": 0.6531,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5333,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 102,
+      "query_type": "single_hop",
+      "question": "初步设计处于哪个设计阶段，主要内容和成果有哪些？",
+      "chunk_ids": [
+        "ck-fd954f5e9ce25d9fdaac786a50b2718e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 274,
+      "question_containment": 0.5417,
+      "question_longest_verbatim": 5,
+      "question_bigram_containment": 0.4545,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 103,
+      "query_type": "multi_hop",
+      "question": "工程项目管理通常覆盖哪些工作？其中竣工决算是什么文件，在反映投资和交付使用方面有什么作用？",
+      "chunk_ids": [
+        "ck-d8e2c173dd886be61f1c754b23d24266",
+        "ck-7b8753ba5f870e852c5b7f4d65b5bb98"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 261,
+      "question_containment": 0.6222,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6279,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 104,
+      "query_type": "single_hop",
+      "question": "工程招标投标应遵循哪四项基本原则？",
+      "chunk_ids": [
+        "ck-71c600328174932bf91eb232647b829f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 41,
+      "question_containment": 0.7059,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 105,
+      "query_type": "multi_hop",
+      "question": "工程项目招标人自行组织招标应具备哪些条件？其招标小组通常由什么人员组成，承担哪些具体工作？",
+      "chunk_ids": [
+        "ck-184285bbe68f5e7d96acb236a229d779",
+        "ck-2c0386a7b8c2f89748c7696f9371fcad"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 171,
+      "question_containment": 0.6667,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5854,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 106,
+      "query_type": "single_hop",
+      "question": "向通过资格预审的单位发出的投标邀请书，应包含哪些具体信息？",
+      "chunk_ids": [
+        "ck-f2bf1fea8e3b96f7bc310c9e7a899252"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 105,
+      "question_containment": 0.5862,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5714,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 107,
+      "query_type": "multi_hop",
+      "question": "工程招标开标时，如何主持、检查密封、拆封唱标和保存记录？在招标过程中，为什么不能向投标人透露其他潜在投标人的名单？",
+      "chunk_ids": [
+        "ck-410c7fc778cd6bcdbf0dbbccfc914456",
+        "ck-e100b2a683824aee0eaaae5dffbc0904"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 177,
+      "question_containment": 0.5965,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5472,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 108,
+      "query_type": "single_hop",
+      "question": "投标人冒用他人名义或弄虚作假骗取中标，应承担哪些后果？",
+      "chunk_ids": [
+        "ck-e100b2a683824aee0eaaae5dffbc0904"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 39,
+      "question_containment": 0.8519,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6154,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 109,
+      "query_type": "multi_hop",
+      "question": "投标人是否必须参加标前答疑会？对资格预审文件、招标文件提出异议的期限，以及招标人答复的期限分别是多少？",
+      "chunk_ids": [
+        "ck-56aeacfa18354bf474188c8d4a956eab",
+        "ck-adae438f8d9da06c4f734488a0820ee3"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9929,
+      "reference_longest_verbatim": 96,
+      "question_containment": 0.7451,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5111,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 110,
+      "query_type": "single_hop",
+      "question": "评标活动在什么情况下可以暂停或中止，暂停后如何保存文件和恢复评审？",
+      "chunk_ids": [
+        "ck-5a812fc70d0431ac81a42f34b555d090"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 220,
+      "question_containment": 0.7879,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.4839,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 111,
+      "query_type": "multi_hop",
+      "question": "最低投标价法和性价比法分别如何确定中标候选人？最低投标价法主要适用于什么类型的采购？",
+      "chunk_ids": [
+        "ck-0b3d87e6e255636bab62c13116fc5305",
+        "ck-6b72bc5934b0f2e075a324583c6883fc"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 140,
+      "question_containment": 0.6667,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.5833,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 112,
+      "query_type": "single_hop",
+      "question": "资格预审采用合格制时，对通过审查的申请人数量是否设上限？",
+      "chunk_ids": [
+        "ck-63c34b172e4984f83aac68d31ab8b94b"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 68,
+      "question_containment": 0.7143,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.5185,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 113,
+      "query_type": "multi_hop",
+      "question": "职业资格中的从业资格与执业资格有什么区别？相应证书分为哪两类，执业资格证书取得后还需要办理什么手续？",
+      "chunk_ids": [
+        "ck-6fe2a74a9c18113c54576bb9df145204",
+        "ck-80f12c7131afcc3332e000cb89fc3ea3"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9963,
+      "reference_longest_verbatim": 168,
+      "question_containment": 0.72,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.525,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 114,
+      "query_type": "single_hop",
+      "question": "工程施工招标中，网络发布的招标文件与书面文件不一致时，应以哪一版本为准？",
+      "chunk_ids": [
+        "ck-80f12c7131afcc3332e000cb89fc3ea3"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 31,
+      "question_containment": 0.9167,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.7879,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 115,
+      "query_type": "multi_hop",
+      "question": "工期较长时，招标文件可以如何约定工程价格调整？单价合同按什么依据结算，其单价能否随工资和材料价格指数调整？",
+      "chunk_ids": [
+        "ck-6188e1486393b8eb08d79bd29a87b505",
+        "ck-cd3fc7278ec40c7a6a30cd1078144b0b"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 57,
+      "question_containment": 0.7736,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.7083,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 116,
+      "query_type": "single_hop",
+      "question": "招标人使用未中标单位的技术成果或方案前，应取得什么同意并给予什么补偿？",
+      "chunk_ids": [
+        "ck-6fe08da42d3a399df2239b2b2a643690"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 24,
+      "question_containment": 0.7714,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5758,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 117,
+      "query_type": "multi_hop",
+      "question": "投标人确定工程投标报价一般要经过哪些步骤，固定低价招标是否仍需核算成本？工程量清单中的暂列金额是什么，主要用于哪些费用？",
+      "chunk_ids": [
+        "ck-1fde464c63b96b9137dc6a1a7c035b07",
+        "ck-d7a7d6f89adba46d09e0215b1c65495b"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 134,
+      "question_containment": 0.7333,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6786,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 118,
+      "query_type": "single_hop",
+      "question": "组成投标联合体时，各方应具备什么资质和能力，共同投标协议如何提交？",
+      "chunk_ids": [
+        "ck-ef5a3cc8f34c99a5381414bcce03453c"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 83,
+      "question_containment": 0.5152,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6129,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 119,
+      "query_type": "multi_hop",
+      "question": "工程勘察、设计招标在什么前提下可以分段或分项？出现哪些情形时应重新招标？",
+      "chunk_ids": [
+        "ck-d325746c022b44211ad5662f7ad06117",
+        "ck-579294710cb7b415bb273b7fb7305cc0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 154,
+      "question_containment": 0.6944,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.7059,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 120,
+      "query_type": "single_hop",
+      "question": "依法必须公开招标的项目，出现哪些情形可以改用邀请招标？",
+      "chunk_ids": [
+        "ck-579294710cb7b415bb273b7fb7305cc0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 74,
+      "question_containment": 0.8148,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.68,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 121,
+      "query_type": "multi_hop",
+      "question": "建筑工程方案设计应遵循哪些基本原则？方案评标委员会在专业构成、人数和特殊项目专家选定方面有哪些要求？",
+      "chunk_ids": [
+        "ck-7a30900d30c098d8f3b34d90c16c69fb",
+        "ck-1dee9c638939148d11fdc266119c7a96"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 274,
+      "question_containment": 0.64,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.4255,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 122,
+      "query_type": "single_hop",
+      "question": "建筑工程方案设计采用综合评分法时，技术和商务部分的权重一般如何安排？",
+      "chunk_ids": [
+        "ck-1dee9c638939148d11fdc266119c7a96"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 32,
+      "question_containment": 0.7941,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6667,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 123,
+      "query_type": "multi_hop",
+      "question": "建筑工程设计方案可以在什么条件下组织优化后再次评审，参加者如何产生？概念性方案设计的中标人应按什么标准取得设计费？",
+      "chunk_ids": [
+        "ck-1dee9c638939148d11fdc266119c7a96",
+        "ck-2f69c72c799a60d3d856eadf0b365dab"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 124,
+      "question_containment": 0.5789,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6154,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 124,
+      "query_type": "single_hop",
+      "question": "建筑工程设计投标人拒绝延长投标有效期后，能否领取招标文件约定的未中标补偿？",
+      "chunk_ids": [
+        "ck-2f69c72c799a60d3d856eadf0b365dab"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 32,
+      "question_containment": 0.8378,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 125,
+      "query_type": "multi_hop",
+      "question": "工程货物招标因公开招标费用比例过大而改用邀请招标时，由谁认定？中标合同价格超过批准投资范围时，签约前应办理什么手续？",
+      "chunk_ids": [
+        "ck-b1176d13cf7cdcb796ce3ff1da03c172",
+        "ck-2ea79bf7a36554970fd27562fd41a036"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 98,
+      "question_containment": 0.5862,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5556,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 126,
+      "query_type": "multi_hop",
+      "question": "工程货物招标在什么情况下适合采用资格预审？采用两阶段招标时，每个阶段分别提交什么内容，投标保证金在哪个阶段提出？",
+      "chunk_ids": [
+        "ck-fec7dab4f76e04d55673a77b35be65bc",
+        "ck-2ea79bf7a36554970fd27562fd41a036"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 196,
+      "question_containment": 0.7679,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.6531,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 127,
+      "query_type": "single_hop",
+      "question": "必须审批的工程建设项目货物合同价格确需超出范围时，应在何时履行什么审批手续？",
+      "chunk_ids": [
+        "ck-2ea79bf7a36554970fd27562fd41a036"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 23,
+      "question_containment": 0.8947,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.7778,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 128,
+      "query_type": "single_hop",
+      "question": "市政基础设施工程通常包括哪些设施和工程内容？",
+      "chunk_ids": [
+        "ck-2ea79bf7a36554970fd27562fd41a036"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 70,
+      "question_containment": 0.7727,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6316,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 129,
+      "query_type": "multi_hop",
+      "question": "房屋建筑和市政基础设施施工项目应具备哪些招标条件？招标人自行招标时，应在公告或邀请书发出前多久备案？",
+      "chunk_ids": [
+        "ck-d4f83f221dfb5fcea66527e28637d955",
+        "ck-2ea79bf7a36554970fd27562fd41a036"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9904,
+      "reference_longest_verbatim": 77,
+      "question_containment": 0.66,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6809,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 130,
+      "query_type": "single_hop",
+      "question": "哪些房屋建筑和市政基础设施施工项目，应进入有形建筑市场开展招标投标？",
+      "chunk_ids": [
+        "ck-d4f83f221dfb5fcea66527e28637d955"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 63,
+      "question_containment": 0.8529,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.75,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 131,
+      "query_type": "multi_hop",
+      "question": "公路工程施工招标投标活动由哪些交通主管部门监督？资格审查委员会的成员人数和专家比例有什么要求？",
+      "chunk_ids": [
+        "ck-689658ca81ca4786d51644cde6853013",
+        "ck-4c362798fd66062af8bfe3ab24d37b61"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 79,
+      "question_containment": 0.7872,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.7174,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 132,
+      "query_type": "single_hop",
+      "question": "自行办理公路工程施工招标，需要具备哪些管理和招标组织能力？",
+      "chunk_ids": [
+        "ck-689658ca81ca4786d51644cde6853013"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 70,
+      "question_containment": 0.6552,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.5185,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 133,
+      "query_type": "multi_hop",
+      "question": "公路工程施工与施工监理招标，发出招标文件到投标截止的最短时间分别如何规定？文件发出后如需修改或补遗，应提前多久？",
+      "chunk_ids": [
+        "ck-64e12058a4c4743b5d00c3a8bf93f100",
+        "ck-839b311935578775ceea372e8b3bc0d0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 74,
+      "question_containment": 0.5,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.4902,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 134,
+      "query_type": "single_hop",
+      "question": "公路工程施工招标的评标工作通常分成哪些步骤？",
+      "chunk_ids": [
+        "ck-64e12058a4c4743b5d00c3a8bf93f100"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 33,
+      "question_containment": 0.6818,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.7143,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 135,
+      "query_type": "multi_hop",
+      "question": "公路工程勘察、设计和施工监理合同分别达到什么金额时，达到必须招标的规模标准？公路施工监理的业务范围包括哪些工程及监督工作？",
+      "chunk_ids": [
+        "ck-395cb99db67174ed6e9410f8ccecfb09",
+        "ck-f036f51189f398e3243db9c5246ffff4"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 122,
+      "question_containment": 0.459,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 136,
+      "query_type": "single_hop",
+      "question": "公路工程勘察设计的评标报告应包括哪些内容？",
+      "chunk_ids": [
+        "ck-f036f51189f398e3243db9c5246ffff4"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 73,
+      "question_containment": 0.9048,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.85,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 137,
+      "query_type": "multi_hop",
+      "question": "公路施工监理招标公告或投标邀请书应列明哪些信息？划分监理标段应遵循什么原则？",
+      "chunk_ids": [
+        "ck-839b311935578775ceea372e8b3bc0d0",
+        "ck-f036f51189f398e3243db9c5246ffff4"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9923,
+      "reference_longest_verbatim": 101,
+      "question_containment": 0.6579,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5278,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 138,
+      "query_type": "single_hop",
+      "question": "公路工程施工监理招标文件及补遗书，应分别提前多久发出？",
+      "chunk_ids": [
+        "ck-839b311935578775ceea372e8b3bc0d0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 26,
+      "question_containment": 0.7407,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.6923,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 139,
+      "query_type": "multi_hop",
+      "question": "经营性公路建设项目投资人的资格审查应考察哪些内容？投资人评标可以采用哪些方法，综合评分考察哪些因素？",
+      "chunk_ids": [
+        "ck-f3fa5f7b6264871306351cd86d7539d4",
+        "ck-0fa0038f3413e1ee0f8bc349eb39c3bd"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9911,
+      "reference_longest_verbatim": 66,
+      "question_containment": 0.7,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.6512,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 140,
+      "query_type": "single_hop",
+      "question": "经营性公路建设项目的招标文件、资格预审结果和评标报告是否需要报交通主管部门核备？",
+      "chunk_ids": [
+        "ck-f3fa5f7b6264871306351cd86d7539d4"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 102,
+      "question_containment": 0.925,
+      "question_longest_verbatim": 21,
+      "question_bigram_containment": 0.8974,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 141,
+      "query_type": "multi_hop",
+      "question": "经营性公路建设项目投资人招标中的招标人是谁？联合体中标后，投资协议由谁签订，各方承担什么责任？",
+      "chunk_ids": [
+        "ck-0fa0038f3413e1ee0f8bc349eb39c3bd",
+        "ck-839b311935578775ceea372e8b3bc0d0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9895,
+      "reference_longest_verbatim": 57,
+      "question_containment": 0.5745,
+      "question_longest_verbatim": 14,
+      "question_bigram_containment": 0.7045,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 142,
+      "query_type": "single_hop",
+      "question": "经营性公路建设项目评标委员会由哪些人员组成，人数和招标人代表比例有何要求？",
+      "chunk_ids": [
+        "ck-0fa0038f3413e1ee0f8bc349eb39c3bd"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 86,
+      "question_containment": 0.5676,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.6667,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 143,
+      "query_type": "multi_hop",
+      "question": "水运工程招标投标的监督职责如何在各级交通主管部门间划分？水运工程的评标报告应包含哪些内容？",
+      "chunk_ids": [
+        "ck-537e3838d2e08adceb3452b74ddc5826",
+        "ck-60312b21ed7d411e27ec2b9214dc30c6"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9968,
+      "reference_longest_verbatim": 197,
+      "question_containment": 0.7778,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6829,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 144,
+      "query_type": "single_hop",
+      "question": "水运工程建设项目应进入什么类型和层级的场所开展招标投标？",
+      "chunk_ids": [
+        "ck-537e3838d2e08adceb3452b74ddc5826"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 62,
+      "question_containment": 0.7143,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6667,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 145,
+      "query_type": "multi_hop",
+      "question": "水运工程资格预审文件的澄清或修改影响申请文件编制时，应提前多久通知，时间不足怎么办？正式投标文件出现哪些递交问题时应被拒收？",
+      "chunk_ids": [
+        "ck-a3a146f45712973944471c719dc68081",
+        "ck-988092724c9644c03627ef47ee898c7b"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9915,
+      "reference_longest_verbatim": 75,
+      "question_containment": 0.7742,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.4915,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 146,
+      "query_type": "single_hop",
+      "question": "水运工程潜在投标人对资格预审文件有异议，应在申请截止时间前多久提出？",
+      "chunk_ids": [
+        "ck-a3a146f45712973944471c719dc68081"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 22,
+      "question_containment": 0.9412,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.7576,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 147,
+      "query_type": "multi_hop",
+      "question": "水运工程招标对投标人与招标人、其他投标人及设计监理等单位的关系有哪些限制？编制资格预审文件和招标文件应使用哪些标准文本？",
+      "chunk_ids": [
+        "ck-988092724c9644c03627ef47ee898c7b",
+        "ck-537e3838d2e08adceb3452b74ddc5826"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9952,
+      "reference_longest_verbatim": 158,
+      "question_containment": 0.8833,
+      "question_longest_verbatim": 13,
+      "question_bigram_containment": 0.7308,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 148,
+      "query_type": "single_hop",
+      "question": "水运工程联合体的资质类别和资质等级，应如何根据分工及成员情况确定？",
+      "chunk_ids": [
+        "ck-988092724c9644c03627ef47ee898c7b"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 66,
+      "question_containment": 0.697,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6129,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 149,
+      "query_type": "multi_hop",
+      "question": "水运工程评标委员会的组成和专家选取有哪些要求？委员会需要投标人澄清或说明时，应如何通知，能否暗示或诱导？",
+      "chunk_ids": [
+        "ck-60312b21ed7d411e27ec2b9214dc30c6",
+        "ck-988092724c9644c03627ef47ee898c7b"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 0.9973,
+      "reference_longest_verbatim": 304,
+      "question_containment": 0.5385,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.6327,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 150,
+      "query_type": "single_hop",
+      "question": "水运工程投标人向评标委员会作出澄清或说明，在形式、内容和主动提出方面有什么限制？",
+      "chunk_ids": [
+        "ck-60312b21ed7d411e27ec2b9214dc30c6"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 68,
+      "question_containment": 0.75,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.6923,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 151,
+      "query_type": "multi_hop",
+      "question": "水利工程招标中的重要设备包括哪些类别？重要设备和材料采购的招标文件应包含哪些主要内容？",
+      "chunk_ids": [
+        "ck-b277b9fe5e3391c8d978547c9222c4fc",
+        "ck-0ac7cd0333ead85941bf1b66a164f6d0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 142,
+      "question_containment": 0.7907,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.7027,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 152,
+      "query_type": "single_hop",
+      "question": "水利工程招标文件和修改文件，应分别在投标截止前多久发出？",
+      "chunk_ids": [
+        "ck-0ac7cd0333ead85941bf1b66a164f6d0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 41,
+      "question_containment": 0.6429,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6538,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 153,
+      "query_type": "multi_hop",
+      "question": "水利工程重要设备和材料采购的投标文件应提交哪些材料？水利工程评标从宣布成员到提交工作报告通常经过哪些程序？",
+      "chunk_ids": [
+        "ck-d72b46d266cc30e287adfb9c1f3cf4c1",
+        "ck-0ac7cd0333ead85941bf1b66a164f6d0"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 251,
+      "question_containment": 0.4906,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.5652,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 154,
+      "query_type": "single_hop",
+      "question": "水利工程评标委员会由哪些人员组成，成员人数和专家比例有何要求？",
+      "chunk_ids": [
+        "ck-d72b46d266cc30e287adfb9c1f3cf4c1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 54,
+      "question_containment": 0.7742,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.6,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 155,
+      "query_type": "multi_hop",
+      "question": "通信工程建设项目中的工程、相关货物和相关服务分别指什么？通信工程评标专家应具备哪些资格条件？",
+      "chunk_ids": [
+        "ck-1f7884a2ee4a9e1334aec14cf65245fc",
+        "ck-d390a77193fada90501964b597b6ff51"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 210,
+      "question_containment": 0.5,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 156,
+      "query_type": "single_hop",
+      "question": "通信工程建设项目招标投标活动由哪些部门实施监督？",
+      "chunk_ids": [
+        "ck-1f7884a2ee4a9e1334aec14cf65245fc"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 29,
+      "question_containment": 0.8333,
+      "question_longest_verbatim": 14,
+      "question_bigram_containment": 0.7826,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 157,
+      "query_type": "multi_hop",
+      "question": "通信工程招标文件对非实质性要求的允许偏差应如何规定？投标人认为存在低于成本价投标时，应何时提出异议并提交材料？",
+      "chunk_ids": [
+        "ck-d390a77193fada90501964b597b6ff51",
+        "ck-1f7884a2ee4a9e1334aec14cf65245fc"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 50,
+      "question_containment": 0.5818,
+      "question_longest_verbatim": 14,
+      "question_bigram_containment": 0.7358,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 158,
+      "query_type": "single_hop",
+      "question": "通信工程招标的开标记录，应记载哪些事项？",
+      "chunk_ids": [
+        "ck-d390a77193fada90501964b597b6ff51"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 47,
+      "question_containment": 0.9,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.6316,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 159,
+      "query_type": "multi_hop",
+      "question": "农业基本建设项目出现哪些情形，经批准可以采用邀请招标？其中施工招标还应具备哪些设计、资金和用地条件？",
+      "chunk_ids": [
+        "ck-fa701c3165cffb75069ec84445bf2550",
+        "ck-7ee06dea9c6362bfc59caf7fd6fd5f49"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 117,
+      "question_containment": 0.8,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.6596,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 160,
+      "query_type": "single_hop",
+      "question": "农业基本建设项目启动施工招标前，应满足哪些设计、资金和用地条件？",
+      "chunk_ids": [
+        "ck-7ee06dea9c6362bfc59caf7fd6fd5f49"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 39,
+      "question_containment": 0.625,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.5161,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 161,
+      "query_type": "multi_hop",
+      "question": "农业基本建设项目的施工招标与监理招标，评审内容分别包括哪些方面？",
+      "chunk_ids": [
+        "ck-7ee06dea9c6362bfc59caf7fd6fd5f49",
+        "ck-fa701c3165cffb75069ec84445bf2550"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 81,
+      "question_containment": 0.9375,
+      "question_longest_verbatim": 13,
+      "question_bigram_containment": 0.7333,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 162,
+      "query_type": "single_hop",
+      "question": "农业基本建设项目设计、施工、监理评标前，应如何处理投标文件中的名称和标志？",
+      "chunk_ids": [
+        "ck-6fe814cc07f47098341eab2c2de5feb1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 35,
+      "question_containment": 0.8649,
+      "question_longest_verbatim": 18,
+      "question_bigram_containment": 0.8611,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 163,
+      "query_type": "multi_hop",
+      "question": "依法必须招标的民航工程建设项目应具备哪些条件才能启动招标？发出中标通知书前，评标结果还须完成什么备案手续？",
+      "chunk_ids": [
+        "ck-93d8e9f472267a3a5faddcd1afb457ed",
+        "ck-aa67497427f40565aac9c7f7090306a9"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 125,
+      "question_containment": 0.7925,
+      "question_longest_verbatim": 15,
+      "question_bigram_containment": 0.6667,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 164,
+      "query_type": "single_hop",
+      "question": "民航专业工程评标委员会成员既拒绝签字又不说明异议理由时，如何认定并记录？",
+      "chunk_ids": [
+        "ck-aa67497427f40565aac9c7f7090306a9"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 30,
+      "question_containment": 0.6667,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.5714,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 165,
+      "query_type": "multi_hop",
+      "question": "民航专业工程招标文件的发售期及其最后一天有什么要求？评标结论需多少比例的评委签署同意才有效？",
+      "chunk_ids": [
+        "ck-aa67497427f40565aac9c7f7090306a9",
+        "ck-93d8e9f472267a3a5faddcd1afb457ed"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 31,
+      "question_containment": 0.4783,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.7333,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 166,
+      "query_type": "single_hop",
+      "question": "施工合同履行中，发包人在提供场地、设计交底、付款和验收等方面有哪些义务？",
+      "chunk_ids": [
+        "ck-185a03f37e8cedff6cf0fd242371319f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 161,
+      "question_containment": 0.3056,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5714,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 167,
+      "query_type": "multi_hop",
+      "question": "施工合同履行中，承包人在施工、安全、环境保护和移交前维护方面有哪些义务？承包人违约时，发包人可以如何要求整改、解除合同和索赔？",
+      "chunk_ids": [
+        "ck-185a03f37e8cedff6cf0fd242371319f",
+        "ck-9cc791d90420f192f4cb08fcc553f803"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 207,
+      "question_containment": 0.4286,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6491,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 168,
+      "query_type": "single_hop",
+      "question": "施工合同没有特别约定时，监理人应在开工前多久向承包人发出开工通知？",
+      "chunk_ids": [
+        "ck-1e396a04a61930e16684f90e2da65372"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 23,
+      "question_containment": 0.6667,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.7419,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 169,
+      "query_type": "multi_hop",
+      "question": "因发包人原因延误工期，承包人可以提出哪些要求？中标人未经申请便改派进场人员时，招标人可以如何处理，相关损失和工期由谁承担？",
+      "chunk_ids": [
+        "ck-1e396a04a61930e16684f90e2da65372",
+        "ck-185a03f37e8cedff6cf0fd242371319f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 85,
+      "question_containment": 0.459,
+      "question_longest_verbatim": 4,
+      "question_bigram_containment": 0.5455,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 170,
+      "query_type": "single_hop",
+      "question": "按书中施工合同条款，质量保证金如何扣留，缺陷责任期满后如何核实与返还？",
+      "chunk_ids": [
+        "ck-9cc791d90420f192f4cb08fcc553f803"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 226,
+      "question_containment": 0.7143,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.4545,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 171,
+      "query_type": "multi_hop",
+      "question": "工程隐蔽部位覆盖前应完成哪些检查手续？承包人申请竣工验收前，又应完成哪些工作并备齐哪些资料？",
+      "chunk_ids": [
+        "ck-9cc791d90420f192f4cb08fcc553f803",
+        "ck-1e396a04a61930e16684f90e2da65372"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 198,
+      "question_containment": 0.5217,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.65,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 172,
+      "query_type": "single_hop",
+      "question": "全国机电产品国际招标投标由哪个部门管理，该部门主要负责哪些工作？",
+      "chunk_ids": [
+        "ck-272f12799c312d0249ee8a44fe1dcb15"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 173,
+      "question_containment": 0.6562,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.5333,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 173,
+      "query_type": "multi_hop",
+      "question": "机电产品国际招标与出口商品招标分别是什么采购或贸易管理行为，各自如何确定中标人或出口数量？",
+      "chunk_ids": [
+        "ck-272f12799c312d0249ee8a44fe1dcb15",
+        "ck-72f6ec857a6a1e92b6d1dd97f337331d"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 78,
+      "question_containment": 0.8222,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.7381,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 174,
+      "query_type": "single_hop",
+      "question": "机电产品国际招标重新招标后仍不足3家投标人，可以如何处理？",
+      "chunk_ids": [
+        "ck-211b4b756c4e8e4857a957c4cf2a183d"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 70,
+      "question_containment": 0.7586,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.7037,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 175,
+      "query_type": "multi_hop",
+      "question": "机电产品国际招标评标委员会的成员构成、专家比例和抽取方式有哪些要求？评标出现重大分歧或评委拒绝签字时如何处理？",
+      "chunk_ids": [
+        "ck-211b4b756c4e8e4857a957c4cf2a183d",
+        "ck-b41cb92b500617f18815a76c3235e63f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 315,
+      "question_containment": 0.6,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6226,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 176,
+      "query_type": "single_hop",
+      "question": "机电产品国际招标使用国外贷款或援助资金时，评标报告报送和结果公示的时间如何安排？",
+      "chunk_ids": [
+        "ck-b41cb92b500617f18815a76c3235e63f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 77,
+      "question_containment": 0.875,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6667,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 177,
+      "query_type": "multi_hop",
+      "question": "机电产品国际招标的投诉有哪些不予受理的情形？受理后，什么情况下终止处理、驳回投诉或作出纠正决定？",
+      "chunk_ids": [
+        "ck-72f6ec857a6a1e92b6d1dd97f337331d",
+        "ck-b41cb92b500617f18815a76c3235e63f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 321,
+      "question_containment": 0.5625,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.6,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 178,
+      "query_type": "single_hop",
+      "question": "机电产品国际招标最迟应在何时向中标人和未中标人退还投标保证金，是否包括利息？",
+      "chunk_ids": [
+        "ck-72f6ec857a6a1e92b6d1dd97f337331d"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 47,
+      "question_containment": 0.8684,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.7429,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 179,
+      "query_type": "multi_hop",
+      "question": "竞争性磋商项目同时包含货物和服务时，如何确定项目属性？磋商文件的发售期限不得少于多少个工作日？",
+      "chunk_ids": [
+        "ck-3a25eeac75d8421a5a2aefe0224f047e",
+        "ck-21d92c84a33e287e2dda7aeeaecb086f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 46,
+      "question_containment": 0.8085,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.7045,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 180,
+      "query_type": "single_hop",
+      "question": "竞争性磋商应如何邀请供应商，邀请数量和采购人推荐比例有什么要求？",
+      "chunk_ids": [
+        "ck-3a25eeac75d8421a5a2aefe0224f047e"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 208,
+      "question_containment": 0.875,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.7667,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 181,
+      "query_type": "multi_hop",
+      "question": "竞争性磋商文件应列明哪些主要内容？确定成交供应商后，应在成交通知书发出之日起多久签订政府采购合同？",
+      "chunk_ids": [
+        "ck-21d92c84a33e287e2dda7aeeaecb086f",
+        "ck-1c9b1095344438236f86a2e844822ac1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 148,
+      "question_containment": 0.8571,
+      "question_longest_verbatim": 12,
+      "question_bigram_containment": 0.8298,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 182,
+      "query_type": "single_hop",
+      "question": "竞争性磋商文件发出至首次响应文件提交截止，应至少留出多少天？",
+      "chunk_ids": [
+        "ck-21d92c84a33e287e2dda7aeeaecb086f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 38,
+      "question_containment": 0.9,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.6071,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 183,
+      "query_type": "multi_hop",
+      "question": "竞争性磋商小组的组成和专家选取有哪些要求？该小组如何按评分推荐成交候选供应商，哪些项目可以只推荐两家？",
+      "chunk_ids": [
+        "ck-1c9b1095344438236f86a2e844822ac1",
+        "ck-21d92c84a33e287e2dda7aeeaecb086f"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 246,
+      "question_containment": 0.549,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.617,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 184,
+      "query_type": "single_hop",
+      "question": "竞争性磋商中，采购人应在什么期限内按什么顺序确定成交供应商，逾期未确定且无异议怎么办？",
+      "chunk_ids": [
+        "ck-1c9b1095344438236f86a2e844822ac1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 124,
+      "question_containment": 0.7674,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.625,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 185,
+      "query_type": "multi_hop",
+      "question": "竞争性磋商与竞争性谈判确定成交供应商排序的依据有什么区别？竞争性磋商出现哪些情形应终止，供应商数量要求有哪些例外？",
+      "chunk_ids": [
+        "ck-e020bb5bda9b941df4d6fd792e9a6115",
+        "ck-1c9b1095344438236f86a2e844822ac1"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 209,
+      "question_containment": 0.614,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5745,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 186,
+      "query_type": "single_hop",
+      "question": "什么属于电子招标投标活动，其中的数据电文如何定义？",
+      "chunk_ids": [
+        "ck-df240081879e6a190bfe872528e80bf5"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 92,
+      "question_containment": 0.72,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.5,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 187,
+      "query_type": "multi_hop",
+      "question": "电子招标投标系统开发和运营应遵守哪些办法和技术规范？出现哪些情形时，交易平台不得交付使用或应停止运营？",
+      "chunk_ids": [
+        "ck-df240081879e6a190bfe872528e80bf5",
+        "ck-beb6855c2e51e9f4dce16ee674226dee"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 133,
+      "question_containment": 0.7451,
+      "question_longest_verbatim": 8,
+      "question_bigram_containment": 0.7083,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 188,
+      "query_type": "single_hop",
+      "question": "电子招标投标交易平台运营机构及其关联方，能否参与本平台项目的投标或代理投标？",
+      "chunk_ids": [
+        "ck-38604e3180b40fbe8877185ec6d49784"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 73,
+      "question_containment": 0.5789,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.5294,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 189,
+      "query_type": "multi_hop",
+      "question": "电子招标投标的公告、资格预审文件和招标文件应采用什么格式？电子投标文件或资格预审申请文件未按规定加密时，平台如何处理？",
+      "chunk_ids": [
+        "ck-38604e3180b40fbe8877185ec6d49784",
+        "ck-df240081879e6a190bfe872528e80bf5"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 40,
+      "question_containment": 0.661,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.7292,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 190,
+      "query_type": "single_hop",
+      "question": "电子招标投标过程中，哪些文件应进行电子签名并电子存档？",
+      "chunk_ids": [
+        "ck-beb6855c2e51e9f4dce16ee674226dee"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 128,
+      "question_containment": 0.7778,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.75,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 191,
+      "query_type": "multi_hop",
+      "question": "电子招标投标交易平台对公众注册、信息获取、权限和服务器所在地有哪些要求？招标结束后应及时公布哪些信息？",
+      "chunk_ids": [
+        "ck-beb6855c2e51e9f4dce16ee674226dee",
+        "ck-df240081879e6a190bfe872528e80bf5"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 149,
+      "question_containment": 0.5686,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.7021,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 192,
+      "query_type": "single_hop",
+      "question": "政府和社会资本合作项目的政府采购，是选择什么合作方的过程，应遵循哪些原则？",
+      "chunk_ids": [
+        "ck-387da51dc490b786322893e0cb9b17e2"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 94,
+      "question_containment": 0.7568,
+      "question_longest_verbatim": 11,
+      "question_bigram_containment": 0.6176,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 193,
+      "query_type": "multi_hop",
+      "question": "PPP项目采购通常有哪些参与主体？采购人可以在股东协议中对项目公司未经书面同意的哪些行为作出限制？",
+      "chunk_ids": [
+        "ck-387da51dc490b786322893e0cb9b17e2",
+        "ck-5a958e5078a73276aecb0b97b79b9586"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 140,
+      "question_containment": 0.8163,
+      "question_longest_verbatim": 7,
+      "question_bigram_containment": 0.5682,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 194,
+      "query_type": "single_hop",
+      "question": "PPP项目评审小组发现采购文件违反国家强制性规定时，应如何处理？",
+      "chunk_ids": [
+        "ck-3b07f0542f7ca989ea1955d520e99904"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 44,
+      "question_containment": 0.9688,
+      "question_longest_verbatim": 10,
+      "question_bigram_containment": 0.8333,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 195,
+      "query_type": "multi_hop",
+      "question": "PPP项目评审小组的人数、专家比例及专业构成有哪些要求？发现社会资本违法或受到非法干涉时，应向哪些部门报告或举报？",
+      "chunk_ids": [
+        "ck-3b07f0542f7ca989ea1955d520e99904",
+        "ck-387da51dc490b786322893e0cb9b17e2"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 122,
+      "question_containment": 0.614,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.5556,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 196,
+      "query_type": "single_hop",
+      "question": "PPP项目实施机构可以在合同草案中约定哪些项目公司限制，以提前控制风险？",
+      "chunk_ids": [
+        "ck-5a958e5078a73276aecb0b97b79b9586"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 140,
+      "question_containment": 0.6389,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.4545,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 197,
+      "query_type": "multi_hop",
+      "question": "PPP项目的资格预审公告与中标、成交结果公告，分别应包含哪些信息？",
+      "chunk_ids": [
+        "ck-5a958e5078a73276aecb0b97b79b9586",
+        "ck-387da51dc490b786322893e0cb9b17e2"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 133,
+      "question_containment": 0.7576,
+      "question_longest_verbatim": 9,
+      "question_bigram_containment": 0.7,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 198,
+      "query_type": "single_hop",
+      "question": "政府购买服务是指什么活动，应遵循哪些原则？",
+      "chunk_ids": [
+        "ck-fd25fd374589ed5408eb50d4582b75a5"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 116,
+      "question_containment": 0.6667,
+      "question_longest_verbatim": 6,
+      "question_bigram_containment": 0.6,
+      "chunk_books": [
+        "book2"
+      ]
+    },
+    {
+      "index": 199,
+      "query_type": "multi_hop",
+      "question": "政府购买服务的购买主体和承接主体分别包括哪些组织或个人？承接主体能否利用合同融资，购买主体能否为其融资担保？",
+      "chunk_ids": [
+        "ck-fd25fd374589ed5408eb50d4582b75a5",
+        "ck-77796196c68ccb04e8cd48e177b28b54"
+      ],
+      "missing_uids": [],
+      "text_mismatch_uids": [],
+      "reference_containment": 1.0,
+      "reference_longest_verbatim": 155,
+      "question_containment": 0.7963,
+      "question_longest_verbatim": 18,
+      "question_bigram_containment": 0.5714,
+      "chunk_books": [
+        "book2"
+      ]
+    }
+  ]
+}

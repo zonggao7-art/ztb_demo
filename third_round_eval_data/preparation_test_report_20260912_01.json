@@ -1,0 +1,40 @@
+{
+  "schema_version": "third-round-preparation-test-report-v1",
+  "status": "passed",
+  "tested_on": "2026-09-12",
+  "environment": {
+    "python": "3.12.7",
+    "environment": ".venv-eval",
+    "ragas": "0.4.3",
+    "langchain": "1.2.12",
+    "langchain_openai": "1.4.1",
+    "pymilvus": "3.0.1"
+  },
+  "pytest": {
+    "command": ".venv-eval\\Scripts\\python.exe -m pytest test/test_unified_agent.py test/test_rag_eval_framework.py test/test_third_round_eval.py -q --basetemp .pytest_tmp_third_round_final_preparation",
+    "passed": 74,
+    "failed": 0,
+    "duration_s": 8.35,
+    "covered": [
+      "unified Agent policy and evidence contract",
+      "RAG collection/scoring framework",
+      "third-round dataset, collection, deterministic scoring and reliability",
+      "Exact Chunk Macro Recall and Micro Recall",
+      "judge variance summary gate",
+      "resumable continuous-prefix behavior"
+    ]
+  },
+  "syntax_check": {
+    "command": ".venv-eval\\Scripts\\python.exe -m py_compile <12 preparation Python files>",
+    "files": 12,
+    "passed": true
+  },
+  "live_checks": {
+    "six_tool_smoke": "completed_with_recorded_A2_finding",
+    "a2_target_retest": "3_of_3_passed_at_100_percent",
+    "reliability_smoke": "5_of_5_passed",
+    "sql_and_milvus_identity": "passed",
+    "judge_variance": "110_of_110_complete_and_both_repeats_above_threshold"
+  },
+  "formal_run_started": false
+}

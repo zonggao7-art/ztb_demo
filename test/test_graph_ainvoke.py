@@ -8,12 +8,14 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from langchain_core.messages import AIMessage
 
-from agent.graph import AgentGraph, build_graph
+from agent.graph import AgentGraph
 
 
 @pytest.fixture
-def patched_build_graph():
+def patched_build_graph(monkeypatch):
     """用 mock 替换 build_graph，让 AgentGraph 不连真实 LLM/DB。"""
+    # This fixture tests the retained legacy graph, not default routing.
+    monkeypatch.setenv("AGENT_EXECUTION_MODE", "legacy")
     mock_compiled = MagicMock()
     mock_compiled.ainvoke = AsyncMock(
         return_value={
@@ -50,7 +52,7 @@ def test_agent_graph_has_ainvoke():
 
 def test_invoke_delegates_to_ainvoke_sync_path(patched_build_graph):
     """同步 invoke 在无 running loop 时委托给 ainvoke（§3.3 契约）。"""
-    mock_build, mock_compiled = patched_build_graph
+    _, mock_compiled = patched_build_graph
     agent = AgentGraph(async_enabled=False)
     result = agent.invoke("测试")
     # 同步 invoke 内部走 asyncio.run(self.ainvoke(...))，所以答案来自 ainvoke mock
@@ -61,7 +63,7 @@ def test_invoke_delegates_to_ainvoke_sync_path(patched_build_graph):
 
 def test_ainvoke_returns_consistent_shape(patched_build_graph):
     """ainvoke 返回结构与 invoke 一致。"""
-    mock_build, mock_compiled = patched_build_graph
+    _, mock_compiled = patched_build_graph
     agent = AgentGraph(async_enabled=True)
     r1 = agent.invoke("测试")
     r2 = asyncio.run(agent.ainvoke("测试"))
@@ -69,7 +71,7 @@ def test_ainvoke_returns_consistent_shape(patched_build_graph):
 
 
 def test_ainvoke_uses_compiled_graph(patched_build_graph):
-    mock_build, mock_compiled = patched_build_graph
+    _, mock_compiled = patched_build_graph
     agent = AgentGraph(async_enabled=True)
     asyncio.run(agent.ainvoke("测试"))
     mock_compiled.ainvoke.assert_called_once()

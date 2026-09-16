@@ -23,9 +23,13 @@ from agent.tools.knowledge import (
     _search_public_kb_impl,
 )
 from agent.tools.price_db import (
+    _query_company_award_history_impl,
+    _query_company_business_scope_impl,
     _query_bid_records_impl,
     _query_company_info_impl,
     _query_company_penalty_impl,
+    _query_company_registration_impl,
+    _query_project_award_impl,
     _search_business_data_impl,
 )
 
@@ -144,22 +148,47 @@ def test_company_info_builds_intent_and_slices(monkeypatch):
     monkeypatch.setattr(price_db_mod, "_query_company_data", _fake_company_query)
     result = _query_company_info_impl(
         "测试有限公司",
-        industry="建筑",
-        time_start="2020-01-01",
-        time_end="2024-12-31",
         top_k=5,
     )
 
     intent = captured["intent"]
     assert intent.sub_route == "company_query"
     assert intent.hard_filters.company_name == "测试有限公司"
-    assert intent.hard_filters.industry == "建筑"
-    assert intent.hard_filters.time_range == {"start": "2020-01-01", "end": "2024-12-31"}
+    assert intent.hard_filters.industry is None
+    assert intent.hard_filters.time_range is None
     assert intent.exact_tokens == ["测试有限公司"]
 
     assert result["ok"] is True
     assert len(result["data"]["records"]) == 5  # top_k 截断
     assert result["metadata"]["row_count"] == 30
+
+
+def test_company_business_tools_publish_separate_fields(monkeypatch):
+    row = {
+        "company_name": "测试有限公司",
+        "credit_code": "91340000TEST",
+        "legal_person": "张三",
+        "registered_capital": "1000万",
+        "business_scope": "软件开发",
+    }
+    monkeypatch.setattr(price_db_mod, "_query_company_data", lambda intent: {
+        "records": [row], "queried_tables": ["ztb_clean.company_info"],
+        "sql_count": 1, "total_sql_time": 0.1,
+    })
+
+    registration = _query_company_registration_impl("测试有限公司")
+    scope = _query_company_business_scope_impl("测试有限公司")
+
+    assert registration["data"]["records"] == [{
+        "company_name": "测试有限公司",
+        "credit_code": "91340000TEST",
+        "legal_person": "张三",
+        "registered_capital": "1000万",
+    }]
+    assert scope["data"]["records"] == [{
+        "company_name": "测试有限公司",
+        "business_scope": "软件开发",
+    }]
 
 
 def test_bid_records_project_number_mode(monkeypatch):
@@ -193,6 +222,24 @@ def test_bid_records_company_maps_to_successful_bidder(monkeypatch):
     assert intent.hard_filters.successful_bidder == "测试有限公司"
     assert intent.query_type != "project_detail"
     assert result["ok"] is True
+
+
+def test_award_business_tools_keep_project_and_company_modes_separate(monkeypatch):
+    captured = []
+
+    def _fake_bidding(intent):
+        captured.append(intent)
+        return {"records": [], "queried_tables": ["ztb_clean.bid_project"],
+                "sql_count": 1, "total_sql_time": 0.1}
+
+    monkeypatch.setattr(price_db_mod, "_query_bidding_data", _fake_bidding)
+
+    assert _query_project_award_impl("AH2024-001")["ok"] is True
+    assert _query_company_award_history_impl("测试有限公司")["ok"] is True
+    assert captured[0].query_type == "project_detail"
+    assert captured[0].hard_filters.project_number == "AH2024-001"
+    assert captured[1].query_type == "bid_records"
+    assert captured[1].hard_filters.successful_bidder == "测试有限公司"
 
 
 def test_bid_records_requires_subject():
@@ -280,7 +327,7 @@ def test_search_public_kb_kb_not_initialized(fake_rag):
 
 
 def test_knowledge_qa_returns_answer_and_citations(fake_rag):
-    rag = fake_rag(_FakeRAG(query_result={"answer": "公开招标和邀请招标", "sources": [{"doc": "招标投标法"}], "citations": [{"chunk_uid": "uid-1"}]}))
+    fake_rag(_FakeRAG(query_result={"answer": "公开招标和邀请招标", "sources": [{"doc": "招标投标法"}], "citations": [{"chunk_uid": "uid-1"}]}))
     result = _knowledge_qa_impl("招标方式有哪些")
 
     assert result["ok"] is True

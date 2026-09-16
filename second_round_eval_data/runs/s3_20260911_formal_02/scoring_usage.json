@@ -1,0 +1,34 @@
+{
+  "calls": 2876,
+  "input_tokens": 7039228,
+  "output_tokens": 615391,
+  "total_tokens": 7654619,
+  "source_counts": {
+    "api_actual": 2828,
+    "rough_estimate": 48
+  },
+  "unknown_outputs": 48,
+  "components": {
+    "referee": {
+      "calls": 2476,
+      "input_tokens": 6995876,
+      "output_tokens": 615391,
+      "total_tokens": 7611267,
+      "sources": {
+        "api_actual": 2428,
+        "rough_estimate": 48
+      },
+      "unknown_outputs": 48
+    },
+    "scoring_embedding": {
+      "calls": 400,
+      "input_tokens": 43352,
+      "output_tokens": 0,
+      "total_tokens": 43352,
+      "sources": {
+        "api_actual": 400
+      },
+      "unknown_outputs": 0
+    }
+  }
+}

@@ -2,6 +2,7 @@
 
 import asyncio
 import time
+import inspect
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import Awaitable
@@ -63,7 +64,11 @@ async def wait_for_with_deadline(
     """
     remaining = deadline_obj.remaining()
     if remaining <= 0:
-        # 上层给的时间预算早就花光了——直接抛错
+        # No execution may start; close an unstarted coroutine to avoid a leaked awaitable.
+        if inspect.iscoroutine(coro):
+            coro.close()
+        elif isinstance(coro, asyncio.Future):
+            coro.cancel()
         raise DeadlineExceeded(f"{label} deadline already expired (0s remaining)")
 
     try:

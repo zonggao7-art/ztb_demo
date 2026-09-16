@@ -1,0 +1,428 @@
+{
+  "analysis_type": "deterministic_s3_reranker_score_replay",
+  "paid_api_called": false,
+  "limitations": [
+    "Reuses recorded S3 reranker scores; it does not prove a future reranker call returns identical scores.",
+    "Does not regenerate answers and therefore cannot estimate S4 Ragas quality metrics."
+  ],
+  "sample_count": 200,
+  "changed_count": 17,
+  "unchanged_count": 183,
+  "empty_count": 0,
+  "total_removed": 53,
+  "retained_count_distribution": {
+    "1": 6,
+    "2": 8,
+    "3": 2,
+    "4": 1,
+    "5": 183
+  },
+  "threshold_distribution": {
+    "0.4": 200
+  },
+  "s3_exact_retrieval": {
+    "match_key": "chunk_uid",
+    "sample_count": 200,
+    "expected_chunk_count": 270,
+    "matched_chunk_count": 251,
+    "micro_recall": 0.9296296296296296,
+    "macro_recall": 0.9425,
+    "any_hit_count": 194,
+    "any_hit_rate": 0.97,
+    "all_hit_count": 183,
+    "all_hit_rate": 0.915,
+    "mean_first_hit_rank": 1.4381443298969072,
+    "duplicate_retrieved_chunk_count": 0,
+    "missed_sample_ids": [
+      "q052",
+      "q078",
+      "q083",
+      "q108",
+      "q109",
+      "q121"
+    ],
+    "partial_sample_ids": [
+      "q014",
+      "q070",
+      "q084",
+      "q106",
+      "q110",
+      "q126",
+      "q130",
+      "q132",
+      "q146",
+      "q156",
+      "q178"
+    ]
+  },
+  "shadow_s4_exact_retrieval": {
+    "match_key": "chunk_uid",
+    "sample_count": 200,
+    "expected_chunk_count": 270,
+    "matched_chunk_count": 251,
+    "micro_recall": 0.9296296296296296,
+    "macro_recall": 0.9425,
+    "any_hit_count": 194,
+    "any_hit_rate": 0.97,
+    "all_hit_count": 183,
+    "all_hit_rate": 0.915,
+    "mean_first_hit_rank": 1.4381443298969072,
+    "duplicate_retrieved_chunk_count": 0,
+    "missed_sample_ids": [
+      "q052",
+      "q078",
+      "q083",
+      "q108",
+      "q109",
+      "q121"
+    ],
+    "partial_sample_ids": [
+      "q014",
+      "q070",
+      "q084",
+      "q106",
+      "q110",
+      "q126",
+      "q130",
+      "q132",
+      "q146",
+      "q156",
+      "q178"
+    ]
+  },
+  "removed_ground_truth_count": 0,
+  "removed_ground_truth": [],
+  "changed_samples": [
+    {
+      "sample_id": "q032",
+      "index": 32,
+      "query_type": "single_hop",
+      "top_score": 0.88844395,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-79bc1ef97f666dcfd0c28ca81ba8b642",
+        "ck-0fa13fac247e731052c2760980c120a0"
+      ],
+      "removed_chunk_uids": [
+        "ck-64c881d2067b3ae193c280253264e193",
+        "ck-8c6f6c903f34116f353a8fdfd3e082d1",
+        "ck-7124e58a4c59b64afb692b88295d91aa"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q079",
+      "index": 79,
+      "query_type": "single_hop",
+      "top_score": 0.8971594,
+      "threshold": 0.4,
+      "retained_count": 1,
+      "removed_count": 4,
+      "retained_chunk_uids": [
+        "ck-c71371720b55c450899c389870fe9009"
+      ],
+      "removed_chunk_uids": [
+        "ck-556a2ee80c3c6b221cfc6e1fed991f92",
+        "ck-99ff243c920ef6855234b02f6f2b517c",
+        "ck-1dcc4e3d6706283f27fa3afb6e1ef525",
+        "ck-52e6583510f036e9acb2cf793b5704f5"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q088",
+      "index": 88,
+      "query_type": "single_hop",
+      "top_score": 0.97171593,
+      "threshold": 0.4,
+      "retained_count": 4,
+      "removed_count": 1,
+      "retained_chunk_uids": [
+        "ck-77a07c2196ea49508f1c04996e711f54",
+        "ck-2a618df8092dfaa6b9bc08efe9ac206e",
+        "ck-99b4b7441a426b05ab169fc7af2522dd",
+        "ck-1d25458776a3fe4b2cf390cbdd4a9cb1"
+      ],
+      "removed_chunk_uids": [
+        "ck-4909a319920e6032d5b5fc1683b3dde6"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q089",
+      "index": 89,
+      "query_type": "single_hop",
+      "top_score": 0.93501157,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-77a07c2196ea49508f1c04996e711f54",
+        "ck-1d25458776a3fe4b2cf390cbdd4a9cb1"
+      ],
+      "removed_chunk_uids": [
+        "ck-2a618df8092dfaa6b9bc08efe9ac206e",
+        "ck-99b4b7441a426b05ab169fc7af2522dd",
+        "ck-4909a319920e6032d5b5fc1683b3dde6"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q092",
+      "index": 92,
+      "query_type": "single_hop",
+      "top_score": 0.87945271,
+      "threshold": 0.4,
+      "retained_count": 1,
+      "removed_count": 4,
+      "retained_chunk_uids": [
+        "ck-99b4b7441a426b05ab169fc7af2522dd"
+      ],
+      "removed_chunk_uids": [
+        "ck-38b8527a1150d6c3d6ac1f5774274e6d",
+        "ck-1d25458776a3fe4b2cf390cbdd4a9cb1",
+        "ck-77a07c2196ea49508f1c04996e711f54",
+        "ck-6b25a61f7a58b988c5abe4514bcda876"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q097",
+      "index": 97,
+      "query_type": "single_hop",
+      "top_score": 0.98861885,
+      "threshold": 0.4,
+      "retained_count": 1,
+      "removed_count": 4,
+      "retained_chunk_uids": [
+        "ck-a85e0decc8d314ede19536f10787ed5f"
+      ],
+      "removed_chunk_uids": [
+        "ck-954770a0795c8fa8bc11a558eb85ce8f",
+        "ck-4c3888c6830e2909b215f5ff1a89e77e",
+        "ck-bd4afbdec0a952cb1f24023f03f8d1db",
+        "ck-e27380c7b12a1c133214ea36a2ed8d07"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q098",
+      "index": 98,
+      "query_type": "multi_hop",
+      "top_score": 0.99973303,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-638a5a063032dc120e3d56a4cf20a44d",
+        "ck-a85e0decc8d314ede19536f10787ed5f"
+      ],
+      "removed_chunk_uids": [
+        "ck-287f6b13c8b626eca938bf92c6dee473",
+        "ck-55f6316c75e43b82ae48b41905ff7f70",
+        "ck-7c953e225f23c719b9cdc5d376d9ec7c"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q099",
+      "index": 99,
+      "query_type": "single_hop",
+      "top_score": 0.98272967,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-638a5a063032dc120e3d56a4cf20a44d",
+        "ck-a85e0decc8d314ede19536f10787ed5f"
+      ],
+      "removed_chunk_uids": [
+        "ck-4acbacbf2b42705584146cd779dd6ff4",
+        "ck-55f6316c75e43b82ae48b41905ff7f70",
+        "ck-f7a43102737c7403cd6680f01635d98d"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q101",
+      "index": 101,
+      "query_type": "single_hop",
+      "top_score": 0.98481119,
+      "threshold": 0.4,
+      "retained_count": 1,
+      "removed_count": 4,
+      "retained_chunk_uids": [
+        "ck-55f6316c75e43b82ae48b41905ff7f70"
+      ],
+      "removed_chunk_uids": [
+        "ck-9f68e7b14094c2d3ba28c9e2d65f6f77",
+        "ck-d4f83f221dfb5fcea66527e28637d955",
+        "ck-0f15c249827a139dd0cf446a955a18b2",
+        "ck-32fa3604eab018f602acb37be8a50da3"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q103",
+      "index": 103,
+      "query_type": "single_hop",
+      "top_score": 0.94120044,
+      "threshold": 0.4,
+      "retained_count": 1,
+      "removed_count": 4,
+      "retained_chunk_uids": [
+        "ck-fd954f5e9ce25d9fdaac786a50b2718e"
+      ],
+      "removed_chunk_uids": [
+        "ck-d8e2c173dd886be61f1c754b23d24266",
+        "ck-287f6b13c8b626eca938bf92c6dee473",
+        "ck-6847ebabc04aedd8566c690c53b02e1b",
+        "ck-c4a06c3913d35e04e709f11b913ba626"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q104",
+      "index": 104,
+      "query_type": "multi_hop",
+      "top_score": 0.94661289,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-d8e2c173dd886be61f1c754b23d24266",
+        "ck-7b8753ba5f870e852c5b7f4d65b5bb98"
+      ],
+      "removed_chunk_uids": [
+        "ck-fd954f5e9ce25d9fdaac786a50b2718e",
+        "ck-f7a43102737c7403cd6680f01635d98d",
+        "ck-9f68e7b14094c2d3ba28c9e2d65f6f77"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q114",
+      "index": 114,
+      "query_type": "multi_hop",
+      "top_score": 0.9647373,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-80f12c7131afcc3332e000cb89fc3ea3",
+        "ck-6fe2a74a9c18113c54576bb9df145204"
+      ],
+      "removed_chunk_uids": [
+        "ck-525f8ea80567aa90a25b9ea6c1173530",
+        "ck-9b18e8c0d0b8d78e3b1be10b5172e04f",
+        "ck-bde82d3c7418277b9f3d855a483b5991"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q129",
+      "index": 129,
+      "query_type": "single_hop",
+      "top_score": 0.7594983,
+      "threshold": 0.4,
+      "retained_count": 1,
+      "removed_count": 4,
+      "retained_chunk_uids": [
+        "ck-2ea79bf7a36554970fd27562fd41a036"
+      ],
+      "removed_chunk_uids": [
+        "ck-f53ef5c702fd6b47fad64d2bd0a64b8d",
+        "ck-689658ca81ca4786d51644cde6853013",
+        "ck-7b7b7a307d97a4e2d89be1789f2da143",
+        "ck-32fa3604eab018f602acb37be8a50da3"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q169",
+      "index": 169,
+      "query_type": "single_hop",
+      "top_score": 0.99897397,
+      "threshold": 0.4,
+      "retained_count": 3,
+      "removed_count": 2,
+      "retained_chunk_uids": [
+        "ck-1e396a04a61930e16684f90e2da65372",
+        "ck-185a03f37e8cedff6cf0fd242371319f",
+        "ck-9cc791d90420f192f4cb08fcc553f803"
+      ],
+      "removed_chunk_uids": [
+        "ck-fd954f5e9ce25d9fdaac786a50b2718e",
+        "ck-8b431a143e26e6e3560d18b46655cf77"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q171",
+      "index": 171,
+      "query_type": "single_hop",
+      "top_score": 0.99265867,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-9cc791d90420f192f4cb08fcc553f803",
+        "ck-2481a1cb917fc7e6cfb66b7c7b9bf8ab"
+      ],
+      "removed_chunk_uids": [
+        "ck-55c96b67082f06140a7c5bf9ac04889f",
+        "ck-7862d16b540fd67ccbc3aacfe1a3c5e9",
+        "ck-b5b5cf6439773fcc49a6feca78baaa38"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q172",
+      "index": 172,
+      "query_type": "multi_hop",
+      "top_score": 0.98184329,
+      "threshold": 0.4,
+      "retained_count": 2,
+      "removed_count": 3,
+      "retained_chunk_uids": [
+        "ck-1e396a04a61930e16684f90e2da65372",
+        "ck-9cc791d90420f192f4cb08fcc553f803"
+      ],
+      "removed_chunk_uids": [
+        "ck-185a03f37e8cedff6cf0fd242371319f",
+        "ck-62065674c3cc3d5b58f05840b1e96f6b",
+        "ck-fd954f5e9ce25d9fdaac786a50b2718e"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    },
+    {
+      "sample_id": "q197",
+      "index": 197,
+      "query_type": "single_hop",
+      "top_score": 0.97367799,
+      "threshold": 0.4,
+      "retained_count": 3,
+      "removed_count": 2,
+      "retained_chunk_uids": [
+        "ck-5a958e5078a73276aecb0b97b79b9586",
+        "ck-705144184ac0a2c9f1493dd5b829fc93",
+        "ck-387da51dc490b786322893e0cb9b17e2"
+      ],
+      "removed_chunk_uids": [
+        "ck-3b07f0542f7ca989ea1955d520e99904",
+        "ck-5f0c4653ab90d87d646030b2bb3c0f7e"
+      ],
+      "removed_ground_truth_chunk_uids": []
+    }
+  ],
+  "source": {
+    "run_id": "s3_20260911_formal_02",
+    "results_path": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\runs\\s3_20260911_formal_02\\results.jsonl",
+    "results_sha256": "A75686E4B245D31011496D05C8DF4968B582FCA233A3E4B416F440272B67B84F",
+    "baseline_snapshot_path": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\s3_baseline_snapshot.json",
+    "baseline_snapshot_sha256": "E5A369329F670E67D624B9642EEC90DB19F86FDAB9736D8A7F2872938B8C84D4",
+    "baseline_artifact_count": 17
+  }
+}

@@ -10,6 +10,8 @@ import os
 import sys
 from types import SimpleNamespace
 
+import pytest
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from langchain_core.language_models.fake_chat_models import (  # noqa: E402
@@ -32,16 +34,16 @@ from public_kb.citations import (  # noqa: E402
 )
 from public_kb.config import CitationRuleConfig, Settings  # noqa: E402
 from public_kb.qa_chain import (  # noqa: E402
-    _dense_only_retrieve,
     _entity_to_doc,
     _hybrid_search_with_full_fields,
     _search_with_full_fields,
+    _validate_mixed_schema,
     build_qa_chain,
 )
 
 
 def _doc(text="第三十七条 评标由招标人依法组建的评标委员会负责。",
-         chunk_id=101, **meta) -> Document:
+         chunk_id="101", **meta) -> Document:
     metadata = {
         "doc_name": "中华人民共和国招标投标法",
         "chapter": "第四章 开标、评标和中标",
@@ -65,7 +67,7 @@ def _citations(n=2, overrides=None) -> list:
         text = f"第{i}条 测试条文内容。"
         out.append(Citation(
             context_index=i,
-            chunk_id=1000 + i,
+            chunk_id=str(1000 + i),
             chunk_uid=compute_chunk_uid(text, meta),
             doc_name=meta["doc_name"],
             chapter=meta["chapter"],
@@ -128,7 +130,7 @@ def test_build_citations_structure():
     assert len(citations) == 1
     c = citations[0]
     assert c.context_index == 1
-    assert c.chunk_id == 101
+    assert c.chunk_id == "101"
     assert c.chunk_uid == "ck-abc"
     assert c.doc_name == "中华人民共和国招标投标法"
     assert c.chapter == "第四章 开标、评标和中标"
@@ -179,7 +181,7 @@ def _validate(citations, answer, context_ids=None, is_refusal=False, **cfg):
 def test_validator_all_pass():
     citations = _citations(2)
     answer = "评标委员会五人以上单数【来源1】。专家不少于三分之二【来源2】。"
-    report = _validate(citations, answer, context_ids=[1001, 1002])
+    report = _validate(citations, answer, context_ids=["1001", "1002"])
     assert report.all_passed is True
     assert report.cited_markers == [1, 2]
     assert report.uncited_chunks == []
@@ -197,21 +199,21 @@ def test_validator_r1_missing_chunk_id():
 
 def test_validator_r2_missing_uid():
     citations = _citations(1, overrides={1: {"chunk_uid": ""}})
-    report = _validate(citations, "答【来源1】", context_ids=[1001])
+    report = _validate(citations, "答【来源1】", context_ids=["1001"])
     assert report.all_passed is False
     assert not any(r.passed for r in report.rules if r.rule_id == "R2_chunk_uid_present")
 
 
 def test_validator_r3_unknown_doc_name():
     citations = _citations(1, overrides={1: {"doc_name": "未知文档"}})
-    report = _validate(citations, "答【来源1】", context_ids=[1001])
+    report = _validate(citations, "答【来源1】", context_ids=["1001"])
     assert report.all_passed is False
     assert not any(r.passed for r in report.rules if r.rule_id == "R3_source_location_present")
 
 
 def test_validator_r4_empty_text():
     citations = _citations(1, overrides={1: {"text": "  "}})
-    report = _validate(citations, "答【来源1】", context_ids=[1001])
+    report = _validate(citations, "答【来源1】", context_ids=["1001"])
     assert report.all_passed is False
     assert not any(r.passed for r in report.rules if r.rule_id == "R4_full_text_present")
 
@@ -219,7 +221,7 @@ def test_validator_r4_empty_text():
 def test_validator_r5_context_omission():
     """上下文 chunk 未进入 citations → 无遗漏规则失败。"""
     citations = _citations(1)
-    report = _validate(citations, "答【来源1】", context_ids=[1001, 2002])
+    report = _validate(citations, "答【来源1】", context_ids=["1001", "2002"])
     assert report.all_passed is False
     r5 = next(r for r in report.rules if r.rule_id == "R5_context_fully_cited")
     assert r5.passed is False and "2002" in r5.detail
@@ -228,7 +230,7 @@ def test_validator_r5_context_omission():
 def test_validator_r5_extra_citation():
     """citations 凭空多出未进入上下文的 chunk → 无遗漏规则失败。"""
     citations = _citations(2)
-    report = _validate(citations, "答【来源1】", context_ids=[1001])
+    report = _validate(citations, "答【来源1】", context_ids=["1001"])
     assert report.all_passed is False
     assert not any(r.passed for r in report.rules if r.rule_id == "R5_context_fully_cited")
 
@@ -243,7 +245,7 @@ def test_validator_r5_empty_context_with_citations():
 
 def test_validator_r6_unknown_marker():
     citations = _citations(2)
-    report = _validate(citations, "答【来源9】", context_ids=[1001, 1002])
+    report = _validate(citations, "答【来源9】", context_ids=["1001", "1002"])
     assert report.all_passed is False
     assert report.unknown_markers == [9]
     assert not any(r.passed for r in report.rules if r.rule_id == "R6_no_unknown_markers")
@@ -261,7 +263,7 @@ def test_validator_refusal_passes():
 def test_validator_uncited_chunks_recorded_default_soft():
     """默认配置（R7 关闭）：未标记引用仅记录，不影响 all_passed。"""
     citations = _citations(3)
-    report = _validate(citations, "只引用了第一个【来源1】", context_ids=[1001, 1002, 1003])
+    report = _validate(citations, "只引用了第一个【来源1】", context_ids=["1001", "1002", "1003"])
     assert report.all_passed is True
     assert report.uncited_chunks == [2, 3]
     r7 = next(r for r in report.rules if r.rule_id == "R7_all_context_marked")
@@ -271,7 +273,7 @@ def test_validator_uncited_chunks_recorded_default_soft():
 def test_validator_r7_strict_mode():
     citations = _citations(3)
     report = _validate(
-        citations, "只引用了第一个【来源1】", context_ids=[1001, 1002, 1003],
+        citations, "只引用了第一个【来源1】", context_ids=["1001", "1002", "1003"],
         enforce_all_context_cited=True,
     )
     assert report.all_passed is False
@@ -297,7 +299,7 @@ def test_validator_disabled_rule_not_enforced():
 def test_entity_to_doc_propagates_metadata():
     """pymilvus 3.x 嵌套 Hit.entity 结构（生产形态）→ 完整溯源元数据。"""
     inner = {
-        "id": 12345,
+        "id": "12345",
         "text": "第一条 条文内容。",
         "vector": [0.1] * 8,  # 向量不得进入 metadata
         "doc_name": "中华人民共和国招标投标法",
@@ -306,9 +308,9 @@ def test_entity_to_doc_propagates_metadata():
         "source_file": "laws.csv",
         "publish_date": "2019-12-28",
     }
-    entity = {"id": 12345, "distance": 0.88, "entity": inner}
+    entity = {"id": "12345", "distance": 0.88, "entity": inner}
     doc = _entity_to_doc(entity, 0.88)
-    assert doc.metadata["chunk_id"] == 12345
+    assert doc.metadata["chunk_id"] == "12345"
     assert doc.metadata["chunk_uid"] == compute_chunk_uid(inner["text"], inner)
     assert doc.metadata["doc_name"] == "中华人民共和国招标投标法"
     assert doc.metadata["chapter"] == "第一章 总则"
@@ -320,7 +322,7 @@ def test_entity_to_doc_propagates_metadata():
 def test_entity_to_doc_flat_entity():
     """平铺 dict 实体（如 get() 返回）同样可处理。"""
     entity = {
-        "id": 999,
+        "id": "999",
         "text": "第三条 内容。",
         "doc_name": "某法规",
         "chapter": "第二章",
@@ -328,14 +330,14 @@ def test_entity_to_doc_flat_entity():
     }
     doc = _entity_to_doc(entity, 0.7)
     assert doc.page_content == "第三条 内容。"
-    assert doc.metadata["chunk_id"] == 999
+    assert doc.metadata["chunk_id"] == "999"
     assert doc.metadata["doc_name"] == "某法规"
 
 
 class _MockCollection:
     """模拟 pymilvus MilvusClient 的检索接口。"""
 
-    def __init__(self, hits, has_sparse=False, fail_star_once=False):
+    def __init__(self, hits, has_sparse=True, fail_star_once=False):
         self._hits = hits
         self._has_sparse = has_sparse
         self._fail_star_once = fail_star_once
@@ -357,7 +359,8 @@ class _MockCollection:
 
     def hybrid_search(self, name, reqs=None, ranker=None, limit=None,
                       output_fields=None):
-        self.calls.append({"method": "hybrid_search", "output_fields": output_fields})
+        self.calls.append({"method": "hybrid_search", "output_fields": output_fields,
+                           "reqs": list(reqs or [])})
         if self._fail_star_once and output_fields == ["*"]:
             self._fail_star_once = False
             raise RuntimeError("server does not support wildcard")
@@ -372,7 +375,7 @@ class _MockEmbeddings:
         return [[0.1] * 1024] * len(texts)
 
 
-def _hit(chunk_id=7001, text="第三十七条 评标由招标人依法组建的评标委员会负责。", score=0.9):
+def _hit(chunk_id="7001", text="第三十七条 评标由招标人依法组建的评标委员会负责。", score=0.9):
     """构造 pymilvus 3.x 生产形态的嵌套 Hit。"""
     inner = {
         "id": chunk_id,
@@ -409,18 +412,51 @@ def test_hybrid_search_with_full_fields_fallback():
     assert collection.calls[1]["output_fields"] != ["*"]
 
 
-def test_dense_only_retrieve_attaches_chunk_id():
-    collection = _MockCollection([[_hit()]])
-    settings = Settings()
-    results = _dense_only_retrieve(
-        "评标委员会怎么组成？", None, settings, collection, _MockEmbeddings(),
+# ────────────────────────────────────────────────
+# 混合检索契约：BM25 度量 + schema fail-fast（2026-09 整改）
+# ────────────────────────────────────────────────
+def test_build_chain_validates_sparse_metric_and_anns_field():
+    """混合检索必须携带 BM25 度量的稀疏路请求（anns_field=sparse_vector）。"""
+    collection = _MockCollection([[_hit()]], has_sparse=True)
+    chain = build_qa_chain(
+        vector_store=None,
+        llm=FakeListChatModel(responses=["回答【来源1】。"]),
+        settings=Settings(),
+        collection=collection,
+        embeddings=_MockEmbeddings(),
     )
-    assert len(results) == 1
-    doc, score = results[0]
-    assert doc.metadata["chunk_id"] == 7001
-    assert doc.metadata["chunk_uid"] == compute_chunk_uid(
-        doc.page_content, doc.metadata)
-    assert doc.metadata["source_file"] == "laws.csv"
+    chain.invoke("评标委员会由哪些人组成？")
+
+    hybrid_calls = [c for c in collection.calls if c["method"] == "hybrid_search"]
+    assert hybrid_calls, "应执行 hybrid_search（混合检索）"
+    reqs = hybrid_calls[0]["reqs"]
+    fields = {req.anns_field: req for req in reqs}
+    assert set(fields) == {"vector", "sparse_vector"}
+    # 稀疏路：BM25 Function 场景度量必须为 BM25（写 IP 在 2.5+ 服务端不正确）
+    assert fields["sparse_vector"].param["metric_type"] == "BM25"
+    assert fields["sparse_vector"].data == ["评标委员会由哪些人组成？"]
+    # 稠密路：COSINE + nprobe
+    assert fields["vector"].param["metric_type"] == "COSINE"
+
+
+def test_build_chain_raises_on_legacy_dense_schema():
+    """旧版纯稠密 schema（无 sparse_vector 字段）→ 构建链即抛错（D3 fail-fast）。"""
+    collection = _MockCollection([[_hit()]], has_sparse=False)
+    with pytest.raises(RuntimeError, match="sparse_vector"):
+        build_qa_chain(
+            vector_store=None,
+            llm=FakeListChatModel(responses=["不应被调用"]),
+            settings=Settings(),
+            collection=collection,
+            embeddings=_MockEmbeddings(),
+        )
+
+
+def test_validate_mixed_schema_raises_for_legacy_collection():
+    """_validate_mixed_schema 直接对缺稀疏字段的集合抛 RuntimeError。"""
+    collection = _MockCollection([], has_sparse=False)
+    with pytest.raises(RuntimeError, match="sparse_vector"):
+        _validate_mixed_schema(collection, Settings())
 
 
 def test_full_chain_returns_citations_and_validation():
@@ -443,7 +479,7 @@ def test_full_chain_returns_citations_and_validation():
     citations = result["citations"]
     assert len(citations) == 1
     c = citations[0]
-    assert c["chunk_id"] == 7001
+    assert c["chunk_id"] == "7001"
     assert c["chunk_uid"].startswith("ck-")
     assert c["doc_name"] == "中华人民共和国招标投标法"
     assert c["text"] == hit.entity["entity"]["text"]  # 完整原文
@@ -471,7 +507,7 @@ def test_full_chain_refusal_report():
 # ────────────────────────────────────────────────
 # format_citations：呈现层渲染
 # ────────────────────────────────────────────────
-def _citation_dict(idx=1, chunk_id=1001, text="第一条 条文内容。", **meta):
+def _citation_dict(idx=1, chunk_id="1001", text="第一条 条文内容。", **meta):
     return {
         "context_index": idx,
         "chunk_id": chunk_id,
@@ -508,8 +544,8 @@ def test_format_citations_single():
 def test_format_citations_multi():
     block = format_citations([
         _citation_dict(1, text="甲"),
-        _citation_dict(2, chunk_id=1002, text="乙"),
-        _citation_dict(3, chunk_id=1003, text="丙"),
+        _citation_dict(2, chunk_id="1002", text="乙"),
+        _citation_dict(3, chunk_id="1003", text="丙"),
     ])
     assert "共 3 条" in block
     assert block.index("【来源1】") < block.index("【来源2】") < block.index("【来源3】")
@@ -540,7 +576,7 @@ def test_node_knowledge_qa_passes_citations():
     from agent.nodes import knowledge_qa as kqa
 
     citations = [{
-        "context_index": 1, "chunk_id": 7001, "chunk_uid": "ck-x",
+        "context_index": 1, "chunk_id": "7001", "chunk_uid": "ck-x",
         "doc_name": "法A", "chapter": "第一章", "chunk_index": 0,
         "text": "第一条", "score": 0.9, "metadata": {},
     }]

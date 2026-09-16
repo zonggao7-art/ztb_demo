@@ -1,0 +1,57 @@
+{
+  "run_id": "s2_20260910_formal_01",
+  "stage": "s2",
+  "planned_count": 200,
+  "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+  "git": {
+    "commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+    "working_tree_dirty": true
+  },
+  "known_reproducibility_limit": "S2 manifest records working_tree_dirty=true; its own source snapshot and this result snapshot preserve the auditable evidence used as the S3 baseline.",
+  "artifacts": {
+    "manifest.json": {
+      "sha256": "353085FAFBCBE3627E6E2AF646D072D073B8A36575A27CC543A7E6E787F669DF",
+      "bytes": 5811
+    },
+    "results.jsonl": {
+      "sha256": "168E7AF8827DC71670DBB596223805DA9A0ECBCA92EC59A786FC002D100ABEBE",
+      "bytes": 12735596
+    },
+    "scores.jsonl": {
+      "sha256": "47916DA88E5AB84A566285493C27E9F1CF00BCE3DB3F6B73A52CAC1B31FE9986",
+      "bytes": 73103
+    },
+    "scoring_usage.json": {
+      "sha256": "730B706B8E60421CA7ADDB6E0F431F210EEA4595438912D39367E757E3863773",
+      "bytes": 727
+    },
+    "summary.json": {
+      "sha256": "866630A2392DF7BDCB65ED7AD5741D0A6A04F4D894F452E229F4662BB64E7C50",
+      "bytes": 10006
+    },
+    "report.md": {
+      "sha256": "B24EED16C3E93B7A08E2C13778C66AA634EAC5AF4933A297C36C3AAEE8BE2C1E",
+      "bytes": 2175
+    },
+    "paired_comparison.json": {
+      "sha256": "0F6662A0AADE21C9962069176F2224678EB1471C88C30C3715DE1F27C373F41E",
+      "bytes": 201605
+    },
+    "paired_comparison.md": {
+      "sha256": "BC3719D83B8DFE8DD91BE2C2E43B688DC1A02EA6EAA1530BA8C53F6CA7D88802",
+      "bytes": 1854
+    },
+    "scores_before_429_recovery.jsonl": {
+      "sha256": "74FCF410056DE3901326EB1E25830FB0C555073C9547BE7B3E20D10F8EA83872",
+      "bytes": 76523
+    },
+    "scoring_recovery_attempts.jsonl": {
+      "sha256": "223818550B8628B664E98F18ED61E229D68F401E3BB597ECF72A73F55BED972D",
+      "bytes": 6814
+    },
+    "recover_failed_metrics.py": {
+      "sha256": "A7895995400C7FAA959AF9E987ED096BC36FA5B92C0CF2CC1412F872D43F5390",
+      "bytes": 7208
+    }
+  }
+}

@@ -75,8 +75,3 @@ def get_or_register(name: str, limit: int) -> asyncio.Semaphore:
     if name not in _LIMITS:
         register(name, limit)
     return _semaphore_for(name)
-
-
-def list_registered() -> list[str]:
-    """返回所有已注册的信号量名（调试用）。"""
-    return list(_LIMITS.keys())

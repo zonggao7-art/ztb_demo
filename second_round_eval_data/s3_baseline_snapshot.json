@@ -1,0 +1,81 @@
+{
+  "run_id": "s3_20260911_formal_02",
+  "stage": "s3",
+  "planned_count": 200,
+  "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+  "git": {
+    "commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+    "working_tree_dirty": true
+  },
+  "known_reproducibility_limit": "S3 manifest records working_tree_dirty=true; its collection source snapshot, scoring recovery source snapshot, and this result snapshot preserve the auditable evidence used as the S4 baseline.",
+  "artifacts": {
+    "manifest.json": {
+      "sha256": "AFF22BEBAB086B197F282DD3AB85C3421BBFE666E97D01C364DF5F9D2BBEF9B1",
+      "bytes": 11807
+    },
+    "results.jsonl": {
+      "sha256": "A75686E4B245D31011496D05C8DF4968B582FCA233A3E4B416F440272B67B84F",
+      "bytes": 13641140
+    },
+    "scores.jsonl": {
+      "sha256": "3465085A6C5C367F0020BCD919DC4A70F034BF42E38484A2C765E9B03A9C7622",
+      "bytes": 73229
+    },
+    "scoring_usage.json": {
+      "sha256": "E6A682BCC0F7915FDE8406B5A40B1F5AE947E1CAC9CD8155E4E6AAFF442B1113",
+      "bytes": 727
+    },
+    "summary.json": {
+      "sha256": "BA8CC29BD6F07AB4444A5A6E7E5E69437D5B403347F2E2B23FDE6CC41BE3AEF2",
+      "bytes": 11529
+    },
+    "report.md": {
+      "sha256": "2A69BBB1B6C683CA90F23B2B394034D19B773CB95A8188EE574420AB99A00EA5",
+      "bytes": 3231
+    },
+    "paired_comparison.json": {
+      "sha256": "06B3EE5552E7BF260BF5B2F15084A662E03DC81FE7BF779F46C67DBC31AB1CB1",
+      "bytes": 424678
+    },
+    "paired_comparison.md": {
+      "sha256": "9F23D282CF89C8B16056B4D73A2275148BDF06392FB4431E57CA8C2A516AFB6B",
+      "bytes": 3780
+    },
+    "manifest_before_connection_recovery.json": {
+      "sha256": "2830A2A189317B1B80094F430D39DC8F7BFB9F1DD80BCA207180F28473414F64",
+      "bytes": 10199
+    },
+    "paired_comparison_before_connection_recovery.json": {
+      "sha256": "CE461FB9E39DC443EEC81228DEC6E02C8D623CD59219A3763EDBD3D7881F6600",
+      "bytes": 201423
+    },
+    "paired_comparison_before_connection_recovery.md": {
+      "sha256": "7753263E85A87619C06346276BE3A5174439D8B78DB2B5703B37DAFEA122B627",
+      "bytes": 2021
+    },
+    "report_before_connection_recovery.md": {
+      "sha256": "4753D5C808E3362F8FCEA3AADA51687D475F624ADC6FA71EF545A216060008D5",
+      "bytes": 2685
+    },
+    "scores_before_connection_recovery.jsonl": {
+      "sha256": "5551C9A38E9F03A4398B88584A8A4472F1EA9F5A2FE36ABE5CB7C99CAA9B84D4",
+      "bytes": 75903
+    },
+    "scoring_connection_recovery_attempts.jsonl": {
+      "sha256": "5C47180C189E85016C7232D7B92506EA4282D45B2704AC6AC7E9B803A8407519",
+      "bytes": 19601
+    },
+    "scoring_usage_before_connection_recovery.json": {
+      "sha256": "3B77A9B7EA26E207CEB10EFD71A6360CC691114F910CDC090BAF0E5230C56080",
+      "bytes": 727
+    },
+    "summary_before_connection_recovery.json": {
+      "sha256": "A11A4293BBE317F3A8DCAEF0154CF1AF14C5815BFFD47C40F280D3251EB8984D",
+      "bytes": 12162
+    },
+    "recover_connection_failures.py": {
+      "sha256": "2AC4719D3A7563E2D839F50FCEE8B9DCC2556B207BC7E9F76EE8A7E8E0E85D66",
+      "bytes": 10284
+    }
+  }
+}

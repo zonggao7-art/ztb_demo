@@ -1,0 +1,92 @@
+{
+  "schema_version": "third-round-reliability-summary-v1",
+  "scenario_attempts": 5,
+  "collection_complete": true,
+  "per_repeat": {
+    "1": {
+      "status": "passed",
+      "metrics": {
+        "A1": {
+          "value": 0,
+          "threshold": {
+            "operator": "eq",
+            "value": 0,
+            "unit": "events",
+            "blocking": true
+          },
+          "threshold_passed": true
+        },
+        "E1": {
+          "value": null,
+          "distribution": {
+            "cancelled": 1,
+            "clarify": 1,
+            "complete": 6,
+            "partial": 2
+          },
+          "threshold": {
+            "mode": "report_distribution"
+          },
+          "threshold_passed": null
+        },
+        "E2": {
+          "value": 1.0,
+          "passed": 3,
+          "total": 3,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "expected_passed": 16,
+            "expected_total": 16
+          },
+          "threshold_passed": true
+        },
+        "E3": {
+          "value": 0,
+          "threshold": {
+            "operator": "eq",
+            "value": 0,
+            "unit": "violations",
+            "scenario_count": 8,
+            "blocking": true
+          },
+          "threshold_passed": true
+        },
+        "E4": {
+          "value": 0,
+          "threshold": {
+            "operator": "eq",
+            "value": 0,
+            "unit": "violations",
+            "scenario_count": 4,
+            "blocking": true
+          },
+          "threshold_passed": true
+        },
+        "E5": {
+          "value": 1.0,
+          "passed": 4,
+          "total": 4,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "expected_passed": 16,
+            "expected_total": 16,
+            "blocking": true
+          },
+          "threshold_passed": true
+        }
+      },
+      "failed_thresholds": [],
+      "scenario_count": 5
+    }
+  },
+  "E6": {
+    "mode": "not_applicable_in_smoke",
+    "required_consecutive_passing_runs": 3,
+    "observed_runs": 1,
+    "passing_runs": 1,
+    "threshold_passed": null
+  },
+  "decision": "passed"
+}

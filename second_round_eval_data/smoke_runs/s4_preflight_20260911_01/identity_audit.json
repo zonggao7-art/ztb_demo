@@ -1,0 +1,76 @@
+{
+  "audit_status": "functional_results_verified_but_subset_labels_invalid",
+  "formal_evidence_eligible": false,
+  "paid_api_replayed": false,
+  "issue": "The four selected dataset rows were executed correctly, but the subset collector relabeled positions 2-4 as q002-q004 instead of preserving q079, q088, and q098.",
+  "preservation": "Original manifest.json, results.jsonl, and summary.json were not modified.",
+  "original_artifacts": {
+    "manifest.json": {
+      "sha256": "441CC428CBC8A7493D2BCB3B74BDF205F3E5A154900D4B419966D025B6EAC974",
+      "bytes": 7422
+    },
+    "results.jsonl": {
+      "sha256": "24A778358C46E0145C79AB2954FEC7F3D569678AEAE5E68E0CAF92A1EEA8F0D3",
+      "bytes": 173010
+    },
+    "summary.json": {
+      "sha256": "E78C9D06271DF345F8E88D74558874CC874D2C25D79AACCAD1F263A6785FDA79",
+      "bytes": 1288
+    }
+  },
+  "content_identity_checks": [
+    {
+      "position": 1,
+      "stored_sample_id": "q001",
+      "stored_index": 1,
+      "actual_dataset_index": 1,
+      "actual_sample_id": "q001",
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    },
+    {
+      "position": 2,
+      "stored_sample_id": "q002",
+      "stored_index": 2,
+      "actual_dataset_index": 79,
+      "actual_sample_id": "q079",
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    },
+    {
+      "position": 3,
+      "stored_sample_id": "q003",
+      "stored_index": 3,
+      "actual_dataset_index": 88,
+      "actual_sample_id": "q088",
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    },
+    {
+      "position": 4,
+      "stored_sample_id": "q004",
+      "stored_index": 4,
+      "actual_dataset_index": 98,
+      "actual_sample_id": "q098",
+      "question_matches": true,
+      "reference_matches": true,
+      "ground_truth_ids_match": true,
+      "ground_truth_text_match": true
+    }
+  ],
+  "functional_observations": {
+    "collection_success": "4/4",
+    "ragas_called": false,
+    "reranker_rate_limit_count": 0,
+    "citation_counts_in_selected_order": [5, 1, 4, 2],
+    "exact_chunk_micro_recall": 1.0,
+    "exact_chunk_all_hit_rate": 1.0
+  },
+  "disposition": "Supersede this run for the final S4 readiness gate and rerun under a new run id after the subset identity fix is frozen and preflighted."
+}

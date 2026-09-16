@@ -114,7 +114,7 @@ def test_query_table_async_timeout_returns_empty(monkeypatch):
 
     conn = _Conn()
 
-    async def semantic_timeout(conn, table, classification, intent, semantic_ids):
+    async def recall_timeout(conn, table, classification, intent):
         raise _SQLTimeoutError("timeout")
 
     intent = SearchIntent(
@@ -122,9 +122,8 @@ def test_query_table_async_timeout_returns_empty(monkeypatch):
     )
     monkeypatch.setattr(recall_async_mod, "acquire", lambda: _FakeAcquire(conn))
     monkeypatch.setattr(
-        recall_async_mod, "_semantic_recall_candidates", lambda intent, tables: {}
+        recall_async_mod, "_execute_recall_chain_for_table_async", recall_timeout
     )
-    monkeypatch.setattr(recall_async_mod, "_query_semantic_rows_async", semantic_timeout)
 
     result = asyncio.run(_query_table_async("company_info", intent))
     assert result["table"] == "company_info"

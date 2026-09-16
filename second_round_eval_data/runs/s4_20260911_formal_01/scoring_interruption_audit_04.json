@@ -1,0 +1,64 @@
+{
+  "audited_at": "2026-09-11T22:51:35.5293446+08:00",
+  "audit_status": "fourth_scoring_attempt_paused_after_recurrent_rate_limit",
+  "run_id": "s4_20260911_formal_01",
+  "manifest_status": "scoring_interrupted",
+  "scoring_resumed_at": "2026-09-11T22:42:00.464619+08:00",
+  "scoring_interrupted_at": "2026-09-11T22:51:10.462206+08:00",
+  "operator_action": "Stopped after the q145-q148 batch reported recurrent HTTP 429 failures; no further completed batch was accepted.",
+  "checkpoint": {
+    "score_rows": 148,
+    "fully_successful_rows": 134,
+    "rows_with_failed_metrics": 14,
+    "successful_metric_count": 560,
+    "failed_metric_count": 32,
+    "not_attempted_row_count": 52,
+    "not_attempted_metric_count": 208,
+    "last_written_sample_id": "q148",
+    "next_resume_sample_id": "q149"
+  },
+  "fourth_attempt_delta": {
+    "new_score_rows": 32,
+    "new_fully_successful_rows": 28,
+    "new_successful_metric_count": 119,
+    "new_failed_metric_count": 9,
+    "continuous_all_success_range": "q117-q144",
+    "rate_limited_written_batch": "q145-q148",
+    "interrupted_uncommitted_batch": "q149-q152"
+  },
+  "metric_status": {
+    "context_recall": {"success": 148, "failed": 0, "not_attempted": 52},
+    "context_precision": {"success": 137, "failed": 11, "not_attempted": 52},
+    "answer_correctness": {"success": 137, "failed": 11, "not_attempted": 52},
+    "faithfulness": {"success": 138, "failed": 10, "not_attempted": 52}
+  },
+  "new_failed_rows": [
+    {"sample_id": "q145", "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]},
+    {"sample_id": "q146", "failed_metrics": ["context_precision"]},
+    {"sample_id": "q147", "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]},
+    {"sample_id": "q148", "failed_metrics": ["answer_correctness", "faithfulness"]}
+  ],
+  "scoring_usage_checkpoint": {
+    "calls": 1953,
+    "input_tokens": 4648476,
+    "output_tokens": 413887,
+    "total_tokens": 5062363,
+    "api_actual_calls": 1921,
+    "rough_estimate_calls": 32,
+    "unknown_outputs": 32,
+    "audit_limit": "Usage is persisted after a whole four-row batch completes. Calls made by the interrupted q149-q152 batch are not represented in this checkpoint, so provider-billed usage may be higher."
+  },
+  "artifacts": {
+    "manifest.json": {"sha256": "D5153F483C3E875AA4D219C9453DBC482AC05E1A1263B26B98FCA8C8B5F28AA9", "bytes": 11867},
+    "results.jsonl": {"sha256": "1ADEA11AC9AA4E57DDF5F773243272B6B0608B61AC9BCD736E5F0712ED2CF521", "bytes": 13133506},
+    "scores.jsonl": {"sha256": "AE9C2024F014101A6A04CB65451250E8CAE1598E03D1A944D1F85BCA9341107F", "bytes": 63775},
+    "scoring_usage.json": {"sha256": "06C35CF4BA63327333636E4E43A6D7B03030B0F369DC0F1392B53FB5B2B52610", "bytes": 727}
+  },
+  "approved_strategy": {
+    "scoring_concurrency": 4,
+    "contract_changed": false,
+    "cooldown_before_next_attempt_minutes": 90,
+    "resume_behavior": "Verify the q001-q148 prefix and resume from q149. Stop on recurrent provider 429.",
+    "failed_metric_recovery_deferred": true
+  }
+}

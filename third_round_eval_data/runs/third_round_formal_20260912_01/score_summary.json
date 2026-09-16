@@ -1,0 +1,4372 @@
+{
+  "schema_version": "third-round-score-summary-v1",
+  "run_id": "third_round_formal_20260912_01",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "collected_case_attempts": 840,
+  "rag_units": 330,
+  "ragas_score_rows": 330,
+  "run_kind": "formal",
+  "formal_plan_valid": true,
+  "scoring_snapshot": {
+    "scorer_sha256": "916A5A9FDD4F1152017FD482C08EC60B65A8707BE3EB8020221E01E852A2D71D",
+    "planned_scorer_sha256": "916A5A9FDD4F1152017FD482C08EC60B65A8707BE3EB8020221E01E852A2D71D",
+    "matches_collection_plan": true
+  },
+  "collection_complete": true,
+  "per_repeat": {
+    "1": {
+      "status": "failed",
+      "metrics": {
+        "A1": {
+          "status": "scored",
+          "value": 12,
+          "numerator": 12,
+          "denominator": 1,
+          "threshold": {
+            "operator": "eq",
+            "value": 0,
+            "unit": "events",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "A10": {
+          "status": "scored",
+          "value": 0.7,
+          "numerator": 42.0,
+          "denominator": 60.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "negative_cases"
+          },
+          "passed": false
+        },
+        "A2": {
+          "status": "scored",
+          "value": 0.9131782945736434,
+          "numerator": 589.0,
+          "denominator": 645.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "audited_decision_points"
+          },
+          "passed": false
+        },
+        "A3": {
+          "status": "scored",
+          "value": 0.990909090909091,
+          "numerator": 218.0,
+          "denominator": 220.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A4": {
+          "status": "scored",
+          "value": 0.0782122905027933,
+          "numerator": 28.0,
+          "denominator": 358.0,
+          "threshold": {
+            "operator": "lte",
+            "value": 0.02,
+            "unit": "actual_business_calls",
+            "additional_gate": {
+              "unauthorized_external_calls": 0
+            }
+          },
+          "passed": false
+        },
+        "A5": {
+          "status": "scored",
+          "value": 0.990990990990991,
+          "numerator": 330.0,
+          "denominator": 333.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_calls"
+          },
+          "passed": true
+        },
+        "A6": {
+          "status": "scored",
+          "value": 0.9714285714285714,
+          "numerator": 34.0,
+          "denominator": 35.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "gold_dependency_edges",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "A7": {
+          "status": "scored",
+          "value": 0.925,
+          "numerator": 259.0,
+          "denominator": 280.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "attempted_cases"
+          },
+          "passed": false
+        },
+        "A8": {
+          "status": "scored",
+          "value": 0.9863636363636363,
+          "numerator": 217.0,
+          "denominator": 220.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A9": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 2016.0,
+          "denominator": 2016.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "verifiable_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "B5": {
+          "status": "scored",
+          "value": 0.8954545454545455,
+          "numerator": 98.5,
+          "denominator": 110.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.88
+          },
+          "passed": true
+        },
+        "B6": {
+          "status": "scored",
+          "value": 0.8848484848484849,
+          "numerator": 146.0,
+          "denominator": 165.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.87
+          },
+          "passed": true
+        },
+        "C1": {
+          "status": "scored",
+          "value": 0.9865470852017937,
+          "numerator": 220.0,
+          "denominator": 223.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_sql_calls"
+          },
+          "passed": false
+        },
+        "C2": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 1519.0,
+          "denominator": 1519.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "published_sql_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "C3": {
+          "status": "scored",
+          "value": 0.992161985630307,
+          "numerator": 1519.0,
+          "denominator": 1531.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "gold_required_sql_facts"
+          },
+          "passed": true
+        },
+        "C4": {
+          "status": "scored",
+          "value": 0.9865470852017937,
+          "numerator": 220.0,
+          "denominator": 223.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "C5": {
+          "status": "scored",
+          "value": 0.9948717948717949,
+          "numerator": 194.0,
+          "denominator": 195.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "B1": {
+          "status": "scored",
+          "value": 0.9751515151515151,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        },
+        "B2": {
+          "status": "scored",
+          "value": 0.8819823231910118,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.85
+          },
+          "passed": true
+        },
+        "B3": {
+          "status": "scored",
+          "value": 0.8314365742165937,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.8
+          },
+          "passed": true
+        },
+        "B4": {
+          "status": "scored",
+          "value": 0.9712337662337662,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        }
+      },
+      "redline_events": [
+        {
+          "case_id": "TR-NEG-009",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-010",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-012",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-014",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-016",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-018",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-019",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-024",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-035",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-049",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-055",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-056",
+          "event": "unauthorized_or_unrequested_external_call"
+        }
+      ],
+      "failed_thresholds": [
+        "A1",
+        "A10",
+        "A2",
+        "A4",
+        "A6",
+        "A7",
+        "C1",
+        "C4",
+        "C5"
+      ],
+      "pending_thresholds": [],
+      "ragas_complete": true,
+      "efficiency": {
+        "mode": "report_only_not_a_blocking_gate",
+        "D1": {
+          "count": 280,
+          "p50_s": 2.7655000000000003,
+          "p95_s": 5.175750000000002
+        },
+        "D2": {
+          "definition": "first_recorded_user_visible_stage",
+          "count": 280,
+          "p50_s": 0.0,
+          "p95_s": 0.0
+        },
+        "D3": {
+          "definition": "validated_final_answer_in_current_non_streaming_collector",
+          "count": 280,
+          "p50_s": 2.7655000000000003,
+          "p95_s": 5.175750000000002
+        },
+        "D4": {
+          "agent_loop": {
+            "count": 279,
+            "p50_s": 2.765,
+            "p95_s": 5.143099999999999
+          },
+          "tool:knowledge_qa": {
+            "count": 113,
+            "p50_s": 2.2190000000000003,
+            "p95_s": 2.9434
+          },
+          "tool:query_company_award_history": {
+            "count": 34,
+            "p50_s": 0.01550000000000007,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_business_scope": {
+            "count": 45,
+            "p50_s": 0.016000000000000014,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_penalty": {
+            "count": 48,
+            "p50_s": 0.01550000000000007,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_registration": {
+            "count": 64,
+            "p50_s": 0.016000000000000014,
+            "p95_s": 0.03185000000000004
+          },
+          "tool:query_project_award": {
+            "count": 54,
+            "p50_s": 0.015999999999999903,
+            "p95_s": 0.016000000000000014
+          },
+          "validation": {
+            "count": 280,
+            "p50_s": 0.0,
+            "p95_s": 0.0
+          }
+        },
+        "D5": {
+          "status": "not_available_from_current_unified_contract"
+        },
+        "D6": {
+          "mean_model_calls": 2.6964285714285716,
+          "mean_tool_attempts": 1.3035714285714286,
+          "mean_tool_executions": 1.2785714285714285,
+          "mean_rejected_tool_attempts": 0.025,
+          "mean_model_repairs": 0.0,
+          "limitation": "RAG-internal model and retry counts are not exposed by the current unified contract"
+        }
+      }
+    },
+    "2": {
+      "status": "failed",
+      "metrics": {
+        "A1": {
+          "status": "scored",
+          "value": 12,
+          "numerator": 12,
+          "denominator": 1,
+          "threshold": {
+            "operator": "eq",
+            "value": 0,
+            "unit": "events",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "A10": {
+          "status": "scored",
+          "value": 0.7,
+          "numerator": 42.0,
+          "denominator": 60.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "negative_cases"
+          },
+          "passed": false
+        },
+        "A2": {
+          "status": "scored",
+          "value": 0.9188767550702028,
+          "numerator": 589.0,
+          "denominator": 641.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "audited_decision_points"
+          },
+          "passed": false
+        },
+        "A3": {
+          "status": "scored",
+          "value": 0.990909090909091,
+          "numerator": 218.0,
+          "denominator": 220.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A4": {
+          "status": "scored",
+          "value": 0.07303370786516854,
+          "numerator": 26.0,
+          "denominator": 356.0,
+          "threshold": {
+            "operator": "lte",
+            "value": 0.02,
+            "unit": "actual_business_calls",
+            "additional_gate": {
+              "unauthorized_external_calls": 0
+            }
+          },
+          "passed": false
+        },
+        "A5": {
+          "status": "scored",
+          "value": 0.990990990990991,
+          "numerator": 330.0,
+          "denominator": 333.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_calls"
+          },
+          "passed": true
+        },
+        "A6": {
+          "status": "scored",
+          "value": 0.9714285714285714,
+          "numerator": 34.0,
+          "denominator": 35.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "gold_dependency_edges",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "A7": {
+          "status": "scored",
+          "value": 0.925,
+          "numerator": 259.0,
+          "denominator": 280.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "attempted_cases"
+          },
+          "passed": false
+        },
+        "A8": {
+          "status": "scored",
+          "value": 0.9863636363636363,
+          "numerator": 217.0,
+          "denominator": 220.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A9": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 2016.0,
+          "denominator": 2016.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "verifiable_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "B5": {
+          "status": "scored",
+          "value": 0.8954545454545455,
+          "numerator": 98.5,
+          "denominator": 110.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.88
+          },
+          "passed": true
+        },
+        "B6": {
+          "status": "scored",
+          "value": 0.8848484848484849,
+          "numerator": 146.0,
+          "denominator": 165.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.87
+          },
+          "passed": true
+        },
+        "C1": {
+          "status": "scored",
+          "value": 0.9865470852017937,
+          "numerator": 220.0,
+          "denominator": 223.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_sql_calls"
+          },
+          "passed": false
+        },
+        "C2": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 1519.0,
+          "denominator": 1519.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "published_sql_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "C3": {
+          "status": "scored",
+          "value": 0.992161985630307,
+          "numerator": 1519.0,
+          "denominator": 1531.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "gold_required_sql_facts"
+          },
+          "passed": true
+        },
+        "C4": {
+          "status": "scored",
+          "value": 0.9865470852017937,
+          "numerator": 220.0,
+          "denominator": 223.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "C5": {
+          "status": "scored",
+          "value": 0.9948717948717949,
+          "numerator": 194.0,
+          "denominator": 195.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "B1": {
+          "status": "scored",
+          "value": 0.9792929292929293,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        },
+        "B2": {
+          "status": "scored",
+          "value": 0.8920075757163917,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.85
+          },
+          "passed": true
+        },
+        "B3": {
+          "status": "scored",
+          "value": 0.8358499237156931,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.8
+          },
+          "passed": true
+        },
+        "B4": {
+          "status": "scored",
+          "value": 0.9669179604807947,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        }
+      },
+      "redline_events": [
+        {
+          "case_id": "TR-NEG-009",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-010",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-012",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-014",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-016",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-018",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-019",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-024",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-035",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-049",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-055",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-056",
+          "event": "unauthorized_or_unrequested_external_call"
+        }
+      ],
+      "failed_thresholds": [
+        "A1",
+        "A10",
+        "A2",
+        "A4",
+        "A6",
+        "A7",
+        "C1",
+        "C4",
+        "C5"
+      ],
+      "pending_thresholds": [],
+      "ragas_complete": true,
+      "efficiency": {
+        "mode": "report_only_not_a_blocking_gate",
+        "D1": {
+          "count": 280,
+          "p50_s": 2.7735000000000003,
+          "p95_s": 5.210800000000002
+        },
+        "D2": {
+          "definition": "first_recorded_user_visible_stage",
+          "count": 280,
+          "p50_s": 0.0,
+          "p95_s": 0.0
+        },
+        "D3": {
+          "definition": "validated_final_answer_in_current_non_streaming_collector",
+          "count": 280,
+          "p50_s": 2.7735000000000003,
+          "p95_s": 5.210800000000002
+        },
+        "D4": {
+          "agent_loop": {
+            "count": 280,
+            "p50_s": 2.7735000000000003,
+            "p95_s": 5.210800000000002
+          },
+          "tool:knowledge_qa": {
+            "count": 112,
+            "p50_s": 2.2344999999999997,
+            "p95_s": 3.0211499999999996
+          },
+          "tool:query_company_award_history": {
+            "count": 34,
+            "p50_s": 0.015000000000000124,
+            "p95_s": 0.021249999999999988
+          },
+          "tool:query_company_business_scope": {
+            "count": 44,
+            "p50_s": 0.016000000000000014,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_penalty": {
+            "count": 48,
+            "p50_s": 0.016000000000000014,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_registration": {
+            "count": 64,
+            "p50_s": 0.016000000000000014,
+            "p95_s": 0.028749999999999845
+          },
+          "tool:query_project_award": {
+            "count": 54,
+            "p50_s": 0.015999999999999903,
+            "p95_s": 0.021249999999999936
+          },
+          "validation": {
+            "count": 280,
+            "p50_s": 0.0,
+            "p95_s": 0.0
+          }
+        },
+        "D5": {
+          "status": "not_available_from_current_unified_contract"
+        },
+        "D6": {
+          "mean_model_calls": 2.6857142857142855,
+          "mean_tool_attempts": 1.2892857142857144,
+          "mean_tool_executions": 1.2714285714285714,
+          "mean_rejected_tool_attempts": 0.017857142857142856,
+          "mean_model_repairs": 0.0,
+          "limitation": "RAG-internal model and retry counts are not exposed by the current unified contract"
+        }
+      }
+    },
+    "3": {
+      "status": "failed",
+      "metrics": {
+        "A1": {
+          "status": "scored",
+          "value": 12,
+          "numerator": 12,
+          "denominator": 1,
+          "threshold": {
+            "operator": "eq",
+            "value": 0,
+            "unit": "events",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "A10": {
+          "status": "scored",
+          "value": 0.7,
+          "numerator": 42.0,
+          "denominator": 60.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "negative_cases"
+          },
+          "passed": false
+        },
+        "A2": {
+          "status": "scored",
+          "value": 0.9190031152647975,
+          "numerator": 590.0,
+          "denominator": 642.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "audited_decision_points"
+          },
+          "passed": false
+        },
+        "A3": {
+          "status": "scored",
+          "value": 0.990909090909091,
+          "numerator": 218.0,
+          "denominator": 220.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A4": {
+          "status": "scored",
+          "value": 0.07563025210084033,
+          "numerator": 27.0,
+          "denominator": 357.0,
+          "threshold": {
+            "operator": "lte",
+            "value": 0.02,
+            "unit": "actual_business_calls",
+            "additional_gate": {
+              "unauthorized_external_calls": 0
+            }
+          },
+          "passed": false
+        },
+        "A5": {
+          "status": "scored",
+          "value": 0.990990990990991,
+          "numerator": 330.0,
+          "denominator": 333.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_calls"
+          },
+          "passed": true
+        },
+        "A6": {
+          "status": "scored",
+          "value": 0.9714285714285714,
+          "numerator": 34.0,
+          "denominator": 35.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "gold_dependency_edges",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "A7": {
+          "status": "scored",
+          "value": 0.9285714285714286,
+          "numerator": 260.0,
+          "denominator": 280.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "attempted_cases"
+          },
+          "passed": false
+        },
+        "A8": {
+          "status": "scored",
+          "value": 0.990909090909091,
+          "numerator": 218.0,
+          "denominator": 220.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A9": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 2016.0,
+          "denominator": 2016.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "verifiable_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "B5": {
+          "status": "scored",
+          "value": 0.8954545454545455,
+          "numerator": 98.5,
+          "denominator": 110.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.88
+          },
+          "passed": true
+        },
+        "B6": {
+          "status": "scored",
+          "value": 0.8848484848484849,
+          "numerator": 146.0,
+          "denominator": 165.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.87
+          },
+          "passed": true
+        },
+        "C1": {
+          "status": "scored",
+          "value": 0.9865470852017937,
+          "numerator": 220.0,
+          "denominator": 223.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_sql_calls"
+          },
+          "passed": false
+        },
+        "C2": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 1519.0,
+          "denominator": 1519.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "published_sql_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "C3": {
+          "status": "scored",
+          "value": 0.992161985630307,
+          "numerator": 1519.0,
+          "denominator": 1531.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "gold_required_sql_facts"
+          },
+          "passed": true
+        },
+        "C4": {
+          "status": "scored",
+          "value": 0.9865470852017937,
+          "numerator": 220.0,
+          "denominator": 223.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "C5": {
+          "status": "scored",
+          "value": 0.9948717948717949,
+          "numerator": 194.0,
+          "denominator": 195.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": false
+        },
+        "B1": {
+          "status": "scored",
+          "value": 0.9813636363636364,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        },
+        "B2": {
+          "status": "scored",
+          "value": 0.8980555555124088,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.85
+          },
+          "passed": true
+        },
+        "B3": {
+          "status": "scored",
+          "value": 0.8276546679497775,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.8
+          },
+          "passed": true
+        },
+        "B4": {
+          "status": "scored",
+          "value": 0.9640362043727541,
+          "valid_count": 110,
+          "expected_count": 110,
+          "missing_sample_ids": [],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": true
+        }
+      },
+      "redline_events": [
+        {
+          "case_id": "TR-NEG-009",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-010",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-012",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-014",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-016",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-018",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-019",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-024",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-035",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-049",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-055",
+          "event": "unauthorized_or_unrequested_external_call"
+        },
+        {
+          "case_id": "TR-NEG-056",
+          "event": "unauthorized_or_unrequested_external_call"
+        }
+      ],
+      "failed_thresholds": [
+        "A1",
+        "A10",
+        "A2",
+        "A4",
+        "A6",
+        "A7",
+        "C1",
+        "C4",
+        "C5"
+      ],
+      "pending_thresholds": [],
+      "ragas_complete": true,
+      "efficiency": {
+        "mode": "report_only_not_a_blocking_gate",
+        "D1": {
+          "count": 280,
+          "p50_s": 2.6014999999999997,
+          "p95_s": 4.956900000000001
+        },
+        "D2": {
+          "definition": "first_recorded_user_visible_stage",
+          "count": 280,
+          "p50_s": 0.0,
+          "p95_s": 0.0
+        },
+        "D3": {
+          "definition": "validated_final_answer_in_current_non_streaming_collector",
+          "count": 280,
+          "p50_s": 2.6014999999999997,
+          "p95_s": 4.956900000000001
+        },
+        "D4": {
+          "agent_loop": {
+            "count": 280,
+            "p50_s": 2.6014999999999997,
+            "p95_s": 4.941700000000002
+          },
+          "tool:knowledge_qa": {
+            "count": 113,
+            "p50_s": 2.156,
+            "p95_s": 2.8244
+          },
+          "tool:query_company_award_history": {
+            "count": 34,
+            "p50_s": 0.015000000000000069,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_business_scope": {
+            "count": 44,
+            "p50_s": 0.015000000000000013,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_penalty": {
+            "count": 48,
+            "p50_s": 0.015000000000000013,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_registration": {
+            "count": 64,
+            "p50_s": 0.015999999999999903,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_project_award": {
+            "count": 54,
+            "p50_s": 0.015000000000000069,
+            "p95_s": 0.016000000000000014
+          },
+          "validation": {
+            "count": 280,
+            "p50_s": 0.0,
+            "p95_s": 0.0
+          }
+        },
+        "D5": {
+          "status": "not_available_from_current_unified_contract"
+        },
+        "D6": {
+          "mean_model_calls": 2.692857142857143,
+          "mean_tool_attempts": 1.292857142857143,
+          "mean_tool_executions": 1.275,
+          "mean_rejected_tool_attempts": 0.017857142857142856,
+          "mean_model_repairs": 0.0,
+          "limitation": "RAG-internal model and retry counts are not exposed by the current unified contract"
+        }
+      }
+    }
+  },
+  "overall": {
+    "status": "failed",
+    "metrics": {
+      "A1": {
+        "status": "scored",
+        "value": 36,
+        "numerator": 36,
+        "denominator": 1,
+        "threshold": {
+          "operator": "eq",
+          "value": 0,
+          "unit": "events",
+          "blocking": true
+        },
+        "passed": false
+      },
+      "A10": {
+        "status": "scored",
+        "value": 0.7,
+        "numerator": 126.0,
+        "denominator": 180.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "negative_cases"
+        },
+        "passed": false
+      },
+      "A2": {
+        "status": "scored",
+        "value": 0.91701244813278,
+        "numerator": 1768.0,
+        "denominator": 1928.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "audited_decision_points"
+        },
+        "passed": false
+      },
+      "A3": {
+        "status": "scored",
+        "value": 0.990909090909091,
+        "numerator": 654.0,
+        "denominator": 660.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "positive_cases"
+        },
+        "passed": true
+      },
+      "A4": {
+        "status": "scored",
+        "value": 0.07563025210084033,
+        "numerator": 81.0,
+        "denominator": 1071.0,
+        "threshold": {
+          "operator": "lte",
+          "value": 0.02,
+          "unit": "actual_business_calls",
+          "additional_gate": {
+            "unauthorized_external_calls": 0
+          }
+        },
+        "passed": false
+      },
+      "A5": {
+        "status": "scored",
+        "value": 0.990990990990991,
+        "numerator": 990.0,
+        "denominator": 999.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.99,
+          "unit": "gold_required_calls"
+        },
+        "passed": true
+      },
+      "A6": {
+        "status": "scored",
+        "value": 0.9714285714285714,
+        "numerator": 102.0,
+        "denominator": 105.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "gold_dependency_edges",
+          "blocking": true
+        },
+        "passed": false
+      },
+      "A7": {
+        "status": "scored",
+        "value": 0.9261904761904762,
+        "numerator": 778.0,
+        "denominator": 840.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "attempted_cases"
+        },
+        "passed": false
+      },
+      "A8": {
+        "status": "scored",
+        "value": 0.9878787878787879,
+        "numerator": 652.0,
+        "denominator": 660.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.95,
+          "unit": "positive_cases"
+        },
+        "passed": true
+      },
+      "A9": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 6048.0,
+        "denominator": 6048.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "verifiable_facts",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "B5": {
+        "status": "scored",
+        "value": 0.8954545454545455,
+        "numerator": 295.5,
+        "denominator": 330.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.88
+        },
+        "passed": true
+      },
+      "B6": {
+        "status": "scored",
+        "value": 0.8848484848484849,
+        "numerator": 438.0,
+        "denominator": 495.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.87
+        },
+        "passed": true
+      },
+      "C1": {
+        "status": "scored",
+        "value": 0.9865470852017937,
+        "numerator": 660.0,
+        "denominator": 669.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.99,
+          "unit": "gold_required_sql_calls"
+        },
+        "passed": false
+      },
+      "C2": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 4557.0,
+        "denominator": 4557.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "published_sql_facts",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "C3": {
+        "status": "scored",
+        "value": 0.992161985630307,
+        "numerator": 4557.0,
+        "denominator": 4593.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "gold_required_sql_facts"
+        },
+        "passed": true
+      },
+      "C4": {
+        "status": "scored",
+        "value": 0.9865470852017937,
+        "numerator": 660.0,
+        "denominator": 669.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "applicable_cases",
+          "blocking": true
+        },
+        "passed": false
+      },
+      "C5": {
+        "status": "scored",
+        "value": 0.9948717948717949,
+        "numerator": 582.0,
+        "denominator": 585.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "applicable_cases",
+          "blocking": true
+        },
+        "passed": false
+      },
+      "B1": {
+        "status": "scored",
+        "value": 0.9786026936026936,
+        "valid_count": 330,
+        "expected_count": 330,
+        "missing_sample_ids": [],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.95
+        },
+        "passed": true
+      },
+      "B2": {
+        "status": "scored",
+        "value": 0.8906818181399375,
+        "valid_count": 330,
+        "expected_count": 330,
+        "missing_sample_ids": [],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.85
+        },
+        "passed": true
+      },
+      "B3": {
+        "status": "scored",
+        "value": 0.8316470552940214,
+        "valid_count": 330,
+        "expected_count": 330,
+        "missing_sample_ids": [],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.8
+        },
+        "passed": true
+      },
+      "B4": {
+        "status": "scored",
+        "value": 0.9673959770291051,
+        "valid_count": 330,
+        "expected_count": 330,
+        "missing_sample_ids": [],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.95
+        },
+        "passed": true
+      }
+    },
+    "redline_events": [
+      {
+        "case_id": "TR-NEG-009",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-010",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-012",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-014",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-016",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-018",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-019",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-024",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-035",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-049",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-055",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-056",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-009",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-010",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-012",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-014",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-016",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-018",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-019",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-024",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-035",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-049",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-055",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-056",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-009",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-010",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-012",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-014",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-016",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-018",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-019",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-024",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-035",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-049",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-055",
+        "event": "unauthorized_or_unrequested_external_call"
+      },
+      {
+        "case_id": "TR-NEG-056",
+        "event": "unauthorized_or_unrequested_external_call"
+      }
+    ],
+    "failed_thresholds": [
+      "A1",
+      "A10",
+      "A2",
+      "A4",
+      "A6",
+      "A7",
+      "C1",
+      "C4",
+      "C5"
+    ],
+    "pending_thresholds": [],
+    "ragas_complete": true,
+    "efficiency": {
+      "mode": "report_only_not_a_blocking_gate",
+      "D1": {
+        "count": 840,
+        "p50_s": 2.75,
+        "p95_s": 5.142499999999998
+      },
+      "D2": {
+        "definition": "first_recorded_user_visible_stage",
+        "count": 840,
+        "p50_s": 0.0,
+        "p95_s": 0.0
+      },
+      "D3": {
+        "definition": "validated_final_answer_in_current_non_streaming_collector",
+        "count": 840,
+        "p50_s": 2.75,
+        "p95_s": 5.142499999999998
+      },
+      "D4": {
+        "agent_loop": {
+          "count": 839,
+          "p50_s": 2.75,
+          "p95_s": 5.1400999999999994
+        },
+        "tool:knowledge_qa": {
+          "count": 338,
+          "p50_s": 2.2030000000000003,
+          "p95_s": 2.93715
+        },
+        "tool:query_company_award_history": {
+          "count": 102,
+          "p50_s": 0.015000000000000124,
+          "p95_s": 0.016000000000000014
+        },
+        "tool:query_company_business_scope": {
+          "count": 133,
+          "p50_s": 0.015999999999999903,
+          "p95_s": 0.016000000000000014
+        },
+        "tool:query_company_penalty": {
+          "count": 144,
+          "p50_s": 0.015500000000000014,
+          "p95_s": 0.016000000000000014
+        },
+        "tool:query_company_registration": {
+          "count": 192,
+          "p50_s": 0.016000000000000014,
+          "p95_s": 0.030999999999999917
+        },
+        "tool:query_project_award": {
+          "count": 162,
+          "p50_s": 0.015000000000000124,
+          "p95_s": 0.016000000000000014
+        },
+        "validation": {
+          "count": 840,
+          "p50_s": 0.0,
+          "p95_s": 0.0
+        }
+      },
+      "D5": {
+        "status": "not_available_from_current_unified_contract"
+      },
+      "D6": {
+        "mean_model_calls": 2.691666666666667,
+        "mean_tool_attempts": 1.2952380952380953,
+        "mean_tool_executions": 1.275,
+        "mean_rejected_tool_attempts": 0.02023809523809524,
+        "mean_model_repairs": 0.0,
+        "limitation": "RAG-internal model and retry counts are not exposed by the current unified contract"
+      }
+    }
+  },
+  "breakdowns": {
+    "authorized_tool": {
+      "knowledge_qa": {
+        "case_count": 330,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9772727272727273,
+            "numerator": 774.0,
+            "denominator": 792.0
+          },
+          "A3": {
+            "value": 0.990909090909091,
+            "numerator": 327.0,
+            "denominator": 330.0
+          },
+          "A4": {
+            "value": 0.026143790849673203,
+            "numerator": 12.0,
+            "denominator": 459.0
+          },
+          "A5": {
+            "value": 0.9933333333333333,
+            "numerator": 447.0,
+            "denominator": 450.0
+          },
+          "A7": {
+            "value": 0.990909090909091,
+            "numerator": 327.0,
+            "denominator": 330.0
+          },
+          "A8": {
+            "value": 0.990909090909091,
+            "numerator": 327.0,
+            "denominator": 330.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 2325.0,
+            "denominator": 2325.0
+          },
+          "B1": {
+            "value": 0.9786026936026936,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B2": {
+            "value": 0.8906818181399375,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B3": {
+            "value": 0.8316470552940214,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B4": {
+            "value": 0.9673959770291051,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B5": {
+            "value": 0.8954545454545455,
+            "numerator": 295.5,
+            "denominator": 330.0
+          },
+          "B6": {
+            "value": 0.8848484848484849,
+            "numerator": 438.0,
+            "denominator": 495.0
+          },
+          "C1": {
+            "value": 0.975,
+            "numerator": 117.0,
+            "denominator": 120.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 834.0,
+            "denominator": 834.0
+          },
+          "C3": {
+            "value": 0.9788732394366197,
+            "numerator": 834.0,
+            "denominator": 852.0
+          },
+          "C4": {
+            "value": 0.975,
+            "numerator": 117.0,
+            "denominator": 120.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          }
+        }
+      },
+      "no_business_tool": {
+        "case_count": 180,
+        "metrics": {
+          "A1": {
+            "value": 36,
+            "numerator": 36,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          },
+          "A2": {
+            "value": 0.4846153846153846,
+            "numerator": 126.0,
+            "denominator": 260.0
+          },
+          "A4": {
+            "value": 1.0,
+            "numerator": 66.0,
+            "denominator": 66.0
+          },
+          "A7": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          }
+        }
+      },
+      "query_company_award_history": {
+        "case_count": 87,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.927710843373494,
+            "numerator": 231.0,
+            "denominator": 249.0
+          },
+          "A3": {
+            "value": 0.9655172413793104,
+            "numerator": 84.0,
+            "denominator": 87.0
+          },
+          "A4": {
+            "value": 0.07547169811320754,
+            "numerator": 12.0,
+            "denominator": 159.0
+          },
+          "A5": {
+            "value": 0.98,
+            "numerator": 147.0,
+            "denominator": 150.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "A7": {
+            "value": 0.9655172413793104,
+            "numerator": 84.0,
+            "denominator": 87.0
+          },
+          "A8": {
+            "value": 0.9655172413793104,
+            "numerator": 84.0,
+            "denominator": 87.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1896.0,
+            "denominator": 1896.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B2": {
+            "value": 0.8872106481179104,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B3": {
+            "value": 0.8135099759978622,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B4": {
+            "value": 0.9821428571428572,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 36.0,
+            "denominator": 36.0
+          },
+          "C1": {
+            "value": 0.9761904761904762,
+            "numerator": 123.0,
+            "denominator": 126.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 1776.0,
+            "denominator": 1776.0
+          },
+          "C3": {
+            "value": 0.9899665551839465,
+            "numerator": 1776.0,
+            "denominator": 1794.0
+          },
+          "C4": {
+            "value": 0.9761904761904762,
+            "numerator": 123.0,
+            "denominator": 126.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          }
+        }
+      },
+      "query_company_business_scope": {
+        "case_count": 123,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9943502824858758,
+            "numerator": 352.0,
+            "denominator": 354.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 123.0,
+            "denominator": 123.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 231.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 231.0,
+            "denominator": 231.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 27.0,
+            "denominator": 27.0
+          },
+          "A7": {
+            "value": 0.983739837398374,
+            "numerator": 121.0,
+            "denominator": 123.0
+          },
+          "A8": {
+            "value": 0.983739837398374,
+            "numerator": 121.0,
+            "denominator": 123.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1011.0,
+            "denominator": 1011.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B2": {
+            "value": 0.9643518518166108,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B3": {
+            "value": 0.8262882745122359,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B4": {
+            "value": 0.953125,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 33.0,
+            "denominator": 33.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 207.0,
+            "denominator": 207.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 891.0,
+            "denominator": 891.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 891.0,
+            "denominator": 891.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 207.0,
+            "denominator": 207.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 192.0,
+            "denominator": 192.0
+          }
+        }
+      },
+      "query_company_penalty": {
+        "case_count": 114,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9814814814814815,
+            "numerator": 318.0,
+            "denominator": 324.0
+          },
+          "A3": {
+            "value": 0.9736842105263158,
+            "numerator": 111.0,
+            "denominator": 114.0
+          },
+          "A4": {
+            "value": 0.014285714285714285,
+            "numerator": 3.0,
+            "denominator": 210.0
+          },
+          "A5": {
+            "value": 0.971830985915493,
+            "numerator": 207.0,
+            "denominator": 213.0
+          },
+          "A6": {
+            "value": 0.8888888888888888,
+            "numerator": 24.0,
+            "denominator": 27.0
+          },
+          "A7": {
+            "value": 0.9736842105263158,
+            "numerator": 111.0,
+            "denominator": 114.0
+          },
+          "A8": {
+            "value": 0.9736842105263158,
+            "numerator": 111.0,
+            "denominator": 114.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 843.0,
+            "denominator": 843.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B2": {
+            "value": 0.9295717592160123,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B3": {
+            "value": 0.8942930453304206,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B4": {
+            "value": 0.9177188552188552,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 39.0,
+            "denominator": 39.0
+          },
+          "C1": {
+            "value": 0.9682539682539683,
+            "numerator": 183.0,
+            "denominator": 189.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 723.0,
+            "denominator": 723.0
+          },
+          "C3": {
+            "value": 0.9757085020242915,
+            "numerator": 723.0,
+            "denominator": 741.0
+          },
+          "C4": {
+            "value": 0.9682539682539683,
+            "numerator": 183.0,
+            "denominator": 189.0
+          },
+          "C5": {
+            "value": 0.9767441860465116,
+            "numerator": 126.0,
+            "denominator": 129.0
+          }
+        }
+      },
+      "query_company_registration": {
+        "case_count": 150,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 435.0,
+            "denominator": 435.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 150.0,
+            "denominator": 150.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 285.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 285.0,
+            "denominator": 285.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 27.0,
+            "denominator": 27.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 150.0,
+            "denominator": 150.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 150.0,
+            "denominator": 150.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1860.0,
+            "denominator": 1860.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B2": {
+            "value": 0.8491319444079557,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B3": {
+            "value": 0.8970133769305012,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B4": {
+            "value": 0.9741402116402117,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 39.0,
+            "denominator": 39.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 261.0,
+            "denominator": 261.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 1740.0,
+            "denominator": 1740.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 1740.0,
+            "denominator": 1740.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 261.0,
+            "denominator": 261.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 231.0,
+            "denominator": 231.0
+          }
+        }
+      },
+      "query_project_award": {
+        "case_count": 162,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9869281045751634,
+            "numerator": 453.0,
+            "denominator": 459.0
+          },
+          "A3": {
+            "value": 0.9814814814814815,
+            "numerator": 159.0,
+            "denominator": 162.0
+          },
+          "A4": {
+            "value": 0.010101010101010102,
+            "numerator": 3.0,
+            "denominator": 297.0
+          },
+          "A5": {
+            "value": 0.98,
+            "numerator": 294.0,
+            "denominator": 300.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A7": {
+            "value": 0.9814814814814815,
+            "numerator": 159.0,
+            "denominator": 162.0
+          },
+          "A8": {
+            "value": 0.9814814814814815,
+            "numerator": 159.0,
+            "denominator": 162.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 2190.0,
+            "denominator": 2190.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B2": {
+            "value": 0.9097222221894561,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B3": {
+            "value": 0.8652112962634321,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B4": {
+            "value": 1.0,
+            "valid_count": 24,
+            "expected_count": 24
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 33.0,
+            "denominator": 33.0
+          },
+          "C1": {
+            "value": 0.9782608695652174,
+            "numerator": 270.0,
+            "denominator": 276.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 2070.0,
+            "denominator": 2070.0
+          },
+          "C3": {
+            "value": 0.9913793103448276,
+            "numerator": 2070.0,
+            "denominator": 2088.0
+          },
+          "C4": {
+            "value": 0.9782608695652174,
+            "numerator": 270.0,
+            "denominator": 276.0
+          },
+          "C5": {
+            "value": 0.9876543209876543,
+            "numerator": 240.0,
+            "denominator": 243.0
+          }
+        }
+      }
+    },
+    "case_category": {
+      "independent_multi_action": {
+        "case_count": 105,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 324.0,
+            "denominator": 324.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 105.0,
+            "denominator": 105.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 219.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 219.0,
+            "denominator": 219.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 105.0,
+            "denominator": 105.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 105.0,
+            "denominator": 105.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1335.0,
+            "denominator": 1335.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 219.0,
+            "denominator": 219.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 1335.0,
+            "denominator": 1335.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 1335.0,
+            "denominator": 1335.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 219.0,
+            "denominator": 219.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 195.0,
+            "denominator": 195.0
+          }
+        }
+      },
+      "negative": {
+        "case_count": 180,
+        "metrics": {
+          "A1": {
+            "value": 36,
+            "numerator": 36,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          },
+          "A2": {
+            "value": 0.4846153846153846,
+            "numerator": 126.0,
+            "denominator": 260.0
+          },
+          "A4": {
+            "value": 1.0,
+            "numerator": 66.0,
+            "denominator": 66.0
+          },
+          "A7": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          }
+        }
+      },
+      "rag_anchor": {
+        "case_count": 210,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 420.0,
+            "denominator": 420.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 210.0,
+            "denominator": 210.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 210.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 210.0,
+            "denominator": 210.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 210.0,
+            "denominator": 210.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 210.0,
+            "denominator": 210.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 891.0,
+            "denominator": 891.0
+          },
+          "B1": {
+            "value": 0.9663756613756614,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B2": {
+            "value": 0.8807870369915652,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B3": {
+            "value": 0.8158664047152391,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B4": {
+            "value": 0.9685220297312308,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B5": {
+            "value": 0.8357142857142857,
+            "numerator": 175.5,
+            "denominator": 210.0
+          },
+          "B6": {
+            "value": 0.819047619047619,
+            "numerator": 258.0,
+            "denominator": 315.0
+          }
+        }
+      },
+      "result_dependent": {
+        "case_count": 105,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9807692307692307,
+            "numerator": 306.0,
+            "denominator": 312.0
+          },
+          "A3": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A4": {
+            "value": 0.014492753623188406,
+            "numerator": 3.0,
+            "denominator": 207.0
+          },
+          "A5": {
+            "value": 0.9714285714285714,
+            "numerator": 204.0,
+            "denominator": 210.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A7": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A8": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1683.0,
+            "denominator": 1683.0
+          },
+          "C1": {
+            "value": 0.9714285714285714,
+            "numerator": 204.0,
+            "denominator": 210.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 1683.0,
+            "denominator": 1683.0
+          },
+          "C3": {
+            "value": 0.9894179894179894,
+            "numerator": 1683.0,
+            "denominator": 1701.0
+          },
+          "C4": {
+            "value": 0.9714285714285714,
+            "numerator": 204.0,
+            "denominator": 210.0
+          },
+          "C5": {
+            "value": 0.9836065573770492,
+            "numerator": 180.0,
+            "denominator": 183.0
+          }
+        }
+      },
+      "single_sql": {
+        "case_count": 120,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9916666666666667,
+            "numerator": 238.0,
+            "denominator": 240.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 120.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          },
+          "A7": {
+            "value": 0.9833333333333333,
+            "numerator": 118.0,
+            "denominator": 120.0
+          },
+          "A8": {
+            "value": 0.9833333333333333,
+            "numerator": 118.0,
+            "denominator": 120.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 705.0,
+            "denominator": 705.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 705.0,
+            "denominator": 705.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 705.0,
+            "denominator": 705.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 87.0,
+            "denominator": 87.0
+          }
+        }
+      },
+      "sql_rag_cross_capability": {
+        "case_count": 120,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9516129032258065,
+            "numerator": 354.0,
+            "denominator": 372.0
+          },
+          "A3": {
+            "value": 0.975,
+            "numerator": 117.0,
+            "denominator": 120.0
+          },
+          "A4": {
+            "value": 0.04819277108433735,
+            "numerator": 12.0,
+            "denominator": 249.0
+          },
+          "A5": {
+            "value": 0.9875,
+            "numerator": 237.0,
+            "denominator": 240.0
+          },
+          "A7": {
+            "value": 0.975,
+            "numerator": 117.0,
+            "denominator": 120.0
+          },
+          "A8": {
+            "value": 0.975,
+            "numerator": 117.0,
+            "denominator": 120.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1434.0,
+            "denominator": 1434.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B2": {
+            "value": 0.907997685149589,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B3": {
+            "value": 0.8592631938068904,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B4": {
+            "value": 0.9654253848003849,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 180.0,
+            "denominator": 180.0
+          },
+          "C1": {
+            "value": 0.975,
+            "numerator": 117.0,
+            "denominator": 120.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 834.0,
+            "denominator": 834.0
+          },
+          "C3": {
+            "value": 0.9788732394366197,
+            "numerator": 834.0,
+            "denominator": 852.0
+          },
+          "C4": {
+            "value": 0.975,
+            "numerator": 117.0,
+            "denominator": 120.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          }
+        }
+      }
+    },
+    "finish_status": {
+      "clarify": {
+        "case_count": 66,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7727272727272727,
+            "numerator": 51.0,
+            "denominator": 66.0
+          },
+          "A2": {
+            "value": 0.7083333333333334,
+            "numerator": 51.0,
+            "denominator": 72.0
+          },
+          "A7": {
+            "value": 0.7727272727272727,
+            "numerator": 51.0,
+            "denominator": 66.0
+          }
+        }
+      },
+      "complete": {
+        "case_count": 676,
+        "metrics": {
+          "A1": {
+            "value": 21,
+            "numerator": 21,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 21.0
+          },
+          "A2": {
+            "value": 0.9596255119953189,
+            "numerator": 1640.0,
+            "denominator": 1709.0
+          },
+          "A3": {
+            "value": 0.9954198473282443,
+            "numerator": 652.0,
+            "denominator": 655.0
+          },
+          "A4": {
+            "value": 0.040776699029126215,
+            "numerator": 42.0,
+            "denominator": 1030.0
+          },
+          "A5": {
+            "value": 0.9969727547931383,
+            "numerator": 988.0,
+            "denominator": 991.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 102.0,
+            "denominator": 102.0
+          },
+          "A7": {
+            "value": 0.9644970414201184,
+            "numerator": 652.0,
+            "denominator": 676.0
+          },
+          "A8": {
+            "value": 0.9954198473282443,
+            "numerator": 652.0,
+            "denominator": 655.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 6044.0,
+            "denominator": 6044.0
+          },
+          "B1": {
+            "value": 0.9786026936026936,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B2": {
+            "value": 0.8906818181399375,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B3": {
+            "value": 0.8316470552940214,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B4": {
+            "value": 0.9673959770291051,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B5": {
+            "value": 0.8954545454545455,
+            "numerator": 295.5,
+            "denominator": 330.0
+          },
+          "B6": {
+            "value": 0.8848484848484849,
+            "numerator": 438.0,
+            "denominator": 495.0
+          },
+          "C1": {
+            "value": 0.9954614220877458,
+            "numerator": 658.0,
+            "denominator": 661.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 4553.0,
+            "denominator": 4553.0
+          },
+          "C3": {
+            "value": 0.9960621308247648,
+            "numerator": 4553.0,
+            "denominator": 4571.0
+          },
+          "C4": {
+            "value": 0.9954614220877458,
+            "numerator": 658.0,
+            "denominator": 661.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 580.0,
+            "denominator": 580.0
+          }
+        }
+      },
+      "partial": {
+        "case_count": 20,
+        "metrics": {
+          "A1": {
+            "value": 15,
+            "numerator": 15,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 15.0
+          },
+          "A2": {
+            "value": 0.028985507246376812,
+            "numerator": 2.0,
+            "denominator": 69.0
+          },
+          "A3": {
+            "value": 0.4,
+            "numerator": 2.0,
+            "denominator": 5.0
+          },
+          "A4": {
+            "value": 0.9512195121951219,
+            "numerator": 39.0,
+            "denominator": 41.0
+          },
+          "A5": {
+            "value": 0.25,
+            "numerator": 2.0,
+            "denominator": 8.0
+          },
+          "A6": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 3.0
+          },
+          "A7": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 20.0
+          },
+          "A8": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 5.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          },
+          "C1": {
+            "value": 0.25,
+            "numerator": 2.0,
+            "denominator": 8.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          },
+          "C3": {
+            "value": 0.18181818181818182,
+            "numerator": 4.0,
+            "denominator": 22.0
+          },
+          "C4": {
+            "value": 0.25,
+            "numerator": 2.0,
+            "denominator": 8.0
+          },
+          "C5": {
+            "value": 0.4,
+            "numerator": 2.0,
+            "denominator": 5.0
+          }
+        }
+      },
+      "unsupported": {
+        "case_count": 78,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.9615384615384616,
+            "numerator": 75.0,
+            "denominator": 78.0
+          },
+          "A2": {
+            "value": 0.9615384615384616,
+            "numerator": 75.0,
+            "denominator": 78.0
+          },
+          "A7": {
+            "value": 0.9615384615384616,
+            "numerator": 75.0,
+            "denominator": 78.0
+          }
+        }
+      }
+    },
+    "formal_run": {
+      "repeat_1": {
+        "case_count": 280,
+        "metrics": {
+          "A1": {
+            "value": 12,
+            "numerator": 12,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 42.0,
+            "denominator": 60.0
+          },
+          "A2": {
+            "value": 0.9131782945736434,
+            "numerator": 589.0,
+            "denominator": 645.0
+          },
+          "A3": {
+            "value": 0.990909090909091,
+            "numerator": 218.0,
+            "denominator": 220.0
+          },
+          "A4": {
+            "value": 0.0782122905027933,
+            "numerator": 28.0,
+            "denominator": 358.0
+          },
+          "A5": {
+            "value": 0.990990990990991,
+            "numerator": 330.0,
+            "denominator": 333.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 34.0,
+            "denominator": 35.0
+          },
+          "A7": {
+            "value": 0.925,
+            "numerator": 259.0,
+            "denominator": 280.0
+          },
+          "A8": {
+            "value": 0.9863636363636363,
+            "numerator": 217.0,
+            "denominator": 220.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 2016.0,
+            "denominator": 2016.0
+          },
+          "B1": {
+            "value": 0.9751515151515151,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B2": {
+            "value": 0.8819823231910118,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B3": {
+            "value": 0.8314365742165937,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B4": {
+            "value": 0.9712337662337662,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B5": {
+            "value": 0.8954545454545455,
+            "numerator": 98.5,
+            "denominator": 110.0
+          },
+          "B6": {
+            "value": 0.8848484848484849,
+            "numerator": 146.0,
+            "denominator": 165.0
+          },
+          "C1": {
+            "value": 0.9865470852017937,
+            "numerator": 220.0,
+            "denominator": 223.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 1519.0,
+            "denominator": 1519.0
+          },
+          "C3": {
+            "value": 0.992161985630307,
+            "numerator": 1519.0,
+            "denominator": 1531.0
+          },
+          "C4": {
+            "value": 0.9865470852017937,
+            "numerator": 220.0,
+            "denominator": 223.0
+          },
+          "C5": {
+            "value": 0.9948717948717949,
+            "numerator": 194.0,
+            "denominator": 195.0
+          }
+        }
+      },
+      "repeat_2": {
+        "case_count": 280,
+        "metrics": {
+          "A1": {
+            "value": 12,
+            "numerator": 12,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 42.0,
+            "denominator": 60.0
+          },
+          "A2": {
+            "value": 0.9188767550702028,
+            "numerator": 589.0,
+            "denominator": 641.0
+          },
+          "A3": {
+            "value": 0.990909090909091,
+            "numerator": 218.0,
+            "denominator": 220.0
+          },
+          "A4": {
+            "value": 0.07303370786516854,
+            "numerator": 26.0,
+            "denominator": 356.0
+          },
+          "A5": {
+            "value": 0.990990990990991,
+            "numerator": 330.0,
+            "denominator": 333.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 34.0,
+            "denominator": 35.0
+          },
+          "A7": {
+            "value": 0.925,
+            "numerator": 259.0,
+            "denominator": 280.0
+          },
+          "A8": {
+            "value": 0.9863636363636363,
+            "numerator": 217.0,
+            "denominator": 220.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 2016.0,
+            "denominator": 2016.0
+          },
+          "B1": {
+            "value": 0.9792929292929293,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B2": {
+            "value": 0.8920075757163917,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B3": {
+            "value": 0.8358499237156931,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B4": {
+            "value": 0.9669179604807947,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B5": {
+            "value": 0.8954545454545455,
+            "numerator": 98.5,
+            "denominator": 110.0
+          },
+          "B6": {
+            "value": 0.8848484848484849,
+            "numerator": 146.0,
+            "denominator": 165.0
+          },
+          "C1": {
+            "value": 0.9865470852017937,
+            "numerator": 220.0,
+            "denominator": 223.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 1519.0,
+            "denominator": 1519.0
+          },
+          "C3": {
+            "value": 0.992161985630307,
+            "numerator": 1519.0,
+            "denominator": 1531.0
+          },
+          "C4": {
+            "value": 0.9865470852017937,
+            "numerator": 220.0,
+            "denominator": 223.0
+          },
+          "C5": {
+            "value": 0.9948717948717949,
+            "numerator": 194.0,
+            "denominator": 195.0
+          }
+        }
+      },
+      "repeat_3": {
+        "case_count": 280,
+        "metrics": {
+          "A1": {
+            "value": 12,
+            "numerator": 12,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 42.0,
+            "denominator": 60.0
+          },
+          "A2": {
+            "value": 0.9190031152647975,
+            "numerator": 590.0,
+            "denominator": 642.0
+          },
+          "A3": {
+            "value": 0.990909090909091,
+            "numerator": 218.0,
+            "denominator": 220.0
+          },
+          "A4": {
+            "value": 0.07563025210084033,
+            "numerator": 27.0,
+            "denominator": 357.0
+          },
+          "A5": {
+            "value": 0.990990990990991,
+            "numerator": 330.0,
+            "denominator": 333.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 34.0,
+            "denominator": 35.0
+          },
+          "A7": {
+            "value": 0.9285714285714286,
+            "numerator": 260.0,
+            "denominator": 280.0
+          },
+          "A8": {
+            "value": 0.990909090909091,
+            "numerator": 218.0,
+            "denominator": 220.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 2016.0,
+            "denominator": 2016.0
+          },
+          "B1": {
+            "value": 0.9813636363636364,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B2": {
+            "value": 0.8980555555124088,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B3": {
+            "value": 0.8276546679497775,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B4": {
+            "value": 0.9640362043727541,
+            "valid_count": 110,
+            "expected_count": 110
+          },
+          "B5": {
+            "value": 0.8954545454545455,
+            "numerator": 98.5,
+            "denominator": 110.0
+          },
+          "B6": {
+            "value": 0.8848484848484849,
+            "numerator": 146.0,
+            "denominator": 165.0
+          },
+          "C1": {
+            "value": 0.9865470852017937,
+            "numerator": 220.0,
+            "denominator": 223.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 1519.0,
+            "denominator": 1519.0
+          },
+          "C3": {
+            "value": 0.992161985630307,
+            "numerator": 1519.0,
+            "denominator": 1531.0
+          },
+          "C4": {
+            "value": 0.9865470852017937,
+            "numerator": 220.0,
+            "denominator": 223.0
+          },
+          "C5": {
+            "value": 0.9948717948717949,
+            "numerator": 194.0,
+            "denominator": 195.0
+          }
+        }
+      }
+    },
+    "normal_adversarial_or_fault": {
+      "adversarial": {
+        "case_count": 54,
+        "metrics": {
+          "A1": {
+            "value": 9,
+            "numerator": 9,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7222222222222222,
+            "numerator": 39.0,
+            "denominator": 54.0
+          },
+          "A2": {
+            "value": 0.5909090909090909,
+            "numerator": 39.0,
+            "denominator": 66.0
+          },
+          "A4": {
+            "value": 1.0,
+            "numerator": 9.0,
+            "denominator": 9.0
+          },
+          "A7": {
+            "value": 0.7222222222222222,
+            "numerator": 39.0,
+            "denominator": 54.0
+          }
+        }
+      },
+      "normal": {
+        "case_count": 786,
+        "metrics": {
+          "A1": {
+            "value": 27,
+            "numerator": 27,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.6904761904761905,
+            "numerator": 87.0,
+            "denominator": 126.0
+          },
+          "A2": {
+            "value": 0.9285714285714286,
+            "numerator": 1729.0,
+            "denominator": 1862.0
+          },
+          "A3": {
+            "value": 0.990909090909091,
+            "numerator": 654.0,
+            "denominator": 660.0
+          },
+          "A4": {
+            "value": 0.06779661016949153,
+            "numerator": 72.0,
+            "denominator": 1062.0
+          },
+          "A5": {
+            "value": 0.990990990990991,
+            "numerator": 990.0,
+            "denominator": 999.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A7": {
+            "value": 0.9402035623409669,
+            "numerator": 739.0,
+            "denominator": 786.0
+          },
+          "A8": {
+            "value": 0.9878787878787879,
+            "numerator": 652.0,
+            "denominator": 660.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 6048.0,
+            "denominator": 6048.0
+          },
+          "B1": {
+            "value": 0.9786026936026936,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B2": {
+            "value": 0.8906818181399375,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B3": {
+            "value": 0.8316470552940214,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B4": {
+            "value": 0.9673959770291051,
+            "valid_count": 330,
+            "expected_count": 330
+          },
+          "B5": {
+            "value": 0.8954545454545455,
+            "numerator": 295.5,
+            "denominator": 330.0
+          },
+          "B6": {
+            "value": 0.8848484848484849,
+            "numerator": 438.0,
+            "denominator": 495.0
+          },
+          "C1": {
+            "value": 0.9865470852017937,
+            "numerator": 660.0,
+            "denominator": 669.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 4557.0,
+            "denominator": 4557.0
+          },
+          "C3": {
+            "value": 0.992161985630307,
+            "numerator": 4557.0,
+            "denominator": 4593.0
+          },
+          "C4": {
+            "value": 0.9865470852017937,
+            "numerator": 660.0,
+            "denominator": 669.0
+          },
+          "C5": {
+            "value": 0.9948717948717949,
+            "numerator": 582.0,
+            "denominator": 585.0
+          }
+        }
+      }
+    },
+    "normal_empty_or_failure": {
+      "empty_field": {
+        "case_count": 21,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9607843137254902,
+            "numerator": 49.0,
+            "denominator": 51.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 21.0,
+            "denominator": 21.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 30.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "A7": {
+            "value": 0.9047619047619048,
+            "numerator": 19.0,
+            "denominator": 21.0
+          },
+          "A8": {
+            "value": 0.9047619047619048,
+            "numerator": 19.0,
+            "denominator": 21.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 225.0,
+            "denominator": 225.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 6,
+            "expected_count": 6
+          },
+          "B2": {
+            "value": 0.8629629629328086,
+            "valid_count": 6,
+            "expected_count": 6
+          },
+          "B3": {
+            "value": 0.8587101462722293,
+            "valid_count": 6,
+            "expected_count": 6
+          },
+          "B4": {
+            "value": 0.9833333333333334,
+            "valid_count": 6,
+            "expected_count": 6
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 12.0,
+            "denominator": 12.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 195.0,
+            "denominator": 195.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 195.0,
+            "denominator": 195.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 24.0,
+            "denominator": 24.0
+          }
+        }
+      },
+      "no_match": {
+        "case_count": 84,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9733333333333334,
+            "numerator": 219.0,
+            "denominator": 225.0
+          },
+          "A3": {
+            "value": 0.9642857142857143,
+            "numerator": 81.0,
+            "denominator": 84.0
+          },
+          "A4": {
+            "value": 0.02127659574468085,
+            "numerator": 3.0,
+            "denominator": 141.0
+          },
+          "A5": {
+            "value": 0.9583333333333334,
+            "numerator": 138.0,
+            "denominator": 144.0
+          },
+          "A6": {
+            "value": 0.8888888888888888,
+            "numerator": 24.0,
+            "denominator": 27.0
+          },
+          "A7": {
+            "value": 0.9642857142857143,
+            "numerator": 81.0,
+            "denominator": 84.0
+          },
+          "A8": {
+            "value": 0.9642857142857143,
+            "numerator": 81.0,
+            "denominator": 84.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 378.0,
+            "denominator": 378.0
+          },
+          "C1": {
+            "value": 0.9583333333333334,
+            "numerator": 138.0,
+            "denominator": 144.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 378.0,
+            "denominator": 378.0
+          },
+          "C3": {
+            "value": 0.9545454545454546,
+            "numerator": 378.0,
+            "denominator": 396.0
+          },
+          "C4": {
+            "value": 0.9583333333333334,
+            "numerator": 138.0,
+            "denominator": 144.0
+          },
+          "C5": {
+            "value": 0.95,
+            "numerator": 57.0,
+            "denominator": 60.0
+          }
+        }
+      },
+      "normal_result": {
+        "case_count": 555,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9870689655172413,
+            "numerator": 1374.0,
+            "denominator": 1392.0
+          },
+          "A3": {
+            "value": 0.9945945945945946,
+            "numerator": 552.0,
+            "denominator": 555.0
+          },
+          "A4": {
+            "value": 0.014388489208633094,
+            "numerator": 12.0,
+            "denominator": 834.0
+          },
+          "A5": {
+            "value": 0.9963636363636363,
+            "numerator": 822.0,
+            "denominator": 825.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 78.0,
+            "denominator": 78.0
+          },
+          "A7": {
+            "value": 0.9945945945945946,
+            "numerator": 552.0,
+            "denominator": 555.0
+          },
+          "A8": {
+            "value": 0.9945945945945946,
+            "numerator": 552.0,
+            "denominator": 555.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 5445.0,
+            "denominator": 5445.0
+          },
+          "B1": {
+            "value": 0.9782064471879286,
+            "valid_count": 324,
+            "expected_count": 324
+          },
+          "B2": {
+            "value": 0.8911951302734028,
+            "valid_count": 324,
+            "expected_count": 324
+          },
+          "B3": {
+            "value": 0.8311458869425732,
+            "valid_count": 324,
+            "expected_count": 324
+          },
+          "B4": {
+            "value": 0.9671008408012488,
+            "valid_count": 324,
+            "expected_count": 324
+          },
+          "B5": {
+            "value": 0.8935185185185185,
+            "numerator": 289.5,
+            "denominator": 324.0
+          },
+          "B6": {
+            "value": 0.8819875776397516,
+            "numerator": 426.0,
+            "denominator": 483.0
+          },
+          "C1": {
+            "value": 0.9940119760479041,
+            "numerator": 498.0,
+            "denominator": 501.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 3984.0,
+            "denominator": 3984.0
+          },
+          "C3": {
+            "value": 0.9955022488755623,
+            "numerator": 3984.0,
+            "denominator": 4002.0
+          },
+          "C4": {
+            "value": 0.9940119760479041,
+            "numerator": 498.0,
+            "denominator": 501.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 501.0,
+            "denominator": 501.0
+          }
+        }
+      },
+      "not_applicable": {
+        "case_count": 180,
+        "metrics": {
+          "A1": {
+            "value": 36,
+            "numerator": 36,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          },
+          "A2": {
+            "value": 0.4846153846153846,
+            "numerator": 126.0,
+            "denominator": 260.0
+          },
+          "A4": {
+            "value": 1.0,
+            "numerator": 66.0,
+            "denominator": 66.0
+          },
+          "A7": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          }
+        }
+      }
+    },
+    "rag_single_or_multi_hop": {
+      "multi_hop": {
+        "case_count": 165,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9923664122137404,
+            "numerator": 390.0,
+            "denominator": 393.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 165.0,
+            "denominator": 165.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 225.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 225.0,
+            "denominator": 225.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 165.0,
+            "denominator": 165.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 165.0,
+            "denominator": 165.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1233.0,
+            "denominator": 1233.0
+          },
+          "B1": {
+            "value": 0.9572053872053873,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B2": {
+            "value": 0.8384764309412001,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B3": {
+            "value": 0.8492309505441511,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B4": {
+            "value": 0.9733359823214897,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B5": {
+            "value": 0.8636363636363636,
+            "numerator": 142.5,
+            "denominator": 165.0
+          },
+          "B6": {
+            "value": 0.8636363636363636,
+            "numerator": 285.0,
+            "denominator": 330.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 60.0,
+            "denominator": 60.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 444.0,
+            "denominator": 444.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 444.0,
+            "denominator": 444.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 60.0,
+            "denominator": 60.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 60.0,
+            "denominator": 60.0
+          }
+        }
+      },
+      "not_applicable": {
+        "case_count": 510,
+        "metrics": {
+          "A1": {
+            "value": 36,
+            "numerator": 36,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          },
+          "A2": {
+            "value": 0.875,
+            "numerator": 994.0,
+            "denominator": 1136.0
+          },
+          "A3": {
+            "value": 0.990909090909091,
+            "numerator": 327.0,
+            "denominator": 330.0
+          },
+          "A4": {
+            "value": 0.11274509803921569,
+            "numerator": 69.0,
+            "denominator": 612.0
+          },
+          "A5": {
+            "value": 0.9890710382513661,
+            "numerator": 543.0,
+            "denominator": 549.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A7": {
+            "value": 0.884313725490196,
+            "numerator": 451.0,
+            "denominator": 510.0
+          },
+          "A8": {
+            "value": 0.9848484848484849,
+            "numerator": 325.0,
+            "denominator": 330.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 3723.0,
+            "denominator": 3723.0
+          },
+          "C1": {
+            "value": 0.9890710382513661,
+            "numerator": 543.0,
+            "denominator": 549.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 3723.0,
+            "denominator": 3723.0
+          },
+          "C3": {
+            "value": 0.9951884522854851,
+            "numerator": 3723.0,
+            "denominator": 3741.0
+          },
+          "C4": {
+            "value": 0.9890710382513661,
+            "numerator": 543.0,
+            "denominator": 549.0
+          },
+          "C5": {
+            "value": 0.9935483870967742,
+            "numerator": 462.0,
+            "denominator": 465.0
+          }
+        }
+      },
+      "single_hop": {
+        "case_count": 165,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9624060150375939,
+            "numerator": 384.0,
+            "denominator": 399.0
+          },
+          "A3": {
+            "value": 0.9818181818181818,
+            "numerator": 162.0,
+            "denominator": 165.0
+          },
+          "A4": {
+            "value": 0.05128205128205128,
+            "numerator": 12.0,
+            "denominator": 234.0
+          },
+          "A5": {
+            "value": 0.9866666666666667,
+            "numerator": 222.0,
+            "denominator": 225.0
+          },
+          "A7": {
+            "value": 0.9818181818181818,
+            "numerator": 162.0,
+            "denominator": 165.0
+          },
+          "A8": {
+            "value": 0.9818181818181818,
+            "numerator": 162.0,
+            "denominator": 165.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 1092.0,
+            "denominator": 1092.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B2": {
+            "value": 0.9428872053386751,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B3": {
+            "value": 0.8140631600438918,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B4": {
+            "value": 0.9614559717367205,
+            "valid_count": 165,
+            "expected_count": 165
+          },
+          "B5": {
+            "value": 0.9272727272727272,
+            "numerator": 153.0,
+            "denominator": 165.0
+          },
+          "B6": {
+            "value": 0.9272727272727272,
+            "numerator": 153.0,
+            "denominator": 165.0
+          },
+          "C1": {
+            "value": 0.95,
+            "numerator": 57.0,
+            "denominator": 60.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 390.0,
+            "denominator": 390.0
+          },
+          "C3": {
+            "value": 0.9558823529411765,
+            "numerator": 390.0,
+            "denominator": 408.0
+          },
+          "C4": {
+            "value": 0.95,
+            "numerator": 57.0,
+            "denominator": 60.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 60.0,
+            "denominator": 60.0
+          }
+        }
+      }
+    },
+    "single_or_multi_entity": {
+      "multi_entity": {
+        "case_count": 162,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9875776397515528,
+            "numerator": 477.0,
+            "denominator": 483.0
+          },
+          "A3": {
+            "value": 0.9814814814814815,
+            "numerator": 159.0,
+            "denominator": 162.0
+          },
+          "A4": {
+            "value": 0.009345794392523364,
+            "numerator": 3.0,
+            "denominator": 321.0
+          },
+          "A5": {
+            "value": 0.9814814814814815,
+            "numerator": 318.0,
+            "denominator": 324.0
+          },
+          "A6": {
+            "value": 0.9714285714285714,
+            "numerator": 102.0,
+            "denominator": 105.0
+          },
+          "A7": {
+            "value": 0.9814814814814815,
+            "numerator": 159.0,
+            "denominator": 162.0
+          },
+          "A8": {
+            "value": 0.9814814814814815,
+            "numerator": 159.0,
+            "denominator": 162.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 2520.0,
+            "denominator": 2520.0
+          },
+          "C1": {
+            "value": 0.9814814814814815,
+            "numerator": 318.0,
+            "denominator": 324.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 2520.0,
+            "denominator": 2520.0
+          },
+          "C3": {
+            "value": 0.9929078014184397,
+            "numerator": 2520.0,
+            "denominator": 2538.0
+          },
+          "C4": {
+            "value": 0.9814814814814815,
+            "numerator": 318.0,
+            "denominator": 324.0
+          },
+          "C5": {
+            "value": 0.98989898989899,
+            "numerator": 294.0,
+            "denominator": 297.0
+          }
+        }
+      },
+      "not_applicable": {
+        "case_count": 390,
+        "metrics": {
+          "A1": {
+            "value": 36,
+            "numerator": 36,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 0.7,
+            "numerator": 126.0,
+            "denominator": 180.0
+          },
+          "A2": {
+            "value": 0.8029411764705883,
+            "numerator": 546.0,
+            "denominator": 680.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 210.0,
+            "denominator": 210.0
+          },
+          "A4": {
+            "value": 0.2391304347826087,
+            "numerator": 66.0,
+            "denominator": 276.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 210.0,
+            "denominator": 210.0
+          },
+          "A7": {
+            "value": 0.8615384615384616,
+            "numerator": 336.0,
+            "denominator": 390.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 210.0,
+            "denominator": 210.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 891.0,
+            "denominator": 891.0
+          },
+          "B1": {
+            "value": 0.9663756613756614,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B2": {
+            "value": 0.8807870369915652,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B3": {
+            "value": 0.8158664047152391,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B4": {
+            "value": 0.9685220297312308,
+            "valid_count": 210,
+            "expected_count": 210
+          },
+          "B5": {
+            "value": 0.8357142857142857,
+            "numerator": 175.5,
+            "denominator": 210.0
+          },
+          "B6": {
+            "value": 0.819047619047619,
+            "numerator": 258.0,
+            "denominator": 315.0
+          }
+        }
+      },
+      "single_entity": {
+        "case_count": 288,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.9738562091503268,
+            "numerator": 745.0,
+            "denominator": 765.0
+          },
+          "A3": {
+            "value": 0.9895833333333334,
+            "numerator": 285.0,
+            "denominator": 288.0
+          },
+          "A4": {
+            "value": 0.02531645569620253,
+            "numerator": 12.0,
+            "denominator": 474.0
+          },
+          "A5": {
+            "value": 0.9935483870967742,
+            "numerator": 462.0,
+            "denominator": 465.0
+          },
+          "A7": {
+            "value": 0.9826388888888888,
+            "numerator": 283.0,
+            "denominator": 288.0
+          },
+          "A8": {
+            "value": 0.9826388888888888,
+            "numerator": 283.0,
+            "denominator": 288.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 2637.0,
+            "denominator": 2637.0
+          },
+          "B1": {
+            "value": 1.0,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B2": {
+            "value": 0.907997685149589,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B3": {
+            "value": 0.8592631938068904,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B4": {
+            "value": 0.9654253848003849,
+            "valid_count": 120,
+            "expected_count": 120
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 120.0,
+            "denominator": 120.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 180.0,
+            "denominator": 180.0
+          },
+          "C1": {
+            "value": 0.991304347826087,
+            "numerator": 342.0,
+            "denominator": 345.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 2037.0,
+            "denominator": 2037.0
+          },
+          "C3": {
+            "value": 0.9912408759124087,
+            "numerator": 2037.0,
+            "denominator": 2055.0
+          },
+          "C4": {
+            "value": 0.991304347826087,
+            "numerator": 342.0,
+            "denominator": 345.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 288.0,
+            "denominator": 288.0
+          }
+        }
+      }
+    }
+  },
+  "formal_main_decision": "failed",
+  "limitations": [
+    "A9 is deterministic evidence association; legal semantic support is additionally gated by B4.",
+    "C3 requires up to eight complete frozen-truth records per SQL action because the production renderer publishes at most eight records per action.",
+    "D5 remains unavailable until the unified runtime exposes component usage and cost metadata.",
+    "D3 equals validated final-answer latency because the current collector does not expose an earlier deliverable-answer event.",
+    "Required group breakdowns report raw numerators and denominators; formal thresholds apply to each complete run, not every subgroup.",
+    "Reliability E metrics are scored from a separate reliability batch."
+  ]
+}

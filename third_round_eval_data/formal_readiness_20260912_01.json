@@ -1,0 +1,254 @@
+{
+  "schema_version": "third-round-formal-readiness-v1",
+  "readiness_id": "third_round_formal_readiness_20260912_01",
+  "status": "ready_for_authorization",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "formal_run_config_id": "third_round_formal_run_config_20260912_v1",
+  "formal_run_authorized": false,
+  "formal_run_started": false,
+  "checks": {
+    "offline_preflight": true,
+    "human_review": true,
+    "thresholds_frozen": true,
+    "formal_config_frozen": true,
+    "a2_target_retest_three_repeats": true,
+    "reliability_live_smoke": true,
+    "live_sql_and_rag_identity": true,
+    "judge_variance": true,
+    "preparation_tests": true,
+    "formal_run_directories_absent": true,
+    "formal_run_not_started": true
+  },
+  "blocking_failures": [],
+  "evidence": {
+    "a2_repeat_values": {
+      "1": 1.0,
+      "2": 1.0,
+      "3": 1.0
+    },
+    "reliability_smoke_decision": "passed",
+    "judge_variance_repeats": 2,
+    "judge_variance_aggregates": {
+      "1": {
+        "complete": true,
+        "identity_ok": true,
+        "metrics": {
+          "B1": {
+            "ragas_metric": "context_recall",
+            "value": 0.9693939393939395,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.95
+            },
+            "passed": true
+          },
+          "B2": {
+            "ragas_metric": "context_precision",
+            "value": 0.8710101009686956,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.85
+            },
+            "passed": true
+          },
+          "B3": {
+            "ragas_metric": "answer_correctness",
+            "value": 0.8178186092656822,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.8
+            },
+            "passed": true
+          },
+          "B4": {
+            "ragas_metric": "faithfulness",
+            "value": 0.9611302440249809,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.95
+            },
+            "passed": true
+          }
+        }
+      },
+      "2": {
+        "complete": true,
+        "identity_ok": true,
+        "metrics": {
+          "B1": {
+            "ragas_metric": "context_recall",
+            "value": 0.9806277056277056,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.95
+            },
+            "passed": true
+          },
+          "B2": {
+            "ragas_metric": "context_precision",
+            "value": 0.8645707070303975,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.85
+            },
+            "passed": true
+          },
+          "B3": {
+            "ragas_metric": "answer_correctness",
+            "value": 0.8375698075694826,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.8
+            },
+            "passed": true
+          },
+          "B4": {
+            "ragas_metric": "faithfulness",
+            "value": 0.9726117741907215,
+            "valid_count": 110,
+            "expected_count": 110,
+            "failed_sample_ids": [],
+            "threshold": {
+              "operator": "gte",
+              "value": 0.95
+            },
+            "passed": true
+          }
+        }
+      }
+    },
+    "live_data_status": "passed",
+    "test_report": {
+      "schema_version": "third-round-preparation-test-report-v1",
+      "status": "passed",
+      "tested_on": "2026-09-12",
+      "environment": {
+        "python": "3.12.7",
+        "environment": ".venv-eval",
+        "ragas": "0.4.3",
+        "langchain": "1.2.12",
+        "langchain_openai": "1.4.1",
+        "pymilvus": "3.0.1"
+      },
+      "pytest": {
+        "command": ".venv-eval\\Scripts\\python.exe -m pytest test/test_unified_agent.py test/test_rag_eval_framework.py test/test_third_round_eval.py -q --basetemp .pytest_tmp_third_round_final_preparation",
+        "passed": 74,
+        "failed": 0,
+        "duration_s": 8.35,
+        "covered": [
+          "unified Agent policy and evidence contract",
+          "RAG collection/scoring framework",
+          "third-round dataset, collection, deterministic scoring and reliability",
+          "Exact Chunk Macro Recall and Micro Recall",
+          "judge variance summary gate",
+          "resumable continuous-prefix behavior"
+        ]
+      },
+      "syntax_check": {
+        "command": ".venv-eval\\Scripts\\python.exe -m py_compile <12 preparation Python files>",
+        "files": 12,
+        "passed": true
+      },
+      "live_checks": {
+        "six_tool_smoke": "completed_with_recorded_A2_finding",
+        "a2_target_retest": "3_of_3_passed_at_100_percent",
+        "reliability_smoke": "5_of_5_passed",
+        "sql_and_milvus_identity": "passed",
+        "judge_variance": "110_of_110_complete_and_both_repeats_above_threshold"
+      },
+      "formal_run_started": false
+    }
+  },
+  "capacity_budget": {
+    "unit": "bounded_calls_and_planning_tokens_not_currency",
+    "main_agent_model_call_ceiling": 6720,
+    "reliability_agent_model_call_ceiling": 960,
+    "total_agent_model_call_ceiling": 7680,
+    "main_business_tool_execution_ceiling": 5040,
+    "reliability_business_tool_execution_ceiling": 720,
+    "total_business_tool_execution_ceiling": 5760,
+    "ragas_expected_scored_units": 330,
+    "ragas_expected_metric_values": 1320,
+    "ragas_referee_api_call_planning_value": 3936,
+    "ragas_embedding_api_call_planning_value": 660,
+    "ragas_total_api_call_planning_value": 4596,
+    "ragas_total_api_call_planning_ceiling": 5500,
+    "ragas_scoring_token_planning_value": 12109194,
+    "ragas_scoring_token_planning_ceiling": 15000000,
+    "ragas_token_basis": "Judge variance repeat 2 actual 4036398 scoring tokens and 1532 API calls for the same frozen 110-sample subset, scaled to 330 formal units",
+    "ragas_token_enforcement": "usage checkpoint after each scored unit; do not resume if cumulative actual usage reaches the planning ceiling without a new explicit decision",
+    "agent_component_token_limit_available": false,
+    "currency_budget_claimed": false,
+    "reason": "Provider billing prices and unified-Agent component usage are not frozen; call ceilings are enforceable while currency would be an estimate. D5 remains report-only."
+  },
+  "evidence_hashes": {
+    "third_round_eval_data/runs/third_round_smoke_a2_retest_20260912_01/run_plan.json": "6899FD213831411B9B262FA80CBBA015BC20846C57ED0C2E0886A3D72EAFC952",
+    "third_round_eval_data/runs/third_round_smoke_a2_retest_20260912_01/results.jsonl": "9DEA8210BA3FF46A3A5663198E65AB9710FBA99143AFFEDB42B43CD5CA7B5389",
+    "third_round_eval_data/runs/third_round_smoke_a2_retest_20260912_01/score_summary.json": "E6EAE5FA0C109DB51287F5F2D5D97F823E17B7689FBD06868195B1620C8147D3",
+    "third_round_eval_data/runs/third_round_reliability_smoke_20260912_01/reliability_plan.json": "77166E4AF0324E9DFFBDC75BDFFEF8FA2059733185AB7EFF2299A8AFFD0D9A50",
+    "third_round_eval_data/runs/third_round_reliability_smoke_20260912_01/reliability_results.jsonl": "06D6F3305392D15B59E7ECB2185339F9932AE2465097BC26521F230EB6D60747",
+    "third_round_eval_data/runs/third_round_reliability_smoke_20260912_01/reliability_summary.json": "452ACD8081AAF048A2F4732EB66F6E13DE4A8F4CAA5EBE5BA2B3D5DBAF53F879",
+    "third_round_eval_data/judge_variance/judge_variance_s4plus1_20260912_01/scoring_config.json": "71D710804577F5CF2DC66068E9668107C1A94EF2A5D12DBBEF1387392E67A22E",
+    "third_round_eval_data/judge_variance/judge_variance_s4plus1_20260912_01/repeat_1/scores.jsonl": "5972784E68DAE28D3C67EE6143D84527A961038134888C78C60972464B33EBE2",
+    "third_round_eval_data/judge_variance/judge_variance_s4plus1_20260912_01/repeat_2/scores.jsonl": "FD39CB916873F1197864B2006DEBF7AD2AA25431F59AB47DF19E74AD5D197304",
+    "third_round_eval_data/judge_variance/judge_variance_s4plus1_20260912_01/repeat_2/usage.json": "92D64E3E9CFF001CA94FB835E359B5EDAEA92D80268B45384DF292C53F31346A",
+    "third_round_eval_data/judge_variance/judge_variance_s4plus1_20260912_01/summary.json": "C4A117E45999C2688F89E1A3BE5D7265E5394D419E2264BFC1F8A30DDB0309CB",
+    "third_round_eval_data/live_data_preflight_20260912_01.json": "016570956FD11E2CB89EB381DDEBBE3A4F2EF576D4CED2B523A68DA33103C53A",
+    "third_round_eval_data/preparation_test_report_20260912_01.json": "A409D1CF3ADC4C966546BB94FF7410B3772387768F726D86BE5800C84FFAEDFB",
+    "third_round_eval_data/formal_run_config.json": "26334B6C490613CF80CC75248F06F9E3F8096E176CB8EA48B888F049CD1E33C8"
+  },
+  "code_snapshot": {
+    "git_commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+    "git_branch": "feat/tool-registry",
+    "worktree_dirty": true,
+    "changed_path_count": 211,
+    "git_status_sha256": "725AF767AB49CB3F019BF986E981DADA76A3282D85DA25DA2A257F81A958A34A",
+    "tracked_diff_sha256": "B9393038CB545189D278CF31A800B204F46E5BBA589C16D7987C544D60692166",
+    "source_hashes": {
+      "scripts/run_third_round_eval.py": "6444BA4BA8154BCF4218BBD2C4C962CE6C1141057B08F68DC858E79695C4A963",
+      "evaluation/rag/scoring.py": "AC522E80EF2C44057136471D50A32F8881B04A13841F96497994340BCF33BC9D",
+      "evaluation/unified/collector.py": "E539B2B8328688F11F1BB72F7F685641694C3C9533110F0470DB4084F5DE3909",
+      "evaluation/unified/dataset.py": "379517F8B30E66D7FBF23F110851C853E92E7BFC16DAB3967B5C07FA73C121E6",
+      "evaluation/unified/judge_variance.py": "A3B57D6887AB2F2256B8B3E0A51847BAC0EABCC233C25CD65B7BB8AB8894DC87",
+      "evaluation/unified/reliability.py": "68603A81981AD3133C52E8C8775F099627BED6850C326C26D77EB8056DFD7D48",
+      "evaluation/unified/report.py": "8F6A2638BCDFAA3DC18D5860C2B955CC18296EC2129CACE626C41E6A94B8D760",
+      "evaluation/unified/scoring.py": "916A5A9FDD4F1152017FD482C08EC60B65A8707BE3EB8020221E01E852A2D71D",
+      "agent/execution/unified.py": "C3803E4EFA8CE23F6E0B16A3AFA2FF23AE3D21057D8453D7A2AD1D7EA0189AFD",
+      "agent/execution/context.py": "C886E4C36C40BDD46384599730F4D2EF99DAA8927902401815F6F2799E176ADB",
+      "agent/execution/contracts.py": "1DB30A6110EC0DD4B86E42FD0E97BD59430023A62D243A6AF61F045D8BBBFCE3",
+      "agent/execution/evidence.py": "625D1A0FB37EBD455797207B2B2162FFA6944CE22F43ABB0C4F3794354F8AAE2",
+      "agent/execution/output.py": "CCC7EFAF8C73F5BE07C344C98A67542334AE26A780FE526645BECAAA4729115A",
+      "agent/execution/policy.py": "9C52ECE3A6C0D14D69A253E3119F1FF451AB8421B3603F69DCA99F89ED0BBD73",
+      "agent/tools/schemas.py": "0A230BB1EC4621050FD58DCA3CE2ECD425C2C71947A8A10DE575F0ED32F5999C",
+      "agent/tools/knowledge.py": "8843C7C04715F50B802AE195ADAD41D34BA4D09F6A746E263A6AE6B3CF292B3C",
+      "agent/tools/price_db.py": "CB666FAE7B5592C78C06E105461F06B4C43EB4F5F1B0E8D85E1BC1FFE9850F2F",
+      "agent/tools/strict_sql.py": "65747A127ED384D1050FC2E8CD1C673EC19246446208CF6C7333D2625D1D91E5",
+      "public_kb/config.py": "852BB577D4B402B07D3F3E09955477533AEC29CC8500C228926B90639D544B1F",
+      "requirements.txt": "52B39A300665E67B34142109B302C6236D97619B92DD5CD979001FF8DCE08599",
+      "requirements-eval.txt": "7861E270B4C82BCF931955247BD2D8E0CB869FC0233756B68D994EEA321D6F85"
+    }
+  },
+  "next_gate": "explicit_human_authorization_to_start_formal_paid_run"
+}

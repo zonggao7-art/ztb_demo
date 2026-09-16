@@ -1,0 +1,2662 @@
+{
+  "schema_version": "third-round-score-summary-v1",
+  "run_id": "third_round_smoke_20260912_01",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "collected_case_attempts": 6,
+  "rag_units": 2,
+  "ragas_score_rows": 0,
+  "run_kind": "smoke",
+  "formal_plan_valid": true,
+  "scoring_snapshot": {
+    "scorer_sha256": "916A5A9FDD4F1152017FD482C08EC60B65A8707BE3EB8020221E01E852A2D71D",
+    "planned_scorer_sha256": "D80CAFBA5CF214ED9325414359B72883815A06DDF9AE03BF56E05BA44607B25C",
+    "matches_collection_plan": false
+  },
+  "collection_complete": true,
+  "per_repeat": {
+    "1": {
+      "status": "pending_ragas",
+      "metrics": {
+        "A1": {
+          "status": "scored",
+          "value": 0,
+          "numerator": 0,
+          "denominator": 1,
+          "threshold": {
+            "operator": "eq",
+            "value": 0,
+            "unit": "events",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "A10": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 1.0,
+          "denominator": 1.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "negative_cases"
+          },
+          "passed": true
+        },
+        "A2": {
+          "status": "scored",
+          "value": 0.875,
+          "numerator": 14.0,
+          "denominator": 16.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "audited_decision_points"
+          },
+          "passed": false
+        },
+        "A3": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 5.0,
+          "denominator": 5.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A4": {
+          "status": "scored",
+          "value": 0.0,
+          "numerator": 0.0,
+          "denominator": 8.0,
+          "threshold": {
+            "operator": "lte",
+            "value": 0.02,
+            "unit": "actual_business_calls",
+            "additional_gate": {
+              "unauthorized_external_calls": 0
+            }
+          },
+          "passed": true
+        },
+        "A5": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 8.0,
+          "denominator": 8.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_calls"
+          },
+          "passed": true
+        },
+        "A6": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 1.0,
+          "denominator": 1.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "gold_dependency_edges",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "A7": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 6.0,
+          "denominator": 6.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "attempted_cases"
+          },
+          "passed": true
+        },
+        "A8": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 5.0,
+          "denominator": 5.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95,
+            "unit": "positive_cases"
+          },
+          "passed": true
+        },
+        "A9": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 57.0,
+          "denominator": 57.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "verifiable_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "B5": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 2.0,
+          "denominator": 2.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.88
+          },
+          "passed": true
+        },
+        "B6": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 2.0,
+          "denominator": 2.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.87
+          },
+          "passed": true
+        },
+        "C1": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 6.0,
+          "denominator": 6.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.99,
+            "unit": "gold_required_sql_calls"
+          },
+          "passed": true
+        },
+        "C2": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 47.0,
+          "denominator": 47.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "published_sql_facts",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "C3": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 47.0,
+          "denominator": 47.0,
+          "threshold": {
+            "operator": "gte",
+            "value": 0.98,
+            "unit": "gold_required_sql_facts"
+          },
+          "passed": true
+        },
+        "C4": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 6.0,
+          "denominator": 6.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "C5": {
+          "status": "scored",
+          "value": 1.0,
+          "numerator": 4.0,
+          "denominator": 4.0,
+          "threshold": {
+            "operator": "eq",
+            "value": 1.0,
+            "unit": "applicable_cases",
+            "blocking": true
+          },
+          "passed": true
+        },
+        "B1": {
+          "status": "pending_or_incomplete_ragas",
+          "value": null,
+          "valid_count": 0,
+          "expected_count": 2,
+          "missing_sample_ids": [
+            "r1:TR-RAG-001:RAG-q001",
+            "r1:TR-CROSS-005:RAG-q030"
+          ],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": null
+        },
+        "B2": {
+          "status": "pending_or_incomplete_ragas",
+          "value": null,
+          "valid_count": 0,
+          "expected_count": 2,
+          "missing_sample_ids": [
+            "r1:TR-RAG-001:RAG-q001",
+            "r1:TR-CROSS-005:RAG-q030"
+          ],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.85
+          },
+          "passed": null
+        },
+        "B3": {
+          "status": "pending_or_incomplete_ragas",
+          "value": null,
+          "valid_count": 0,
+          "expected_count": 2,
+          "missing_sample_ids": [
+            "r1:TR-RAG-001:RAG-q001",
+            "r1:TR-CROSS-005:RAG-q030"
+          ],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.8
+          },
+          "passed": null
+        },
+        "B4": {
+          "status": "pending_or_incomplete_ragas",
+          "value": null,
+          "valid_count": 0,
+          "expected_count": 2,
+          "missing_sample_ids": [
+            "r1:TR-RAG-001:RAG-q001",
+            "r1:TR-CROSS-005:RAG-q030"
+          ],
+          "threshold": {
+            "operator": "gte",
+            "value": 0.95
+          },
+          "passed": null
+        }
+      },
+      "redline_events": [],
+      "failed_thresholds": [
+        "A2"
+      ],
+      "pending_thresholds": [
+        "B1",
+        "B2",
+        "B3",
+        "B4"
+      ],
+      "ragas_complete": false,
+      "efficiency": {
+        "mode": "report_only_not_a_blocking_gate",
+        "D1": {
+          "count": 6,
+          "p50_s": 2.883,
+          "p95_s": 7.5
+        },
+        "D2": {
+          "definition": "first_recorded_user_visible_stage",
+          "count": 6,
+          "p50_s": 0.0,
+          "p95_s": 0.0
+        },
+        "D3": {
+          "definition": "validated_final_answer_in_current_non_streaming_collector",
+          "count": 6,
+          "p50_s": 2.883,
+          "p95_s": 7.5
+        },
+        "D4": {
+          "agent_loop": {
+            "count": 6,
+            "p50_s": 2.883,
+            "p95_s": 7.5
+          },
+          "tool:knowledge_qa": {
+            "count": 2,
+            "p50_s": 4.648999999999999,
+            "p95_s": 6.779299999999999
+          },
+          "tool:query_company_award_history": {
+            "count": 1,
+            "p50_s": 0.015000000000000124,
+            "p95_s": 0.015000000000000124
+          },
+          "tool:query_company_business_scope": {
+            "count": 1,
+            "p50_s": 0.016000000000000014,
+            "p95_s": 0.016000000000000014
+          },
+          "tool:query_company_penalty": {
+            "count": 1,
+            "p50_s": 0.015000000000000124,
+            "p95_s": 0.015000000000000124
+          },
+          "tool:query_company_registration": {
+            "count": 2,
+            "p50_s": 0.08550000000000002,
+            "p95_s": 0.14895000000000003
+          },
+          "tool:query_project_award": {
+            "count": 1,
+            "p50_s": 0.0,
+            "p95_s": 0.0
+          },
+          "validation": {
+            "count": 6,
+            "p50_s": 0.0,
+            "p95_s": 0.0
+          }
+        },
+        "D5": {
+          "status": "not_available_from_current_unified_contract"
+        },
+        "D6": {
+          "mean_model_calls": 2.8333333333333335,
+          "mean_tool_attempts": 1.6666666666666667,
+          "mean_tool_executions": 1.3333333333333333,
+          "mean_rejected_tool_attempts": 0.3333333333333333,
+          "mean_model_repairs": 0.16666666666666666,
+          "limitation": "RAG-internal model and retry counts are not exposed by the current unified contract"
+        }
+      }
+    }
+  },
+  "overall": {
+    "status": "pending_ragas",
+    "metrics": {
+      "A1": {
+        "status": "scored",
+        "value": 0,
+        "numerator": 0,
+        "denominator": 1,
+        "threshold": {
+          "operator": "eq",
+          "value": 0,
+          "unit": "events",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "A10": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 1.0,
+        "denominator": 1.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "negative_cases"
+        },
+        "passed": true
+      },
+      "A2": {
+        "status": "scored",
+        "value": 0.875,
+        "numerator": 14.0,
+        "denominator": 16.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "audited_decision_points"
+        },
+        "passed": false
+      },
+      "A3": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 5.0,
+        "denominator": 5.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "positive_cases"
+        },
+        "passed": true
+      },
+      "A4": {
+        "status": "scored",
+        "value": 0.0,
+        "numerator": 0.0,
+        "denominator": 8.0,
+        "threshold": {
+          "operator": "lte",
+          "value": 0.02,
+          "unit": "actual_business_calls",
+          "additional_gate": {
+            "unauthorized_external_calls": 0
+          }
+        },
+        "passed": true
+      },
+      "A5": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 8.0,
+        "denominator": 8.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.99,
+          "unit": "gold_required_calls"
+        },
+        "passed": true
+      },
+      "A6": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 1.0,
+        "denominator": 1.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "gold_dependency_edges",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "A7": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 6.0,
+        "denominator": 6.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "attempted_cases"
+        },
+        "passed": true
+      },
+      "A8": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 5.0,
+        "denominator": 5.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.95,
+          "unit": "positive_cases"
+        },
+        "passed": true
+      },
+      "A9": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 57.0,
+        "denominator": 57.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "verifiable_facts",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "B5": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 2.0,
+        "denominator": 2.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.88
+        },
+        "passed": true
+      },
+      "B6": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 2.0,
+        "denominator": 2.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.87
+        },
+        "passed": true
+      },
+      "C1": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 6.0,
+        "denominator": 6.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.99,
+          "unit": "gold_required_sql_calls"
+        },
+        "passed": true
+      },
+      "C2": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 47.0,
+        "denominator": 47.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "published_sql_facts",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "C3": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 47.0,
+        "denominator": 47.0,
+        "threshold": {
+          "operator": "gte",
+          "value": 0.98,
+          "unit": "gold_required_sql_facts"
+        },
+        "passed": true
+      },
+      "C4": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 6.0,
+        "denominator": 6.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "applicable_cases",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "C5": {
+        "status": "scored",
+        "value": 1.0,
+        "numerator": 4.0,
+        "denominator": 4.0,
+        "threshold": {
+          "operator": "eq",
+          "value": 1.0,
+          "unit": "applicable_cases",
+          "blocking": true
+        },
+        "passed": true
+      },
+      "B1": {
+        "status": "pending_or_incomplete_ragas",
+        "value": null,
+        "valid_count": 0,
+        "expected_count": 2,
+        "missing_sample_ids": [
+          "r1:TR-RAG-001:RAG-q001",
+          "r1:TR-CROSS-005:RAG-q030"
+        ],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.95
+        },
+        "passed": null
+      },
+      "B2": {
+        "status": "pending_or_incomplete_ragas",
+        "value": null,
+        "valid_count": 0,
+        "expected_count": 2,
+        "missing_sample_ids": [
+          "r1:TR-RAG-001:RAG-q001",
+          "r1:TR-CROSS-005:RAG-q030"
+        ],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.85
+        },
+        "passed": null
+      },
+      "B3": {
+        "status": "pending_or_incomplete_ragas",
+        "value": null,
+        "valid_count": 0,
+        "expected_count": 2,
+        "missing_sample_ids": [
+          "r1:TR-RAG-001:RAG-q001",
+          "r1:TR-CROSS-005:RAG-q030"
+        ],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.8
+        },
+        "passed": null
+      },
+      "B4": {
+        "status": "pending_or_incomplete_ragas",
+        "value": null,
+        "valid_count": 0,
+        "expected_count": 2,
+        "missing_sample_ids": [
+          "r1:TR-RAG-001:RAG-q001",
+          "r1:TR-CROSS-005:RAG-q030"
+        ],
+        "threshold": {
+          "operator": "gte",
+          "value": 0.95
+        },
+        "passed": null
+      }
+    },
+    "redline_events": [],
+    "failed_thresholds": [
+      "A2"
+    ],
+    "pending_thresholds": [
+      "B1",
+      "B2",
+      "B3",
+      "B4"
+    ],
+    "ragas_complete": false,
+    "efficiency": {
+      "mode": "report_only_not_a_blocking_gate",
+      "D1": {
+        "count": 6,
+        "p50_s": 2.883,
+        "p95_s": 7.5
+      },
+      "D2": {
+        "definition": "first_recorded_user_visible_stage",
+        "count": 6,
+        "p50_s": 0.0,
+        "p95_s": 0.0
+      },
+      "D3": {
+        "definition": "validated_final_answer_in_current_non_streaming_collector",
+        "count": 6,
+        "p50_s": 2.883,
+        "p95_s": 7.5
+      },
+      "D4": {
+        "agent_loop": {
+          "count": 6,
+          "p50_s": 2.883,
+          "p95_s": 7.5
+        },
+        "tool:knowledge_qa": {
+          "count": 2,
+          "p50_s": 4.648999999999999,
+          "p95_s": 6.779299999999999
+        },
+        "tool:query_company_award_history": {
+          "count": 1,
+          "p50_s": 0.015000000000000124,
+          "p95_s": 0.015000000000000124
+        },
+        "tool:query_company_business_scope": {
+          "count": 1,
+          "p50_s": 0.016000000000000014,
+          "p95_s": 0.016000000000000014
+        },
+        "tool:query_company_penalty": {
+          "count": 1,
+          "p50_s": 0.015000000000000124,
+          "p95_s": 0.015000000000000124
+        },
+        "tool:query_company_registration": {
+          "count": 2,
+          "p50_s": 0.08550000000000002,
+          "p95_s": 0.14895000000000003
+        },
+        "tool:query_project_award": {
+          "count": 1,
+          "p50_s": 0.0,
+          "p95_s": 0.0
+        },
+        "validation": {
+          "count": 6,
+          "p50_s": 0.0,
+          "p95_s": 0.0
+        }
+      },
+      "D5": {
+        "status": "not_available_from_current_unified_contract"
+      },
+      "D6": {
+        "mean_model_calls": 2.8333333333333335,
+        "mean_tool_attempts": 1.6666666666666667,
+        "mean_tool_executions": 1.3333333333333333,
+        "mean_rejected_tool_attempts": 0.3333333333333333,
+        "mean_model_repairs": 0.16666666666666666,
+        "limitation": "RAG-internal model and retry counts are not exposed by the current unified contract"
+      }
+    }
+  },
+  "breakdowns": {
+    "authorized_tool": {
+      "knowledge_qa": {
+        "case_count": 2,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.7142857142857143,
+            "numerator": 5.0,
+            "denominator": 7.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 3.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 40.0,
+            "denominator": 40.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "no_business_tool": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "query_company_award_history": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.6,
+            "numerator": 3.0,
+            "denominator": 5.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 35.0,
+            "denominator": 35.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "query_company_business_scope": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          }
+        }
+      },
+      "query_company_penalty": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "query_company_registration": {
+        "case_count": 2,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 3.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          }
+        }
+      },
+      "query_project_award": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      }
+    },
+    "case_category": {
+      "independent_multi_action": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 11.0,
+            "denominator": 11.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          }
+        }
+      },
+      "negative": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "rag_anchor": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 1.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "result_dependent": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "single_sql": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 1.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "sql_rag_cross_capability": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.6,
+            "numerator": 3.0,
+            "denominator": 5.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 35.0,
+            "denominator": 35.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      }
+    },
+    "finish_status": {
+      "clarify": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "complete": {
+        "case_count": 5,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.8666666666666667,
+            "numerator": 13.0,
+            "denominator": 15.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 8.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 8.0,
+            "denominator": 8.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 57.0,
+            "denominator": 57.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 47.0,
+            "denominator": 47.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 47.0,
+            "denominator": 47.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          }
+        }
+      }
+    },
+    "formal_run": {
+      "repeat_1": {
+        "case_count": 6,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 0.875,
+            "numerator": 14.0,
+            "denominator": 16.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 8.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 8.0,
+            "denominator": 8.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 57.0,
+            "denominator": 57.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 47.0,
+            "denominator": 47.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 47.0,
+            "denominator": 47.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          }
+        }
+      }
+    },
+    "normal_adversarial_or_fault": {
+      "normal": {
+        "case_count": 6,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 0.875,
+            "numerator": 14.0,
+            "denominator": 16.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 8.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 8.0,
+            "denominator": 8.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 57.0,
+            "denominator": 57.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 47.0,
+            "denominator": 47.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 47.0,
+            "denominator": 47.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          }
+        }
+      }
+    },
+    "normal_empty_or_failure": {
+      "no_match": {
+        "case_count": 2,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 3.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "normal_result": {
+        "case_count": 3,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.8,
+            "numerator": 8.0,
+            "denominator": 10.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 5.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 51.0,
+            "denominator": 51.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 41.0,
+            "denominator": 41.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 41.0,
+            "denominator": 41.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          }
+        }
+      },
+      "not_applicable": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      }
+    },
+    "rag_single_or_multi_hop": {
+      "not_applicable": {
+        "case_count": 4,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 9.0,
+            "denominator": 9.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 5.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 17.0,
+            "denominator": 17.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 17.0,
+            "denominator": 17.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 17.0,
+            "denominator": 17.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          }
+        }
+      },
+      "single_hop": {
+        "case_count": 2,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.7142857142857143,
+            "numerator": 5.0,
+            "denominator": 7.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 3.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 40.0,
+            "denominator": 40.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 2
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 30.0,
+            "denominator": 30.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      }
+    },
+    "single_or_multi_entity": {
+      "multi_entity": {
+        "case_count": 1,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 2.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 6.0,
+            "denominator": 6.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "not_applicable": {
+        "case_count": 2,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A10": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A2": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 1.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 2.0,
+            "denominator": 2.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          }
+        }
+      },
+      "single_entity": {
+        "case_count": 3,
+        "metrics": {
+          "A1": {
+            "value": 0,
+            "numerator": 0,
+            "denominator": 1
+          },
+          "A2": {
+            "value": 0.8,
+            "numerator": 8.0,
+            "denominator": 10.0
+          },
+          "A3": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A4": {
+            "value": 0.0,
+            "numerator": 0.0,
+            "denominator": 5.0
+          },
+          "A5": {
+            "value": 1.0,
+            "numerator": 5.0,
+            "denominator": 5.0
+          },
+          "A7": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A8": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          },
+          "A9": {
+            "value": 1.0,
+            "numerator": 46.0,
+            "denominator": 46.0
+          },
+          "B1": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B2": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B3": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B4": {
+            "value": null,
+            "valid_count": 0,
+            "expected_count": 1
+          },
+          "B5": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "B6": {
+            "value": 1.0,
+            "numerator": 1.0,
+            "denominator": 1.0
+          },
+          "C1": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          },
+          "C2": {
+            "value": 1.0,
+            "numerator": 41.0,
+            "denominator": 41.0
+          },
+          "C3": {
+            "value": 1.0,
+            "numerator": 41.0,
+            "denominator": 41.0
+          },
+          "C4": {
+            "value": 1.0,
+            "numerator": 4.0,
+            "denominator": 4.0
+          },
+          "C5": {
+            "value": 1.0,
+            "numerator": 3.0,
+            "denominator": 3.0
+          }
+        }
+      }
+    }
+  },
+  "formal_main_decision": "incomplete",
+  "limitations": [
+    "A9 is deterministic evidence association; legal semantic support is additionally gated by B4.",
+    "C3 requires up to eight complete frozen-truth records per SQL action because the production renderer publishes at most eight records per action.",
+    "D5 remains unavailable until the unified runtime exposes component usage and cost metadata.",
+    "D3 equals validated final-answer latency because the current collector does not expose an earlier deliverable-answer event.",
+    "Required group breakdowns report raw numerators and denominators; formal thresholds apply to each complete run, not every subgroup.",
+    "The scorer changed after collection; this smoke was rescored with the current recorded scorer hash. Formal runs forbid this mismatch.",
+    "Reliability E metrics are scored from a separate reliability batch."
+  ]
+}

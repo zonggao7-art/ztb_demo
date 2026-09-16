@@ -2,8 +2,6 @@
 """streaming/ envelope 离线测试。"""
 from __future__ import annotations
 
-import pytest
-
 from agent.streaming import EventType, StreamEvent, format_sse, format_jsonl
 
 

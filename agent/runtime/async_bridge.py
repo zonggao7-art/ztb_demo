@@ -1,10 +1,10 @@
 import asyncio
+from contextvars import copy_context
 
 from concurrent.futures import Executor, ThreadPoolExecutor
 
 from typing import Any, Awaitable, Callable, Iterable, Optional
 
-'''_IO_EXECUTOR'''
 _IO_EXECUTOR: Optional[Executor] = None
 _CPU_EXECUTOR: Optional[Executor] = None
 
@@ -35,12 +35,33 @@ async def run_blocking(
 
 
     #把同步函数丢到线程池里跑，返回一个awaitable对象
-    return await loop.run_in_executor(executor or _IO_EXECUTOR, #如果调用方没指定executor,就用全局的IO池
-                                      lambda: function(*args, **kwargs),
-                                      )
-    '''整段等价于：1、把function(args, **kwargs)交给线程池里的某个工作线程
-    2、当前协程挂起，让出事件循环3、工作线程跑完，把结果塞回future4、事件循环调度回来，
-    await拿到结果，继续往下走'''
+    from agent.execution.context import current_run
+    run = current_run()
+    context = copy_context()
+    if run:
+        with run.lock:
+            run.check()
+            run.inflight += 1
+    def work():
+        try:
+            if run:
+                run.check()
+            return context.run(function, *args, **kwargs)
+        finally:
+            if run:
+                with run.lock:
+                    run.inflight -= 1
+    try:
+        future = loop.run_in_executor(executor or _IO_EXECUTOR, work)
+    except BaseException:
+        if run:
+            with run.lock:
+                run.inflight -= 1
+        raise
+    # Cancellation of the awaiter must not mark a still-running worker as done.
+    # Consume late exceptions; the thread retains its request context until exit.
+    future.add_done_callback(lambda f: f.exception() if not f.cancelled() else None)
+    return await asyncio.shield(future)
 
 
 async def gather_limited(
@@ -81,3 +102,6 @@ def shutdown_executors() -> None:
         if ex is not None:
             ex.shutdown(wait=True)
     _IO_EXECUTOR = _CPU_EXECUTOR = None
+
+
+atexit.register(shutdown_executors)

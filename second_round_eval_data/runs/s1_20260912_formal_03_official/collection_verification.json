@@ -1,0 +1,40 @@
+{
+  "verified_at": "2026-09-12T03:40:39.288319+00:00",
+  "run_id": "s1_20260912_formal_03_official",
+  "paid_api_called_by_verification": false,
+  "checks": {
+    "manifest_status": true,
+    "planned_count": true,
+    "result_count": true,
+    "all_success": true,
+    "sample_order": true,
+    "index_order": true,
+    "dataset_sha256": true,
+    "stage": true,
+    "retrieval": true,
+    "answer_model_manifest": true,
+    "answer_model_current": true,
+    "source_unchanged": true,
+    "all_answer_usage_actual": true
+  },
+  "counts": {
+    "planned": 200,
+    "results": 200,
+    "success": 200,
+    "non_success": 0
+  },
+  "latency_s": {
+    "method": "nearest_rank",
+    "p50": 1.177373,
+    "p95": 2.046747,
+    "max": 2.547043,
+    "mean": 1.24458362
+  },
+  "artifacts": {
+    "results_sha256": "56810407BA0AE62B79C5A65AB10126B325B07710C0625C8E8988AC8EBA8A1DD8",
+    "manifest_sha256_before_verification": "0646178AE617392862ADE9ABF11B1400392B7A87557539D1156F07D4220AA479",
+    "source_snapshot_sha256": "F904E57C69E561A624712705DB857F1BB54F67CA669029432073AB2F78DEB57D",
+    "preflight_sha256": "695E95A2C4978E73A3ED939B667183D2911DAD926C0705FF4D6B9C5553CB4B5D"
+  },
+  "scoring_ready": true
+}

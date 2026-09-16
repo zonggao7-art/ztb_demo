@@ -1,0 +1,29 @@
+[
+  {
+    "name": "hy3",
+    "model_id": "ep-kc8qrgl9",
+    "total": 1000,
+    "rejected_count": 0,
+    "rejected_rate": 0.0,
+    "fail_count": 0,
+    "fail_rate": 0.0,
+    "ttft_mean": 1.6294,
+    "ttft_p50": 0.6915,
+    "ttft_p95": 0.9102,
+    "ttft_p99": 60.7688,
+    "total_s_mean": 4.8657,
+    "total_s_p50": 3.2706,
+    "total_s_p95": 9.7483,
+    "total_s_p99": 62.0063,
+    "throughput_tokens_per_s": 22.92,
+    "input_tokens_total": 1407917,
+    "output_tokens_total": 111521,
+    "avg_answer_len": 520.0,
+    "cost_est_rmb": 1.631,
+    "faithfulness": 0.7025432562170674,
+    "answer_relevancy": 0.7010695832286132,
+    "answer_correctness": 0.6855087104519977,
+    "is_self_eval": false,
+    "score_failed_count": 12
+  }
+]

@@ -23,7 +23,7 @@ def _query_penalty_by_company_name(company_name: str) -> list[dict[str, Any]]:
     """
     conn = _get_connection(_CLEAN_DB)
     if conn is None:
-        return []
+        raise ConnectionError("company_penalty connection unavailable")
     try:
         with conn.cursor(pymysql.cursors.DictCursor) as cur:
             cur.execute(
@@ -42,112 +42,33 @@ def _query_penalty_by_company_name(company_name: str) -> list[dict[str, Any]]:
             results.append(clean_row)
         return results
     except Exception as e:
-        logger.debug("直接查询 company_penalty 失败: %s", e)
-        return []
+        raise ConnectionError("company_penalty query failed") from e
     finally:
         _release_connection(conn)
 
 def _query_company_data(intent: SearchIntent) -> dict[str, Any]:
-    """公司信息查询：company_info + company_penalty 双路查询。
-
-    penalty_check 查询时优先直接查 company_penalty（按 company_name），
-    避免依赖 company_info 中可能不存在的目标企业。
-    """
-    hf = intent.hard_filters
-
-    # ── P0-1：penalty_check 直接查 company_penalty ──
-    if intent.need_penalty_check:
-        target_company = hf.company_name or (
-            intent.exact_tokens[0] if intent.exact_tokens else None
-        )
-        if target_company:
-            direct_penalty = _query_penalty_by_company_name(target_company)
-            if direct_penalty:
-                logger.info(
-                    "[PENALTY_DIRECT] 直接查 company_penalty 命中 %d 条 (company=%s)",
-                    len(direct_penalty), target_company[:30],
-                )
-                return {
-                    "records": direct_penalty,
-                    "total_found": len(direct_penalty),
-                    "queried_tables": [f"{_CLEAN_DB}.company_penalty"],
-                    "sql_count": 1,
-                    "total_sql_time": 0.0,
-                }
-
-    # ── 原有逻辑：company_info 主查询 + credit_code 联查 ──
-    tables = ["company_info"]
-    result = _query_tables(tables, intent)
-
-    # ── P0-1b：penalty_check 精确匹配过滤 ──
-    # 当直接查 company_penalty 无结果时，降级到 company_info 路径。
-    # 但语义召回可能返回无关企业，必须过滤保留目标企业。
-    if intent.need_penalty_check and hf.company_name and result["records"]:
-        target = hf.company_name
-        matched = [rec for rec in result["records"] if rec.get("company_name") == target]
-        if not matched:
-            logger.info(
-                "[PENALTY_FILTER] company_info 中未找到精确匹配 '%s'，返回空结果", target[:30]
-            )
-            result["records"] = []
-        else:
-            result["records"] = matched
-
-    # 条件联查 company_penalty
-    if intent.need_penalty_check and result["records"]:
-        credit_codes = set()
-        for rec in result["records"]:
-            cc = rec.get("credit_code")
-            if cc and cc not in ("", "None", "未提供"):
-                credit_codes.add(cc)
-
-        if credit_codes:
-            penalty_results: list[dict] = []
-            conn = _get_connection(_CLEAN_DB)
-            if conn:
-                try:
-                    with conn.cursor(pymysql.cursors.DictCursor) as cur:
-                        for cc in credit_codes:
-                            try:
-                                cur.execute(
-                                    "SELECT * FROM `company_penalty` WHERE `credit_code` = %s ORDER BY `penalty_date` DESC",
-                                    (cc,)
-                                )
-                                for row in cur.fetchall():
-                                    clean_row = _clean_result_row(row)
-                                    clean_row["_source_db"] = _CLEAN_DB
-                                    clean_row["_source_table"] = "company_penalty"
-                                    penalty_results.append(clean_row)
-                            except Exception as e:
-                                logger.debug("联查 company_penalty 失败: %s", e)
-                finally:
-                    _release_connection(conn)
-
-            # 合并 penalty 数据到主结果
-            if penalty_results:
-                # 将 penalty 数据按 credit_code 合并到对应 company_info 记录
-                penalty_by_cc: dict[str, list[dict]] = {}
-                for pr in penalty_results:
-                    cc = pr.get("credit_code", "")
-                    if cc:
-                        penalty_by_cc.setdefault(cc, []).append(pr)
-
-                merged_records = []
-                for rec in result["records"]:
-                    cc = rec.get("credit_code", "")
-                    penalties = penalty_by_cc.get(cc, [])
-                    if penalties:
-                        # 将第一个 penalty 记录的关键字段合并到 company_info 记录
-                        p = penalties[0]
-                        rec["penalty_date"] = p.get("penalty_date", "")
-                        rec["illegal_behavior"] = p.get("illegal_behavior", "")
-                        rec["penalty_result"] = p.get("penalty_result", "")
-                        rec["law_enforcement_unit"] = p.get("law_enforcement_unit", "")
-                    merged_records.append(rec)
-
-                result["records"] = merged_records
-                result["queried_tables"].append(f"{_CLEAN_DB}.company_penalty")
-
+    """Keep company profiles and penalties as separate, source-tagged records."""
+    needs_penalty = intent.need_penalty_check or intent.query_type == "penalty_check"
+    result = _query_tables(["company_info"], intent)
+    statuses = dict(result.get("table_status", {}))
+    # Older callers without a status contract cannot certify a successful empty query.
+    statuses.setdefault("company_info", "success" if result.get("records") else "failed")
+    rows = [dict(r, _source_table="company_info") for r in result.get("records", [])]
+    if needs_penalty:
+        target = intent.hard_filters.company_name or (intent.exact_tokens[0] if intent.exact_tokens else "")
+        try:
+            if not target:
+                raise ValueError("missing_company")
+            penalties = _query_penalty_by_company_name(target)
+            statuses["company_penalty"] = "success" if penalties else "empty"
+            rows.extend(dict(r, _source_table="company_penalty") for r in penalties)
+        except TimeoutError:
+            statuses["company_penalty"] = "timeout"
+        except Exception:
+            statuses["company_penalty"] = "failed"
+        result["sql_count"] = result.get("sql_count", 0) + 1
+    result.update(records=rows, total_found=len(rows), table_status=statuses,
+                  queried_tables=[f"{_CLEAN_DB}.{t}" for t in statuses])
     return result
 
 def _query_bidding_data(intent: SearchIntent) -> dict[str, Any]:

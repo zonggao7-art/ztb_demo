@@ -2,9 +2,6 @@ from __future__ import annotations
 
 import asyncio
 
-import pytest
-from langchain_core.messages import AIMessage
-
 from agent.graph import AgentGraph
 from agent.streaming import EventType
 

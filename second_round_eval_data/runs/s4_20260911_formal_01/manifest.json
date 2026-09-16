@@ -1,0 +1,385 @@
+{
+  "run_id": "s4_20260911_formal_01",
+  "stage": "s4",
+  "status": "scoring_complete",
+  "started_at": "2026-09-11T09:16:51.907312+00:00",
+  "planned_count": 200,
+  "order": "dataset_file_order",
+  "concurrency": 1,
+  "dataset": {
+    "path": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\testset_200.jsonl",
+    "sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+    "query_types": {
+      "multi_hop": 70,
+      "single_hop": 130
+    }
+  },
+  "collection": "public_kb",
+  "models": {
+    "query_embedding": "BAAI/bge-m3",
+    "answer": "deepseek-flash",
+    "reranker": "BAAI/bge-reranker-v2-m3",
+    "referee": "MiniMax-M3",
+    "scoring_embedding": "BAAI/bge-m3"
+  },
+  "retrieval": {
+    "stage": "s4",
+    "dense_limit": 30,
+    "top_k": 5,
+    "nprobe": 32,
+    "dense": true,
+    "sparse": true,
+    "sparse_limit": 30,
+    "rrf": true,
+    "rrf_k": 60,
+    "fusion_limit": 30,
+    "reranker": true,
+    "reranker_model": "BAAI/bge-reranker-v2-m3",
+    "reranker_timeout_s": 5.0,
+    "reranker_max_attempts": 2,
+    "reranker_max_concurrency": 4,
+    "dynamic_filter": true,
+    "dynamic_filter_policy": {
+      "policy_id": "adaptive_reranker_v1",
+      "score_scale": "reranker",
+      "rules": [
+        {
+          "condition": "top_score >= 0.75",
+          "threshold": 0.4
+        },
+        {
+          "condition": "0.50 <= top_score < 0.75",
+          "threshold": 0.45
+        },
+        {
+          "condition": "top_score < 0.50",
+          "threshold": 0.5
+        }
+      ],
+      "empty_result_action": "knowledge_qa_refusal"
+    },
+    "score_scale": "reranker",
+    "fixed_threshold": null
+  },
+  "answer_request": {
+    "host": "api.deepseek.com",
+    "model": "deepseek-flash",
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "reranker_request": {
+    "required": true,
+    "model": "BAAI/bge-reranker-v2-m3",
+    "host": "api.siliconflow.cn",
+    "timeout_s": 5.0,
+    "max_attempts": 2,
+    "max_concurrency": 4,
+    "fallback": false,
+    "passed": true,
+    "errors": []
+  },
+  "evaluation_interpretation": "S4 adds only the frozen adaptive reranker-score filter to the S3 retrieval and answer configuration; thresholds are not tuned during S4.",
+  "latency_scope": "knowledge_qa_call_only_excludes_scheduler_throttle",
+  "latency_percentile_method": "nearest_rank",
+  "question_timeout_s": 600.0,
+  "request_throttle": {
+    "min_start_interval_s": 10.0,
+    "wait_recorded_per_result": true,
+    "wait_included_in_question_latency": false,
+    "reranker_rate_limit_policy": "pause_without_appending_failure",
+    "resume_cooldown_s": 65.0
+  },
+  "baseline_run_id": "s3_20260911_formal_02",
+  "baseline_snapshot": {
+    "run_id": "s3_20260911_formal_02",
+    "stage": "s3",
+    "planned_count": 200,
+    "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+    "git": {
+      "commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+      "working_tree_dirty": true
+    },
+    "known_reproducibility_limit": "S3 manifest records working_tree_dirty=true; its collection source snapshot, scoring recovery source snapshot, and this result snapshot preserve the auditable evidence used as the S4 baseline.",
+    "artifacts": {
+      "manifest.json": {
+        "sha256": "AFF22BEBAB086B197F282DD3AB85C3421BBFE666E97D01C364DF5F9D2BBEF9B1",
+        "bytes": 11807
+      },
+      "results.jsonl": {
+        "sha256": "A75686E4B245D31011496D05C8DF4968B582FCA233A3E4B416F440272B67B84F",
+        "bytes": 13641140
+      },
+      "scores.jsonl": {
+        "sha256": "3465085A6C5C367F0020BCD919DC4A70F034BF42E38484A2C765E9B03A9C7622",
+        "bytes": 73229
+      },
+      "scoring_usage.json": {
+        "sha256": "E6A682BCC0F7915FDE8406B5A40B1F5AE947E1CAC9CD8155E4E6AAFF442B1113",
+        "bytes": 727
+      },
+      "summary.json": {
+        "sha256": "BA8CC29BD6F07AB4444A5A6E7E5E69437D5B403347F2E2B23FDE6CC41BE3AEF2",
+        "bytes": 11529
+      },
+      "report.md": {
+        "sha256": "2A69BBB1B6C683CA90F23B2B394034D19B773CB95A8188EE574420AB99A00EA5",
+        "bytes": 3231
+      },
+      "paired_comparison.json": {
+        "sha256": "06B3EE5552E7BF260BF5B2F15084A662E03DC81FE7BF779F46C67DBC31AB1CB1",
+        "bytes": 424678
+      },
+      "paired_comparison.md": {
+        "sha256": "9F23D282CF89C8B16056B4D73A2275148BDF06392FB4431E57CA8C2A516AFB6B",
+        "bytes": 3780
+      },
+      "manifest_before_connection_recovery.json": {
+        "sha256": "2830A2A189317B1B80094F430D39DC8F7BFB9F1DD80BCA207180F28473414F64",
+        "bytes": 10199
+      },
+      "paired_comparison_before_connection_recovery.json": {
+        "sha256": "CE461FB9E39DC443EEC81228DEC6E02C8D623CD59219A3763EDBD3D7881F6600",
+        "bytes": 201423
+      },
+      "paired_comparison_before_connection_recovery.md": {
+        "sha256": "7753263E85A87619C06346276BE3A5174439D8B78DB2B5703B37DAFEA122B627",
+        "bytes": 2021
+      },
+      "report_before_connection_recovery.md": {
+        "sha256": "4753D5C808E3362F8FCEA3AADA51687D475F624ADC6FA71EF545A216060008D5",
+        "bytes": 2685
+      },
+      "scores_before_connection_recovery.jsonl": {
+        "sha256": "5551C9A38E9F03A4398B88584A8A4472F1EA9F5A2FE36ABE5CB7C99CAA9B84D4",
+        "bytes": 75903
+      },
+      "scoring_connection_recovery_attempts.jsonl": {
+        "sha256": "5C47180C189E85016C7232D7B92506EA4282D45B2704AC6AC7E9B803A8407519",
+        "bytes": 19601
+      },
+      "scoring_usage_before_connection_recovery.json": {
+        "sha256": "3B77A9B7EA26E207CEB10EFD71A6360CC691114F910CDC090BAF0E5230C56080",
+        "bytes": 727
+      },
+      "summary_before_connection_recovery.json": {
+        "sha256": "A11A4293BBE317F3A8DCAEF0154CF1AF14C5815BFFD47C40F280D3251EB8984D",
+        "bytes": 12162
+      },
+      "recover_connection_failures.py": {
+        "sha256": "2AC4719D3A7563E2D839F50FCEE8B9DCC2556B207BC7E9F76EE8A7E8E0E85D66",
+        "bytes": 10284
+      }
+    }
+  },
+  "source_snapshot": {
+    "path": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\s4_source_snapshot.json",
+    "sha256": "7B26C5972B3BA18FEA3E5417E5C4F51CC5C1060496E94C559CCB5D3DD0E5AFED",
+    "file_count": 47
+  },
+  "knowledge_base_preflight": {
+    "requested": true,
+    "passed": true,
+    "errors": [],
+    "collection": "public_kb",
+    "row_count": 920,
+    "expected_row_count": 920,
+    "fields": [
+      "chunk_uid",
+      "sparse_vector",
+      "text",
+      "vector"
+    ],
+    "bm25_function": true,
+    "indexes": {
+      "vector": {
+        "field_name": "vector",
+        "index_type": "IVF_FLAT",
+        "metric_type": "COSINE",
+        "total_rows": 920,
+        "indexed_rows": 920,
+        "pending_index_rows": 0,
+        "state": "Finished"
+      },
+      "sparse_vector": {
+        "field_name": "sparse_vector",
+        "index_type": "SPARSE_INVERTED_INDEX",
+        "metric_type": "BM25",
+        "total_rows": 920,
+        "indexed_rows": 920,
+        "pending_index_rows": 0,
+        "state": "Finished"
+      }
+    },
+    "unique_target_chunks": 164,
+    "target_associations": 270,
+    "found_target_chunks": 164,
+    "missing_target_chunks": [],
+    "text_mismatch_chunks": []
+  },
+  "provider_model_preflight": {
+    "requested": true,
+    "reachable": true,
+    "configured_model": "deepseek-flash",
+    "available_models": [
+      "deepseek-flash",
+      "deepseek-v4-pro"
+    ],
+    "exact_match": true,
+    "passed": true,
+    "error": null
+  },
+  "reranker_model_preflight": {
+    "requested": true,
+    "reachable": true,
+    "configured_model": "BAAI/bge-reranker-v2-m3",
+    "available_models": [
+      "zai-org/GLM-5.3",
+      "deepseek-ai/DeepSeek-V4-Flash",
+      "meituan-longcat/LongCat-2.0",
+      "zai-org/GLM-5.2",
+      "moonshotai/Kimi-K2.7-Code",
+      "deepseek-ai/DeepSeek-V4-Pro",
+      "Qwen/Qwen3.8-27B",
+      "Pro/moonshotai/Kimi-K2.6",
+      "Pro/zai-org/GLM-5.1",
+      "MiniMaxAI/MiniMax-M2.5",
+      "Pro/MiniMaxAI/MiniMax-M2.5",
+      "Tongyi-MAI/Z-Image-Turbo",
+      "Tongyi-MAI/Z-Image",
+      "baidu/ERNIE-Image-Turbo",
+      "deepseek-ai/DeepSeek-V3.2",
+      "Pro/deepseek-ai/DeepSeek-V3.2",
+      "deepseek-ai/DeepSeek-V3.1-Terminus",
+      "Pro/deepseek-ai/DeepSeek-V3.1-Terminus",
+      "Qwen/Qwen3.6-35B-A3B",
+      "Qwen/Qwen3.6-27B",
+      "Qwen/Qwen3.5-397B-A17B",
+      "Qwen/Qwen3.5-122B-A10B",
+      "Qwen/Qwen3.5-35B-A3B",
+      "Qwen/Qwen3.5-27B",
+      "Qwen/Qwen3.5-9B",
+      "Qwen/Qwen3.5-4B",
+      "Qwen/Qwen3-VL-Embedding-8B",
+      "Qwen/Qwen3-VL-Reranker-8B",
+      "PaddlePaddle/PaddleOCR-VL-1.5",
+      "deepseek-ai/DeepSeek-R1",
+      "Pro/deepseek-ai/DeepSeek-R1",
+      "deepseek-ai/DeepSeek-V3",
+      "Pro/deepseek-ai/DeepSeek-V3",
+      "stepfun-ai/Step-3.5-Flash",
+      "Qwen/Qwen3-VL-32B-Instruct",
+      "Qwen/Qwen3-VL-32B-Thinking",
+      "Qwen/Qwen3-VL-8B-Instruct",
+      "Qwen/Qwen3-VL-8B-Thinking",
+      "Qwen/Qwen3-VL-30B-A3B-Instruct",
+      "Qwen/Qwen3-VL-30B-A3B-Thinking",
+      "Qwen/Qwen3-Omni-30B-A3B-Instruct",
+      "Qwen/Qwen3-Omni-30B-A3B-Thinking",
+      "Qwen/Qwen3-Omni-30B-A3B-Captioner",
+      "deepseek-ai/DeepSeek-OCR",
+      "inclusionAI/Ling-flash-2.0",
+      "inclusionAI/Ling-mini-2.0",
+      "Qwen/Qwen-Image-Edit-2509",
+      "Qwen/Qwen-Image-Edit",
+      "Qwen/Qwen-Image",
+      "XingChenAGI/XingChenASR-V3.2-Ultra",
+      "XingChenAGI/XingChenGSR-V1.0",
+      "XingChenAGI/XingChenASR-Diarize-V3.0",
+      "Qwen/Qwen3-ASR-1.7B",
+      "tencent/Hunyuan-MT-7B",
+      "ByteDance-Seed/Seed-OSS-36B-Instruct",
+      "Wan-AI/Wan2.2-I2V-A14B",
+      "Wan-AI/Wan2.2-T2V-A14B",
+      "zai-org/GLM-4.5V",
+      "zai-org/GLM-4.5-Air",
+      "XingChenAGI/XingChenASR-V3.2",
+      "Qwen/Qwen3-Coder-30B-A3B-Instruct",
+      "Qwen/Qwen3-30B-A3B-Instruct-2507",
+      "tencent/Hunyuan-A13B-Instruct",
+      "deepseek-ai/DeepSeek-R1-0528-Qwen3-8B",
+      "Qwen/Qwen3-32B",
+      "Qwen/Qwen3-14B",
+      "Qwen/Qwen3-8B",
+      "Qwen/Qwen3-Reranker-8B",
+      "Qwen/Qwen3-Embedding-8B",
+      "Qwen/Qwen3-Reranker-4B",
+      "Qwen/Qwen3-Embedding-4B",
+      "Qwen/Qwen3-Reranker-0.6B",
+      "Qwen/Qwen3-Embedding-0.6B",
+      "THUDM/GLM-4-32B-0414",
+      "THUDM/GLM-Z1-9B-0414",
+      "THUDM/GLM-4-9B-0414",
+      "fnlp/MOSS-TTSD-v0.5",
+      "FunAudioLLM/CosyVoice2-0.5B",
+      "FunAudioLLM/SenseVoiceSmall",
+      "BAAI/bge-m3",
+      "BAAI/bge-reranker-v2-m3",
+      "Kwai-Kolors/Kolors",
+      "Qwen/Qwen2.5-72B-Instruct-128K",
+      "Qwen/Qwen2.5-72B-Instruct",
+      "Qwen/Qwen2.5-32B-Instruct",
+      "Qwen/Qwen2.5-14B-Instruct",
+      "Qwen/Qwen2.5-7B-Instruct",
+      "BAAI/bge-large-en-v1.5",
+      "BAAI/bge-large-zh-v1.5",
+      "Pro/BAAI/bge-m3",
+      "Pro/Qwen/Qwen2.5-7B-Instruct",
+      "Pro/BAAI/bge-reranker-v2-m3",
+      "LoRA/Qwen/Qwen2.5-32B-Instruct",
+      "LoRA/Qwen/Qwen2.5-14B-Instruct",
+      "LoRA/Qwen/Qwen2.5-72B-Instruct",
+      "LoRA/Qwen/Qwen2.5-7B-Instruct"
+    ],
+    "exact_match": true,
+    "passed": true,
+    "error": null
+  },
+  "git": {
+    "commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+    "working_tree_dirty": true
+  },
+  "completed_at": "2026-09-11T09:50:05.555399+00:00",
+  "completed_attempts": 200,
+  "scoring_started_at": "2026-09-11T10:44:57.833365+00:00",
+  "metric_timeout_s": 600.0,
+  "scoring_concurrency": 4,
+  "referee_request": {
+    "thinking": {
+      "type": "disabled"
+    },
+    "max_completion_tokens": 4096
+  },
+  "completed_scores": 200,
+  "scoring_interrupted_at": "2026-09-11T14:51:10.462206+00:00",
+  "scoring_resumed_at": "2026-09-11T16:25:08.453348+00:00",
+  "scoring_completed_at": "2026-09-11T16:43:33.411515+00:00",
+  "scoring_recovery_events": [
+    {
+      "recovery_id": "recovery_20260911T165549Z",
+      "started_at": "2026-09-11T16:55:49.313199+00:00",
+      "method": "failed_metrics_only",
+      "original_failed_metric_count": 32,
+      "metric_timeout_s": 600.0,
+      "concurrency": 1,
+      "inter_metric_delay_s": 2.0,
+      "backup_directory": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\runs\\s4_20260911_formal_01\\scoring_recovery_attempts\\recovery_20260911T165549Z",
+      "backed_up_files": [
+        "manifest.json",
+        "scores.jsonl",
+        "scoring_usage.json",
+        "summary.json",
+        "report.md",
+        "paired_comparison.json",
+        "paired_comparison.md"
+      ],
+      "audit_path": "D:\\DEMO\\zhaotoubiao_demo_copy\\second_round_eval_data\\runs\\s4_20260911_formal_01\\scoring_recovery_attempts\\recovery_20260911T165549Z\\attempts.jsonl",
+      "attempted_metric_count": 32,
+      "recovered_metric_count": 32,
+      "remaining_failed_metric_count": 0,
+      "remaining_failures": [],
+      "status": "complete",
+      "completed_at": "2026-09-11T17:04:31.243625+00:00"
+    }
+  ]
+}

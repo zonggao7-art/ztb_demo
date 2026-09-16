@@ -6,9 +6,11 @@ LCEL 问答链 — 基于 LangChain 1.0+ Runnable 接口的 RAG 问答流水线�
   - 禁止使用任何 langchain.chains 下的旧版 Chain
   - 检索 + 拒答判断 + LLM 调用 + 格式化输出 一体化
 
-扩展预留：
-  - retriever 可替换为 BM25 混合检索（替换 _retrieve 方法）
-  - 可在 RunnableLambda 前插入 Reranker 节点
+检索契约（2026-09 整改，D3 零降级）：
+  - 混合检索 = 稠密 COSINE + 稀疏 BM25（服务端 Function 生成）→ RRF 融合
+    → Reranker 精排 → 动态阈值过滤；任何环节失败一律上抛，不做静默降级
+  - 集合 schema 必须含 sparse_vector 字段——构建链时 fail-fast 校验，
+    缺失即抛错（拒绝以降级模式运行）
 """
 
 from __future__ import annotations
@@ -143,8 +145,9 @@ def _entity_to_doc(entity: Any, score: float) -> Document:
     """将 Milvus 检索命中实体转换为携带完整溯源元数据的 Document。
 
     元数据写入约定：
-      - chunk_id   : Milvus 主键 id（行级唯一，回表验证"错误关联"用）
-      - chunk_uid  : 内容派生稳定标识（存量数据无此字段时即时计算，与入库侧同口径）
+      - chunk_id   : Milvus 主键值（行级唯一；主键字段为 chunk_uid，
+        Hit 顶层 id 即主键取值，回表验证"错误关联"用）
+      - chunk_uid  : 内容派生稳定标识（主键化后与 chunk_id 同值）
       - doc_name / chapter / chunk_index : 数据源位置
       - 其余动态字段（source_file / source_url / publish_date 等）原样透传
 
@@ -166,8 +169,9 @@ def _entity_to_doc(entity: Any, score: float) -> Document:
             continue
         meta[key] = value
 
-    # chunk_id 统一命名（Milvus 主键名固定为 id）
-    meta["chunk_id"] = entity.get("id")
+    # chunk_id = Milvus 主键取值（主键字段 chunk_uid；Hit 顶层 id 即主键值，
+    # _normalize_hit_entity 已将其合并进 entity["id"]；平铺行则回退主键字段）
+    meta["chunk_id"] = entity.get("id") or entity.get("chunk_uid")
     meta.setdefault("doc_name", "未知文档")
     meta.setdefault("chapter", "未知章节")
     meta.setdefault("chunk_index", -1)
@@ -244,14 +248,34 @@ def _hybrid_search_with_full_fields(
 #  LCEL 问答链构建
 # ============================================================
 
+def _validate_mixed_schema(collection: Any, settings: Settings) -> None:
+    """构建问答链前一次性校验集合 schema（D3 fail-fast；结果随链缓存）。
+
+    集合缺 sparse_vector 字段（旧版纯稠密 schema）时直接抛 RuntimeError，
+    不做任何降级；同时将"每查询一次 describe_collection"收敛为构建期一次。
+    """
+    info = collection.describe_collection(settings.collection_name)
+    field_names = [f.get("name", "") for f in info.get("fields", [])]
+    if "sparse_vector" not in field_names:
+        raise RuntimeError(
+            f"Milvus 集合 '{settings.collection_name}' 缺少 sparse_vector 字段"
+            "（旧版纯稠密 schema，混合检索无法工作）。按零降级口径拒绝以降级"
+            "模式运行，请先完成知识库重建（文档重切分 + init_knowledge_base）。"
+        )
+    logger.info(
+        "Schema 校验通过: 集合=%s 含 sparse_vector 字段（混合检索就绪）",
+        settings.collection_name,
+    )
+
+
 def build_qa_chain(
     vector_store: MilvusVectorStore,
     llm: BaseChatModel,
     settings: Settings,
-    collection: Optional[Any] = None,
-    embeddings: Optional[Any] = None,
+    collection: Any,
+    embeddings: Any,
 ) -> Any:
-    """构建完整的 LCEL RAG 问答链（bge-m3 混合检索版）。
+    """构建完整的 LCEL RAG 问答链（混合检索版）。
 
     链结构：
       question
@@ -259,9 +283,9 @@ def build_qa_chain(
         ├─→ _retrieve(question) ─→ docs_with_scores
         │     │
         │     ├─ 稠密向量检索 (COSINE, k=30, nprobe=32)
-        │     ├─ 稀疏向量检索 (BM25, k=30)
+        │     ├─ 稀疏向量检索 (BM25 Function, k=30)
         │     ├─ RRF 融合 (k=60, 取 Top-30)
-        │     ├─ Reranker 精排 (bge-reranker-v2-m3)
+        │     ├─ Reranker 精排 (settings.reranker_model 实配模型)
         │     └─ 动态阈值过滤
         │
         └─→ _decide_and_answer(docs_with_scores, question)
@@ -269,16 +293,26 @@ def build_qa_chain(
               ├── 无相关结果 → 直接返回拒答
               └── 有结果 → prompt | llm | StrOutputParser → 返回回答 + 来源
 
+    零降级契约（D3）：collection 与 embeddings 必须提供，构建期校验 schema；
+    检索/精排任何失败一律上抛（由上层图节点的 _with_fallback 统一转为
+    友好提示），本链内部不存在任何降级路径。
+
     Args:
-        vector_store: 已初始化的 Milvus 向量存储（langchain_milvus 包装器）。
+        vector_store: Milvus 向量存储包装器（保留集合管理职责；检索不再经由它）。
         llm: LangChain 兼容的 ChatModel。
         settings: 全局配置。
-        collection: MilvusClient 实例（用于 hybrid_search / search）。
+        collection: MilvusClient 实例（用于 hybrid_search）。
         embeddings: Embedding 模型实例（用于生成稠密查询向量）。
 
     Returns:
         可调用的 LCEL Runnable 链，invoke(question) → dict。
     """
+    if collection is None or embeddings is None:
+        raise ValueError(
+            "build_qa_chain 需要 collection(MilvusClient) 与 embeddings 非空"
+            "（零降级口径：已移除纯稠密降级检索路径）"
+        )
+    _validate_mixed_schema(collection, settings)
     prompt = _build_prompt(
         settings.system_prompt,
         enable_inline_citations=settings.enable_inline_citations,
@@ -302,111 +336,94 @@ def build_qa_chain(
 
     # ── 阶段 1: 混合检索（RunnableLambda 包装）──
     def _retrieve(question: str) -> List[Tuple[Document, float]]:
-        """混合检索：稠密 COSINE + 稀疏 BM25 → RRF 融合 → Reranker 精排。
+        """混合检索：稠密 COSINE + 稀疏 BM25 → RRF 融合 → Reranker 精排 → 动态阈值。
 
-        若 collection 或 embeddings 未提供，降级为纯稠密检索。
-        若稀疏向量字段不存在（旧 schema），自动降级为纯稠密 + Reranker 模式。
+        零降级（D3）：schema 已在构建期经 _validate_mixed_schema 校验；
+        向量生成、检索、精排任何环节失败一律上抛，不做静默降级。
         """
-        # ── 前置检查：必须同时有 collection 和 embeddings 才能走混合检索 ──
-        if collection is None or embeddings is None:
-            logger.info("未提供原生 collection/embeddings，使用纯稠密检索")
-            return _dense_only_retrieve(question, vector_store, settings, collection, embeddings)
+        # 1. 生成稠密 query 向量
+        dense_vec = embeddings.embed_query(question)
 
-        try:
-            # 1. 生成稠密 query 向量
-            dense_vec = embeddings.embed_query(question)
+        # 2. 构造双路检索请求
+        dense_req = AnnSearchRequest(
+            data=[dense_vec],
+            anns_field="vector",
+            param={
+                "metric_type": "COSINE",
+                "params": {"nprobe": settings.nprobe},
+            },
+            limit=settings.hybrid_dense_limit,
+        )
+        # 稀疏路查询传原始文本，服务端 BM25 Function 自动 tokenize；
+        # 度量必须与稀疏索引一致（BM25 Function 场景下不允许写 IP/COSINE）
+        sparse_req = AnnSearchRequest(
+            data=[question],
+            anns_field="sparse_vector",
+            param={"metric_type": "BM25"},
+            limit=settings.hybrid_sparse_limit,
+        )
 
-            # 2. 检查稀疏向量字段是否存在（旧 schema 可能没有）
-            collection_info = collection.describe_collection(settings.collection_name)
-            field_names = [f.get("name", "") for f in collection_info.get("fields", [])]
-            has_sparse = "sparse_vector" in field_names
+        # 3. RRF 融合（全字段输出，含动态溯源元数据）
+        rrf = RRFRanker(k=settings.rrf_k)
+        raw_hits = _hybrid_search_with_full_fields(
+            collection, settings,
+            reqs=[dense_req, sparse_req],
+            ranker=rrf,
+            limit=settings.hybrid_fusion_limit,
+        )
 
-            if not has_sparse:
-                logger.info("当前 Schema 无稀疏向量字段，使用稠密+Reranker 模式")
-                return _dense_only_retrieve(question, vector_store, settings, collection, embeddings)
+        if not raw_hits:
+            logger.debug("混合检索: 无命中结果")
+            return []
 
-            # 3. 构造双路检索请求
-            dense_req = AnnSearchRequest(
-                data=[dense_vec],
-                anns_field="vector",
-                param={
-                    "metric_type": "COSINE",
-                    "params": {"nprobe": settings.nprobe},
-                },
-                limit=settings.hybrid_dense_limit,
-            )
-            sparse_req = AnnSearchRequest(
-                data=[question],  # 原始文本，BM25 Function 自动 tokenize
-                anns_field="sparse_vector",
-                param={"metric_type": "IP"},
-                limit=settings.hybrid_sparse_limit,
-            )
+        # 4. 转换为 (doc_content, rrf_score, entity) 列表
+        candidates: List[Tuple[str, float, dict]] = []
+        for hit in raw_hits:
+            entity = _normalize_hit_entity(hit.entity)
+            candidates.append((
+                entity.get("text", ""),
+                hit.score,
+                entity,
+            ))
 
-            # 4. RRF 融合（全字段输出，含动态溯源元数据）
-            rrf = RRFRanker(k=settings.rrf_k)
-            raw_hits = _hybrid_search_with_full_fields(
-                collection, settings,
-                reqs=[dense_req, sparse_req],
-                ranker=rrf,
-                limit=settings.hybrid_fusion_limit,
-            )
+        logger.info(
+            "混合检索: 稠密=%d路, 稀疏=%d路, RRF融合后=%d条",
+            settings.hybrid_dense_limit, settings.hybrid_sparse_limit,
+            len(candidates),
+        )
 
-            if not raw_hits:
-                logger.debug("混合检索: 无命中结果")
-                return []
+        # 5. Reranker 精排（失败上抛，零降级）
+        reranker = _get_reranker()
+        docs_text = [c[0] for c in candidates]
+        reranked = reranker.rerank(
+            query=question,
+            documents=docs_text,
+            top_k=settings.retrieval_top_k,
+        )
 
-            # 5. 转换为 (doc_content, rrf_score, entity) 列表
-            candidates: List[Tuple[str, float, dict]] = []
-            for hit in raw_hits:
-                entity = _normalize_hit_entity(hit.entity)
-                candidates.append((
-                    entity.get("text", ""),
-                    hit.score,
-                    entity,
-                ))
+        if not reranked:
+            logger.debug("Reranker 精排: 无有效结果")
+            return []
 
-            logger.info(
-                "混合检索: 稠密=%d路, 稀疏=%d路, RRF融合后=%d条",
-                settings.hybrid_dense_limit, settings.hybrid_sparse_limit,
-                len(candidates),
-            )
+        # 6. 动态阈值过滤
+        top_score = reranked[0]["relevance_score"]
+        threshold = _adaptive_threshold(top_score)
 
-            # 6. Reranker 精排
-            reranker = _get_reranker()
-            docs_text = [c[0] for c in candidates]
-            reranked = reranker.rerank(
-                query=question,
-                documents=docs_text,
-                top_k=settings.retrieval_top_k,
-            )
+        results: List[Tuple[Document, float]] = []
+        for item in reranked:
+            if item["relevance_score"] >= threshold:
+                idx = item["index"]
+                if idx < len(candidates):
+                    _, rrf_score, entity = candidates[idx]
+                    doc = _entity_to_doc(entity, item["relevance_score"])
+                    doc.metadata["rrf_score"] = round(rrf_score, 4)
+                    results.append((doc, item["relevance_score"]))
 
-            if not reranked:
-                logger.debug("Reranker 精排: 无有效结果")
-                return []
-
-            # 7. 动态阈值过滤
-            top_score = reranked[0]["relevance_score"]
-            threshold = _adaptive_threshold(top_score)
-
-            results: List[Tuple[Document, float]] = []
-            for item in reranked:
-                if item["relevance_score"] >= threshold:
-                    idx = item["index"]
-                    if idx < len(candidates):
-                        text, rrf_score, entity = candidates[idx]
-                        doc = _entity_to_doc(entity, item["relevance_score"])
-                        doc.metadata["rrf_score"] = round(rrf_score, 4)
-                        results.append((doc, item["relevance_score"]))
-
-            logger.info(
-                "检索完成: RRF=%d条, 精排后=%d条, 过滤后=%d条 (threshold=%.2f)",
-                len(candidates), len(reranked), len(results), threshold,
-            )
-            return results
-
-        except Exception as e:
-            logger.warning("混合检索异常 (%s)，回退到降级检索", e)
-            return _dense_only_retrieve(question, vector_store, settings, collection, embeddings)
+        logger.info(
+            "检索完成: RRF=%d条, 精排top1=%.3f, 过滤后=%d条 (threshold=%.2f)",
+            len(candidates), top_score, len(results), threshold,
+        )
+        return results
 
     # ── 阶段 2: 判断 + 回答 ──
     def _decide_and_answer(inputs: Dict[str, Any]) -> Dict[str, Any]:
@@ -475,21 +492,32 @@ def build_qa_chain(
         | RunnableLambda(_decide_and_answer)
     )
 
-    logger.info("LCEL 问答链构建完成（bge-m3 混合检索模式）")
+    logger.info(
+        "LCEL 问答链构建完成（混合检索: dense+RRF+Reranker; embedding=%s, reranker=%s）",
+        settings.embedding_model, settings.reranker_model,
+    )
     return chain
 
 
 # ============================================================
-#  重排序 & 动态阈值 & 降级兜底
+#  重排序 & 动态阈值
 # ============================================================
 
 class _SiliconFlowReranker:
-    """SiliconFlow Reranker API 客户端（OpenAI 兼容 /rerank 端点）。"""
+    """SiliconFlow Reranker API 客户端（OpenAI 兼容 /rerank 端点）。
+
+    零降级契约（D3/D6）：凭据/端点复用 Embedding 提供方配置（有意设计），
+    base_url 缺失即抛错（无默认兜底）；调用失败异常上抛，不返回假分数。
+    """
 
     def __init__(self, model: str, api_key: str, base_url: str) -> None:
+        if not base_url:
+            raise ValueError(
+                "Reranker base_url 缺失（复用 EMBEDDING_BASE_URL，.env 必填，无兜底）"
+            )
         self._model = model
         self._api_key = api_key
-        self._base_url = base_url.rstrip("/") if base_url else "https://api.siliconflow.cn/v1"
+        self._base_url = base_url.rstrip("/")
 
     def rerank(
         self, query: str, documents: List[str], top_k: int = 3,
@@ -503,35 +531,30 @@ class _SiliconFlowReranker:
 
         Returns:
             [{"index": int, "relevance_score": float}, ...] 按分数降序。
+
+        Raises:
+            任何网络/HTTP 异常原样上抛（零降级：不回退假分数，见 WP3.6）。
         """
         if not documents:
             return []
-        try:
-            resp = requests.post(
-                f"{self._base_url}/rerank",
-                headers={
-                    "Authorization": f"Bearer {self._api_key}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "model": self._model,
-                    "query": query,
-                    "documents": documents,
-                    "top_n": min(top_k, len(documents)),
-                },
-                timeout=30,
-            )
-            resp.raise_for_status()
-            data = resp.json()
-            results = data.get("results", [])
-            return sorted(results, key=lambda x: x.get("relevance_score", 0), reverse=True)
-        except Exception as e:
-            logger.warning("Reranker API 调用失败: %s，回退到原始排序", e)
-            # 降级：返回原始顺序
-            return [
-                {"index": i, "relevance_score": 0.5}
-                for i in range(min(top_k, len(documents)))
-            ]
+        resp = requests.post(
+            f"{self._base_url}/rerank",
+            headers={
+                "Authorization": f"Bearer {self._api_key}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": self._model,
+                "query": query,
+                "documents": documents,
+                "top_n": min(top_k, len(documents)),
+            },
+            timeout=30,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        results = data.get("results", [])
+        return sorted(results, key=lambda x: x.get("relevance_score", 0), reverse=True)
 
 
 def _adaptive_threshold(top_score: float) -> float:
@@ -547,71 +570,3 @@ def _adaptive_threshold(top_score: float) -> float:
     if top_score >= 0.50:
         return 0.45
     return 0.50
-
-
-def _dense_only_retrieve(
-    question: str,
-    vector_store: MilvusVectorStore,
-    settings: Settings,
-    collection: Optional[Any] = None,
-    embeddings: Optional[Any] = None,
-) -> List[Tuple[Document, float]]:
-    """降级检索：优先使用 pymilvus 原生 search（可获取动态元数据），
-    失败时回退到 langchain_milvus similarity_search_with_score。
-
-    Args:
-        question: 用户问题。
-        vector_store: Milvus 向量存储（langchain_milvus 包装器）。
-        settings: 全局配置。
-        collection: MilvusClient（可选，用于获取元数据）。
-        embeddings: Embedding 模型实例（可选，用于生成查询向量）。
-
-    Returns:
-        (Document, score) 列表，含完整元数据，经阈值过滤。
-    """
-    # ── 方案 A: pymilvus 原生搜索（可获取动态字段 metadata）──
-    if collection is not None and embeddings is not None:
-        try:
-            dense_vec = embeddings.embed_query(question)
-            raw_hits = _search_with_full_fields(
-                collection, settings,
-                data=[dense_vec],
-                anns_field="vector",
-                search_params={
-                    "metric_type": "COSINE",
-                    "params": {"nprobe": settings.nprobe},
-                },
-                limit=settings.hybrid_dense_limit,
-            )
-            results: List[Tuple[Document, float]] = []
-            for hit in raw_hits:
-                if hit.score >= settings.similarity_threshold:
-                    doc = _entity_to_doc(hit.entity, hit.score)
-                    doc.metadata["score"] = round(hit.score, 4)
-                    results.append((doc, hit.score))
-            logger.info(
-                "pymilvus稠密检索: %d条命中, 过滤后=%d条 (threshold=%.2f)",
-                len(raw_hits), len(results), settings.similarity_threshold,
-            )
-            return results[:settings.retrieval_top_k]
-        except Exception as e:
-            logger.warning("pymilvus 原生检索失败 (%s)，回退到 langchain_milvus", e)
-
-    # ── 方案 B: langchain_milvus 降级（metadata 可能不完整）──
-    try:
-        raw = vector_store.similarity_search_with_score(
-            question, k=settings.hybrid_dense_limit,
-        )
-    except Exception as e:
-        logger.warning("langchain_milvus 检索也失败: %s", e)
-        return []
-
-    filtered = [
-        (doc, score) for doc, score in raw
-        if score >= settings.similarity_threshold
-    ]
-    logger.info(
-        "langchain_milvus降级检索: 原始=%d条, 过滤后=%d条 (threshold=%.2f)",
-        len(raw), len(filtered), settings.similarity_threshold,
-    )
-    return filtered[:settings.retrieval_top_k]

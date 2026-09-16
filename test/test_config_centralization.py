@@ -28,7 +28,10 @@ CHAT_LLM_ALLOWED = {PROJECT_ROOT / "public_kb" / "llm_factory.py"}
 EMBEDDING_ALLOWED = {PROJECT_ROOT / "public_kb" / "embedding_service.py"}
 
 ENV_READ_RE = re.compile(r"os\.getenv|os\.environ|load_dotenv")
-CHAT_LLM_RE = re.compile(r"ChatOpenAI\s*\(|_SafeEmbeddings\s*\(")
+# ChatOpenAI 只允许在 llm_factory 构造；_SafeEmbeddings 归 EMBEDDING_RE 守卫
+# （原正则误将 _SafeEmbeddings 并入本规则，导致 embedding_service 自身
+#  "违规"——与上方文档注释第 2/3 条的约定不符，2026-09 修正）
+CHAT_LLM_RE = re.compile(r"ChatOpenAI\s*\(")
 EMBEDDING_RE = re.compile(r"OpenAIEmbeddings\s*\(|_SafeEmbeddings\s*\(")
 
 

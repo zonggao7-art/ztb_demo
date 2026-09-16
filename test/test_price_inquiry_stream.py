@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import asyncio
 
-import pytest
-
 from agent.nodes.price_inquiry.recall_async import query_tables_async
 
 

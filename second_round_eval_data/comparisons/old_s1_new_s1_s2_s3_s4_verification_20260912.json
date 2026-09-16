@@ -1,0 +1,108 @@
+{
+  "verified_at": "2026-09-12T07:08:43.439127+00:00",
+  "paid_api_called_by_verification": false,
+  "overall_passed": true,
+  "checks": {
+    "five_runs_complete": true,
+    "same_dataset_for_five_runs": true,
+    "four_adjacent_pairings_complete": true,
+    "combined_has_five_runs": true,
+    "combined_metrics_match_run_summaries": true,
+    "old_new_context_match_statement_is_199": true,
+    "report_has_all_stage_names": true,
+    "all_report_local_links_exist": true,
+    "preliminary_three_stage_aggregates_removed": true,
+    "no_paid_api_call_for_report": true
+  },
+  "run_checks": {
+    "old_s1": {
+      "run_id": "s1_20260910_formal_02",
+      "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+      "formal_complete": true,
+      "collection_success": true,
+      "scoring_success": true,
+      "manifest_sha256": "567E61A69C1E83C7B1039BCB95DB2FFE94A90CEDF4F3F828B25CF5D8FA7B75B4",
+      "summary_sha256": "8BAB3F9AD69C96D52F66302790286FCA5FB753D1CD6B8084845D444B6D2F003F"
+    },
+    "new_s1": {
+      "run_id": "s1_20260912_formal_03_official",
+      "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+      "formal_complete": true,
+      "collection_success": true,
+      "scoring_success": true,
+      "manifest_sha256": "217A92C0F7E35881B64C863347AA6F10299A17DDC69D066BB547195036982194",
+      "summary_sha256": "A79786B78C48F5AE1CDE2C26FA654FE66952698026F1DFD3F20BB58CAB78F59B"
+    },
+    "s2": {
+      "run_id": "s2_20260910_formal_01",
+      "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+      "formal_complete": true,
+      "collection_success": true,
+      "scoring_success": true,
+      "manifest_sha256": "353085FAFBCBE3627E6E2AF646D072D073B8A36575A27CC543A7E6E787F669DF",
+      "summary_sha256": "866630A2392DF7BDCB65ED7AD5741D0A6A04F4D894F452E229F4662BB64E7C50"
+    },
+    "s3": {
+      "run_id": "s3_20260911_formal_02",
+      "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+      "formal_complete": true,
+      "collection_success": true,
+      "scoring_success": true,
+      "manifest_sha256": "AFF22BEBAB086B197F282DD3AB85C3421BBFE666E97D01C364DF5F9D2BBEF9B1",
+      "summary_sha256": "BA8CC29BD6F07AB4444A5A6E7E5E69437D5B403347F2E2B23FDE6CC41BE3AEF2"
+    },
+    "s4": {
+      "run_id": "s4_20260911_formal_01",
+      "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+      "formal_complete": true,
+      "collection_success": true,
+      "scoring_success": true,
+      "manifest_sha256": "6FC46214D245B399BFC6625E59FFBFBF0D3F28C5455EF8B4C7E9F16253B6E408",
+      "summary_sha256": "AD8722BB68DAF9A9BEB0D7DBB638AA4F521F05B4E870F61F7E68B656BADE1B82"
+    }
+  },
+  "pair_checks": {
+    "old_to_new": {
+      "paired": true,
+      "quality_complete": true,
+      "paired_count": 200,
+      "row_count": 200,
+      "sha256": "A048DC7200929ED8B7DC9186E7A39D283332BA257363FB6C794E3D957FD6DBBF"
+    },
+    "new_to_s2": {
+      "paired": true,
+      "quality_complete": true,
+      "paired_count": 200,
+      "row_count": 200,
+      "sha256": "4FE49469CBFC3FEFF379CC5E755AB0187F8E96DB6A3736360F025119A555CBEC"
+    },
+    "s2_to_s3": {
+      "paired": true,
+      "quality_complete": true,
+      "paired_count": 200,
+      "row_count": 200,
+      "sha256": "06B3EE5552E7BF260BF5B2F15084A662E03DC81FE7BF779F46C67DBC31AB1CB1"
+    },
+    "s3_to_s4": {
+      "paired": true,
+      "quality_complete": true,
+      "paired_count": 200,
+      "row_count": 200,
+      "sha256": "854E95455408D73C4F122CB2ED4A2A24B8E633CF63E5568869813FAD13B7A8F6"
+    }
+  },
+  "metric_mismatches": [],
+  "old_new_identical_context_count": 199,
+  "report": {
+    "path": "docs/eval_docs/第二轮旧S1至新S1再至S4对比报告_20260912.md",
+    "sha256": "353E611B65A7ED45AA4A4FCFCD34A7CE05FCAA3DD0202A0E295818027E7F6C25",
+    "bytes": 12539
+  },
+  "combined": {
+    "path": "second_round_eval_data/comparisons/old_s1_new_s1_s2_s3_s4_comparison_20260912.json",
+    "sha256": "2BC09CF90E87C5A901B64BC0BF773343DA17217201BC94F8F09D37D0264A149D",
+    "bytes": 27156
+  },
+  "local_link_count": 10,
+  "missing_links": []
+}

@@ -79,52 +79,38 @@ class Settings:
     )
 
     # ============================================================
-    # Embedding 模型
+    # Embedding 模型 — 身份配置（.env 必填、无默认值、无别名兜底；
+    # 缺失/空值在 __post_init__ 统一抛错。口径见
+    # design_docs/嵌入模型与混合检索整改工作计划_20260901.md §2.1）
     # ============================================================
     embedding_model: str = field(
-        default_factory=lambda: os.getenv(
-            "EMBEDDING_MODEL", "BAAI/bge-large-zh-v1.5"
-        )
+        default_factory=lambda: os.getenv("EMBEDDING_MODEL") or ""
     )
     embedding_api_key: str = field(
-        default_factory=lambda: os.getenv(
-            "EMBEDDING_API_KEY",
-            os.getenv(
-                "SILICONFLOW_API_KEY",
-                os.getenv("CLOSEAI_API_KEY", os.getenv("DEEPSEEK_API_KEY", "")),
-            ),
-        )
+        default_factory=lambda: os.getenv("EMBEDDING_API_KEY") or ""
     )
     embedding_base_url: str = field(
-        default_factory=lambda: os.getenv(
-            "EMBEDDING_BASE_URL",
-            os.getenv("SILICONFLOW_BASE_URL", os.getenv("CLOSEAI_BASE_URL", "")),
-        )
+        default_factory=lambda: os.getenv("EMBEDDING_BASE_URL") or ""
     )
-    # BAAI/bge-m3 中文专用，1024 维，8192 token 上限
-    embedding_dim: int = 1024
+    # 向量维度随模型而定（bge-m3 = 1024）；.env 更换模型时必须同步确认
+    # 维度（EMBEDDING_DIM 可覆盖），且需全量重建集合
+    embedding_dim: int = field(
+        default_factory=lambda: int(os.getenv("EMBEDDING_DIM", "1024"))
+    )
 
     # ============================================================
-    # LLM 问答模型
+    # LLM 问答模型 — 身份配置（.env 必填、无默认值、无别名兜底）。
+    # 历史：曾按 LLM_* → API_KEY/BASE_URL/MODEL_NAME → DEEPSEEK_* 别名链
+    # 解析并带代码默认值；2026-09 整改后仅认规范名，缺失即抛错
     # ============================================================
-    # 读取优先级：LLM_*（规范名）→ OpenRouter 直配（API_KEY/BASE_URL/MODEL_NAME）
-    #            → DEEPSEEK_*（历史遗留兜底；2026-08 起对话模型默认切换为 OpenRouter）
     llm_model: str = field(
-        default_factory=lambda: os.getenv(
-            "LLM_MODEL", os.getenv("MODEL_NAME", "z-ai/glm-5.3-flash")
-        )
+        default_factory=lambda: os.getenv("LLM_MODEL") or ""
     )
     llm_api_key: str = field(
-        default_factory=lambda: os.getenv(
-            "LLM_API_KEY",
-            os.getenv("API_KEY", os.getenv("DEEPSEEK_API_KEY", "")),
-        )
+        default_factory=lambda: os.getenv("LLM_API_KEY") or ""
     )
     llm_base_url: str = field(
-        default_factory=lambda: os.getenv(
-            "LLM_BASE_URL",
-            os.getenv("BASE_URL", os.getenv("DEEPSEEK_BASE_URL", "")),
-        )
+        default_factory=lambda: os.getenv("LLM_BASE_URL") or ""
     )
     llm_temperature: float = 0.0
 
@@ -149,7 +135,6 @@ class Settings:
     # 检索参数（P1-3：扩大候选池并放宽阈值，降低长尾问题漏召）
     # ============================================================
     retrieval_top_k: int = 5
-    similarity_threshold: float = 0.45  # 降级路径阈值（低于此值直接拒答），主路径使用自适应阈值
 
     # ── 混合检索参数 ──
     hybrid_dense_limit: int = 30   # 稠密向量检索候选数
@@ -157,19 +142,11 @@ class Settings:
     hybrid_fusion_limit: int = 30  # RRF 融合后取 Top-N
     nprobe: int = 32               # IVF 检索探测单元数（显式控制精度）
     rrf_k: int = 60                # RRF 融合参数 k
-    reranker_model: str = "BAAI/bge-reranker-v2-m3"  # Cross-Encoder 重排序模型
-
-    # ============================================================
-    # 询价语义检索（Milvus mysql_price_semantic 集合）
-    # ============================================================
-    mysql_semantic_collection: str = field(
-        default_factory=lambda: os.getenv("MYSQL_SEMANTIC_COLLECTION", "mysql_price_semantic")
+    # Reranker 精排模型名 — 身份配置（.env 必填；凭据/端点复用 Embedding
+    # 提供方配置，属有意设计：Reranker 与 Embedding 由同一服务方提供）
+    reranker_model: str = field(
+        default_factory=lambda: os.getenv("RERANKER_MODEL") or ""
     )
-    mysql_semantic_batch_size: int = int(os.getenv("MYSQL_SEMANTIC_BATCH_SIZE", "100"))
-    mysql_semantic_top_k: int = int(os.getenv("MYSQL_SEMANTIC_TOP_K", "64"))
-    mysql_semantic_per_table_limit: int = int(os.getenv("MYSQL_SEMANTIC_PER_TABLE_LIMIT", "24"))
-    mysql_semantic_text_truncate: int = int(os.getenv("MYSQL_SEMANTIC_TEXT_TRUNCATE", "120"))
-    mysql_semantic_threshold: float = float(os.getenv("MYSQL_SEMANTIC_THRESHOLD", "0.30"))
 
     # ============================================================
     # 超时与重试参数（任务2）
@@ -202,21 +179,16 @@ class Settings:
     )
 
     # ============================================================
-    # 功能开关（任务1）
-    # ============================================================
-    enable_auto_semantic_bootstrap: bool = field(
-        default_factory=lambda: os.getenv(
-            "ENABLE_AUTO_SEMANTIC_BOOTSTRAP", "false"
-        ).lower() in {"1", "true", "yes"}
-    )
-
-    # ============================================================
     # 系统提示词
     # ============================================================
     system_prompt: str = (
         "你是一个招投标领域的专业顾问，基于权威的公共知识库资料回答问题。\n"
         "请严格依据下方提供的参考资料作答，不要添加任何资料中没有的信息。\n"
-        "如果参考资料不足以回答问题，请明确告知用户无法回答。"
+        "围绕用户问题提取核心内容，不要逐段复述参考资料。普通单问题正文尽量控制在200字以内，引用来源单独计算。\n"
+        "准确简洁的原句可以保留，否则归纳表达；先删重复、背景和非必要例子，不得省略关键适用条件。"
+        "200字是软目标，必要时允许超长，不要截断答案。多项问题应分别回答，不能为字数遗漏任务。\n"
+        "资料只支持部分回答时，提供有依据的部分并简短说明具体缺口；不要擅自替换问题中的概念。"
+        "没有必要时，不添加免责声明、主动追问或建议补充材料等套话。"
     )
 
     # ============================================================
@@ -242,6 +214,8 @@ class Settings:
     embedding_max_concurrency: int = int(os.getenv("EMBEDDING_MAX_CONCURRENCY", "8"))
     rerank_max_concurrency: int = int(os.getenv("RERANK_MAX_CONCURRENCY", "4"))
     milvus_max_concurrency: int = int(os.getenv("MILVUS_MAX_CONCURRENCY", "8"))
+    # 入库批量向量化的每批条数：默认 32（每批约 6 万字符，规避 SiliconFlow TPM 限流）
+    milvus_insert_batch: int = int(os.getenv("MILVUS_INSERT_BATCH", "32"))
     price_recall_concurrency: int = int(os.getenv("PRICE_RECALL_CONCURRENCY", "3"))
 
     # ── MySQL 池（阶段 3 真正用，阶段 1 先占位） ──
@@ -304,3 +278,69 @@ class Settings:
     agent_loop_max_steps: int = field(
         default_factory=lambda: int(os.getenv("AGENT_LOOP_MAX_STEPS", "6"))
     )
+
+    # The default path is one top-level Agent loop. legacy/hybrid remain explicit rollback modes.
+    agent_execution_mode: str = field(default_factory=lambda: os.getenv("AGENT_EXECUTION_MODE", "unified"))
+    agent_react_rollout_percent: int = field(default_factory=lambda: int(os.getenv("AGENT_REACT_ROLLOUT_PERCENT", "100")))
+    agent_react_thread_allowlist: str = field(default_factory=lambda: os.getenv("AGENT_REACT_THREAD_ALLOWLIST", ""))
+    agent_request_timeout_s: float = field(default_factory=lambda: float(os.getenv("AGENT_REQUEST_TIMEOUT_S", "90")))
+    agent_router_timeout_s: float = field(default_factory=lambda: float(os.getenv("AGENT_ROUTER_TIMEOUT_S", "10")))
+    agent_react_timeout_s: float = field(default_factory=lambda: float(os.getenv("AGENT_REACT_TIMEOUT_S", "65")))
+    agent_finalize_reserve_s: float = field(default_factory=lambda: float(os.getenv("AGENT_FINALIZE_RESERVE_S", "15")))
+    agent_max_model_calls: int = field(default_factory=lambda: int(os.getenv("AGENT_MAX_MODEL_CALLS", "8")))
+    agent_max_tool_calls: int = field(default_factory=lambda: int(os.getenv("AGENT_MAX_TOOL_CALLS", "6")))
+    agent_max_input_bytes: int = field(default_factory=lambda: int(os.getenv("AGENT_MAX_INPUT_BYTES", "16000")))
+    # 完整 RAG 需要读取原文；不与外层调度共用较小的输入额度。
+    agent_rag_max_input_bytes: int = field(default_factory=lambda: int(os.getenv("AGENT_RAG_MAX_INPUT_BYTES", "48000")))
+    agent_model_max_output_tokens: int = field(default_factory=lambda: int(os.getenv("AGENT_MODEL_MAX_OUTPUT_TOKENS", "4096")))
+    agent_amount_unit: str = field(default_factory=lambda: os.getenv("AGENT_AMOUNT_UNIT", ""))
+
+    # ============================================================
+    # 身份配置校验（D4/D6：.env 单一事实源 — 未配置即抛错，无默认值、
+    # 无别名兜底；模型名/凭据/端点缺一不可）
+    # ============================================================
+    # 注意：不能加类型注解，否则会被 dataclass 误注册为字段
+    _IDENTITY_VARS = (
+        ("EMBEDDING_MODEL", "embedding_model"),
+        ("EMBEDDING_API_KEY", "embedding_api_key"),
+        ("EMBEDDING_BASE_URL", "embedding_base_url"),
+        ("LLM_MODEL", "llm_model"),
+        ("LLM_API_KEY", "llm_api_key"),
+        ("LLM_BASE_URL", "llm_base_url"),
+        ("RERANKER_MODEL", "reranker_model"),
+    )
+
+    def __post_init__(self) -> None:
+        """校验模型身份配置 — 缺一即拒启。
+
+        实际调用模型必须与 .env 配置严格同步（design_docs/嵌入模型与混合检索
+        整改工作计划_20260901.md D4/D6）：缺失或空串直接抛 ValueError，
+        不做任何默认值/别名兜底。测试环境请在夹具中显式注入这些变量
+        （测试显式配置等同于 .env 配置）。
+        """
+        if self.agent_execution_mode not in {"legacy", "hybrid", "unified"}:
+            raise ValueError("AGENT_EXECUTION_MODE must be legacy, hybrid or unified")
+        if not 0 <= self.agent_react_rollout_percent <= 100:
+            raise ValueError("AGENT_REACT_ROLLOUT_PERCENT must be between 0 and 100")
+        for name in ("agent_request_timeout_s", "agent_router_timeout_s", "agent_react_timeout_s",
+                     "agent_finalize_reserve_s", "agent_max_model_calls", "agent_max_tool_calls",
+                     "agent_max_input_bytes", "agent_rag_max_input_bytes",
+                     "agent_tool_timeout_s", "agent_model_max_output_tokens"):
+            if getattr(self, name) <= 0:
+                raise ValueError(f"{name} must be positive")
+        if self.agent_tool_max_content_chars < 256:
+            raise ValueError("AGENT_TOOL_MAX_CONTENT_CHARS must be at least 256")
+        if self.agent_amount_unit not in {"", "元", "万元"}:
+            raise ValueError("AGENT_AMOUNT_UNIT must be empty, 元 or 万元")
+        missing = [
+            env_name
+            for env_name, attr_name in self._IDENTITY_VARS
+            if not str(getattr(self, attr_name) or "").strip()
+        ]
+        if missing:
+            raise ValueError(
+                "模型身份配置缺失，拒绝启动（.env 单一事实源：必填且唯一，"
+                "无默认值、无别名兜底）——缺："
+                + "、".join(missing)
+                + "。请在项目根目录 .env 中补配后重试。"
+            )

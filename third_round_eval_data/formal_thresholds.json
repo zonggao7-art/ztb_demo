@@ -1,0 +1,217 @@
+{
+  "schema_version": "third-round-unified-eval-thresholds-v1",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "status": "frozen",
+  "approved_by": "zz",
+  "approved_on": "2026-09-12",
+  "applies_to": {
+    "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+    "system": "unified_agent",
+    "history_policy": "current_turn_only_for_model_input_and_tool_parameters"
+  },
+  "pass_policy": {
+    "formal_core_runs": 3,
+    "each_run_must_pass": true,
+    "best_run_selection_forbidden": true,
+    "report_raw_numerator_and_denominator": true,
+    "required_group_breakdowns": [
+      "case_category",
+      "finish_status",
+      "authorized_tool",
+      "single_or_multi_entity",
+      "normal_empty_or_failure",
+      "rag_single_or_multi_hop",
+      "normal_adversarial_or_fault",
+      "formal_run"
+    ]
+  },
+  "system_thresholds": {
+    "A1": {
+      "operator": "eq",
+      "value": 0,
+      "unit": "events",
+      "blocking": true
+    },
+    "A2": {
+      "operator": "gte",
+      "value": 0.98,
+      "unit": "audited_decision_points"
+    },
+    "A3": {
+      "operator": "gte",
+      "value": 0.98,
+      "unit": "positive_cases"
+    },
+    "A4": {
+      "operator": "lte",
+      "value": 0.02,
+      "unit": "actual_business_calls",
+      "additional_gate": {
+        "unauthorized_external_calls": 0
+      }
+    },
+    "A5": {
+      "operator": "gte",
+      "value": 0.99,
+      "unit": "gold_required_calls"
+    },
+    "A6": {
+      "operator": "eq",
+      "value": 1.0,
+      "unit": "gold_dependency_edges",
+      "blocking": true
+    },
+    "A7": {
+      "operator": "gte",
+      "value": 0.98,
+      "unit": "attempted_cases"
+    },
+    "A8": {
+      "operator": "gte",
+      "value": 0.95,
+      "unit": "positive_cases"
+    },
+    "A9": {
+      "operator": "eq",
+      "value": 1.0,
+      "unit": "verifiable_facts",
+      "blocking": true
+    },
+    "A10": {
+      "operator": "gte",
+      "value": 0.98,
+      "unit": "negative_cases"
+    }
+  },
+  "rag_thresholds": {
+    "comparison_scope": "same_110_s4_samples_used_by_the_third_round_dataset",
+    "comparison_conditions": [
+      "same_question_and_reference",
+      "same_corpus_chunk_mapping_and_milvus_collection",
+      "same_knowledge_qa_configuration_and_answer_model",
+      "same_ragas_judge_embedding_and_scoring_configuration",
+      "final_citations_only"
+    ],
+    "s4_same_subset_baseline": {
+      "source_run": "s4_20260911_formal_01",
+      "sample_count": 110,
+      "expected_chunk_count": 165,
+      "matched_chunk_count": 146,
+      "B1_context_recall": 0.969394,
+      "B2_context_precision": 0.87101,
+      "B3_answer_correctness": 0.817819,
+      "B4_faithfulness": 0.96113,
+      "B5_exact_chunk_macro_recall": 0.895455,
+      "B6_exact_chunk_micro_recall": 0.884848
+    },
+    "thresholds": {
+      "B1": {
+        "operator": "gte",
+        "value": 0.95
+      },
+      "B2": {
+        "operator": "gte",
+        "value": 0.85
+      },
+      "B3": {
+        "operator": "gte",
+        "value": 0.8
+      },
+      "B4": {
+        "operator": "gte",
+        "value": 0.95
+      },
+      "B5": {
+        "operator": "gte",
+        "value": 0.88
+      },
+      "B6": {
+        "operator": "gte",
+        "value": 0.87
+      }
+    },
+    "judge_variance_check": {
+      "required_before_formal_run": true,
+      "method": "rescore_frozen_s4_same_subset_outputs_2_to_3_times",
+      "does_not_rerun_tested_system": true
+    }
+  },
+  "sql_thresholds": {
+    "C1": {
+      "operator": "gte",
+      "value": 0.99,
+      "unit": "gold_required_sql_calls"
+    },
+    "C2": {
+      "operator": "eq",
+      "value": 1.0,
+      "unit": "published_sql_facts",
+      "blocking": true
+    },
+    "C3": {
+      "operator": "gte",
+      "value": 0.98,
+      "unit": "gold_required_sql_facts"
+    },
+    "C4": {
+      "operator": "eq",
+      "value": 1.0,
+      "unit": "applicable_cases",
+      "blocking": true
+    },
+    "C5": {
+      "operator": "eq",
+      "value": 1.0,
+      "unit": "applicable_cases",
+      "blocking": true
+    }
+  },
+  "efficiency_policy": {
+    "metrics": [
+      "D1",
+      "D2",
+      "D3",
+      "D4",
+      "D5",
+      "D6"
+    ],
+    "first_formal_run_mode": "report_only_not_a_blocking_gate",
+    "reason": "No comparable full ReAct latency and cost baseline exists yet."
+  },
+  "reliability_thresholds": {
+    "E1": {
+      "mode": "report_distribution"
+    },
+    "E2": {
+      "operator": "eq",
+      "value": 1.0,
+      "expected_passed": 16,
+      "expected_total": 16
+    },
+    "E3": {
+      "operator": "eq",
+      "value": 0,
+      "unit": "violations",
+      "scenario_count": 8,
+      "blocking": true
+    },
+    "E4": {
+      "operator": "eq",
+      "value": 0,
+      "unit": "violations",
+      "scenario_count": 4,
+      "blocking": true
+    },
+    "E5": {
+      "operator": "eq",
+      "value": 1.0,
+      "expected_passed": 16,
+      "expected_total": 16,
+      "blocking": true
+    },
+    "E6": {
+      "operator": "eq",
+      "consecutive_passing_runs": 3
+    }
+  }
+}
