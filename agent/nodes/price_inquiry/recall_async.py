@@ -27,20 +27,16 @@ from .models import SearchIntent
 from .recall import (
     _clean_result_row,
     _enrich_rows_full_columns,
-    _execute_recall_chain_for_table,
     _log_recall_funnel,
     _merge_result_record,
-    _query_semantic_rows,
     _rank_records,
     _execute_sql_fetch_rows,
 )
 from .schema import _get_classification
-from .semantic import _semantic_recall_candidates
 from .sql_builders import (
     _build_candidate_sql,
     _build_full_scan_sql,
     _build_like_fallback_sql,
-    _build_vector_recall_sql,
     _has_preference_filters,
     _strip_preference_filters,
 )
@@ -225,6 +221,8 @@ async def _execute_recall_chain_core_async(
         except Exception as e:
             logger.debug("全表扫描兜底失败 %s.%s: %s", _CLEAN_DB, table_name, e)
 
+    if not sql_count:
+        raise ConnectionError("No recall query completed successfully")
     return [], sql_count, total_sql_time
 
 
@@ -257,39 +255,6 @@ async def _execute_recall_chain_for_table_async(
     return relaxed_rows, sql_count + relaxed_sql_count, total_sql_time + relaxed_sql_time
 
 
-async def _query_semantic_rows_async(
-    conn: Any,
-    table_name: str,
-    classification: dict[str, list[str]],
-    intent: SearchIntent,
-    semantic_ids: dict[str, float],
-) -> tuple[list[dict[str, Any]], int, float]:
-    """Milvus 语义召回结果回表（异步版）。"""
-    if not semantic_ids:
-        return [], 0, 0.0
-
-    sql_tuple = _build_vector_recall_sql(
-        table_name, classification, intent, list(semantic_ids.keys())
-    )
-    if sql_tuple is None:
-        return [], 0, 0.0
-
-    try:
-        rows, elapsed = await safe_execute(
-            conn, sql_tuple[0], sql_tuple[1], table_name, "VECTOR_RECALL"
-        )
-    except _SQLTimeoutError:
-        raise
-    except Exception as e:
-        logger.debug("Milvus 回表失败 %s.%s: %s", _CLEAN_DB, table_name, e)
-        return [], 1, 0.0
-
-    for row in rows:
-        row["_vector_score_"] = semantic_ids.get(str(row.get("_id_", "")), 0.0)
-        row["_recall_stage_"] = 0
-    return rows, 1, elapsed
-
-
 # ═════════════════════════════════════════════════════════
 # 单表召回链
 # ═════════════════════════════════════════════════════════
@@ -303,42 +268,33 @@ async def _query_table_async(table_name: str, intent: SearchIntent) -> dict[str,
     classification = _get_classification(table_name)
     if not classification:
         logger.warning("表 %s 无 schema 定义，跳过", table_name)
-        return {"table": table_name, "rows": [], "sql_count": 0, "total_sql_time": 0.0}
+        return {"table": table_name, "rows": [], "status": "failed", "sql_count": 0, "total_sql_time": 0.0}
 
     sql_count = 0
     total_sql_time = 0.0
 
     try:
-        semantic_candidates = await run_blocking(_semantic_recall_candidates, intent, [table_name])
-    except Exception as e:
-        logger.warning("表 %s 语义召回失败: %s", table_name, e)
-        semantic_candidates = {}
-
-    try:
         async with acquire() as conn:
             try:
-                semantic_rows, sc, st = await _query_semantic_rows_async(
-                    conn,
-                    table_name,
-                    classification,
-                    intent,
-                    semantic_candidates.get(table_name, {}),
-                )
-                sql_count += sc
-                total_sql_time += st
-            except _SQLTimeoutError:
-                return {"table": table_name, "rows": [], "sql_count": sql_count, "total_sql_time": total_sql_time}
-
-            try:
-                recall_rows, rc, rt = await _execute_recall_chain_for_table_async(
-                    conn, table_name, classification, intent
-                )
+                if table_name == "company_penalty" and intent.sub_route == "company_query":
+                    # A penalty check is exact; never relax it into candidate recall.
+                    company = intent.hard_filters.company_name
+                    if not company:
+                        raise ValueError("missing_company")
+                    recall_rows, rt = await safe_execute(
+                        conn, "SELECT * FROM `company_penalty` WHERE `company_name` = %s "
+                        "ORDER BY `penalty_date` DESC LIMIT 50", (company,), table_name, "EXACT")
+                    rc = 1
+                else:
+                    recall_rows, rc, rt = await _execute_recall_chain_for_table_async(
+                        conn, table_name, classification, intent
+                    )
                 sql_count += rc
                 total_sql_time += rt
             except _SQLTimeoutError:
-                return {"table": table_name, "rows": [], "sql_count": sql_count, "total_sql_time": total_sql_time}
+                return {"table": table_name, "rows": [], "status": "timeout", "sql_count": sql_count, "total_sql_time": total_sql_time}
 
-            rows = semantic_rows + recall_rows
+            rows = recall_rows
             if rows:
                 try:
                     await run_blocking(_enrich_rows_full_columns, conn, table_name, classification, rows)
@@ -353,15 +309,16 @@ async def _query_table_async(table_name: str, intent: SearchIntent) -> dict[str,
             return {
                 "table": table_name,
                 "rows": cleaned,
+                "status": "success" if cleaned else "empty",
                 "sql_count": sql_count,
                 "total_sql_time": total_sql_time,
             }
     except asyncio.TimeoutError:
         logger.warning("[DB_POOL] 表 %s 获取连接超时，跳过该表", table_name)
-        return {"table": table_name, "rows": [], "sql_count": sql_count, "total_sql_time": total_sql_time}
+        return {"table": table_name, "rows": [], "status": "timeout", "sql_count": sql_count, "total_sql_time": total_sql_time}
     except Exception as e:
         logger.debug("查询 %s 时出错: %s", table_name, e)
-        return {"table": table_name, "rows": [], "sql_count": sql_count, "total_sql_time": total_sql_time}
+        return {"table": table_name, "rows": [], "status": "failed", "sql_count": sql_count, "total_sql_time": total_sql_time}
 
 
 # ═════════════════════════════════════════════════════════
@@ -453,9 +410,21 @@ async def query_tables_async(
     ranked, queried_tables, sql_count, total_sql_time = await run_blocking(
         _merge_and_rank, table_results, intent
     )
+    if getattr(intent, "sub_route", "") == "company_query":
+        # Never let profiles push penalties out of a shared top-K ranking.
+        ranked = [
+            dict(row, _source_db=_CLEAN_DB, _source_table=res["table"])
+            for res in table_results if isinstance(res, dict)
+            for row in res.get("rows", [])[:50]
+        ]
 
     return {
         "records": ranked,
+        "table_status": {
+            table: (res.get("status", "success" if res.get("rows") else "failed")
+                    if isinstance(res, dict) else "failed")
+            for table, res in zip(tables, table_results)
+        },
         "total_found": len(ranked),
         "queried_tables": queried_tables,
         "sql_count": sql_count,

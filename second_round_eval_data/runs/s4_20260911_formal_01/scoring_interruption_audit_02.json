@@ -1,0 +1,98 @@
+{
+  "audited_at": "2026-09-11T19:19:21.2221349+08:00",
+  "audit_status": "second_scoring_attempt_paused_after_recurrent_rate_limit",
+  "run_id": "s4_20260911_formal_01",
+  "manifest_status": "scoring_interrupted",
+  "scoring_resumed_at": "2026-09-11T19:10:43.772736+08:00",
+  "scoring_interrupted_at": "2026-09-11T19:18:53.356112+08:00",
+  "evidence_based_interpretation": {
+    "observation": "The provider accepted q037-q060 after the retry, then returned the same HTTP 429 / provider code 2062 while processing q061-q068.",
+    "inference": "Available account balance does not guarantee sufficient Token Plan rate-window capacity for the current four-question scoring concurrency.",
+    "confidence": "high for a recurrent throughput or rate-window limit; the exact provider-side reset window is not established by local evidence"
+  },
+  "operator_action": "Stopped the second scoring attempt after the recurrent 429 pattern to prevent additional failed metrics and calls.",
+  "checkpoint": {
+    "score_rows": 68,
+    "fully_successful_rows": 58,
+    "rows_with_failed_metrics": 10,
+    "successful_metric_count": 249,
+    "failed_metric_count": 23,
+    "not_attempted_row_count": 132,
+    "not_attempted_metric_count": 528,
+    "last_written_sample_id": "q068"
+  },
+  "second_attempt_delta": {
+    "new_score_rows": 32,
+    "new_fully_successful_rows": 26,
+    "new_successful_metric_count": 115,
+    "new_failed_metric_count": 13,
+    "continuous_all_success_range": "q037-q060"
+  },
+  "metric_status": {
+    "context_recall": {
+      "success": 68,
+      "failed": 0,
+      "not_attempted": 132
+    },
+    "context_precision": {
+      "success": 60,
+      "failed": 8,
+      "not_attempted": 132
+    },
+    "answer_correctness": {
+      "success": 60,
+      "failed": 8,
+      "not_attempted": 132
+    },
+    "faithfulness": {
+      "success": 61,
+      "failed": 7,
+      "not_attempted": 132
+    }
+  },
+  "failed_rows": [
+    {"sample_id": "q033", "failed_metrics": ["context_precision", "answer_correctness"]},
+    {"sample_id": "q034", "failed_metrics": ["context_precision", "answer_correctness"]},
+    {"sample_id": "q035", "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]},
+    {"sample_id": "q036", "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]},
+    {"sample_id": "q061", "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]},
+    {"sample_id": "q062", "failed_metrics": ["context_precision", "answer_correctness"]},
+    {"sample_id": "q063", "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]},
+    {"sample_id": "q064", "failed_metrics": ["context_precision", "answer_correctness", "faithfulness"]},
+    {"sample_id": "q066", "failed_metrics": ["faithfulness"]},
+    {"sample_id": "q068", "failed_metrics": ["faithfulness"]}
+  ],
+  "scoring_usage_at_interruption": {
+    "calls": 888,
+    "input_tokens": 2141327,
+    "output_tokens": 182680,
+    "total_tokens": 2324007,
+    "api_actual_calls": 865,
+    "rough_estimate_calls": 23,
+    "unknown_outputs": 23
+  },
+  "artifacts": {
+    "manifest.json": {
+      "sha256": "0AD1C9D010C1078508ED5CDDD8E7F4FF8DA2A3AC325C0236A5F5B3FA854E328C",
+      "bytes": 11866
+    },
+    "results.jsonl": {
+      "sha256": "1ADEA11AC9AA4E57DDF5F773243272B6B0608B61AC9BCD736E5F0712ED2CF521",
+      "bytes": 13133506
+    },
+    "scores.jsonl": {
+      "sha256": "5E28EDA916E4CC90197A878FFE005D729947588D902529CD9B5E889F974558C5",
+      "bytes": 31802
+    },
+    "scoring_usage.json": {
+      "sha256": "C408A5752EC7CB0E156C6CFC53803D18DEE55BBE6FEAA1EEC1C9F7ED597EA0D2",
+      "bytes": 723
+    }
+  },
+  "decision_required": {
+    "option_keep_contract": "Keep scoring concurrency at 4, wait for the provider rate window to recover, and resume from q069 in controlled batches. This preserves the frozen scoring contract but may require repeated pauses.",
+    "option_change_pacing": "Reduce scoring concurrency or add pacing. This likely lowers 429 risk but changes the frozen execution contract and requires explicit human approval plus a new source snapshot and preflight.",
+    "option_change_billing": "Switch the referee endpoint to provider pay-as-you-go capacity, then resume under the existing scoring contract if model and request semantics remain identical."
+  },
+  "automatic_third_attempt_performed": false
+}

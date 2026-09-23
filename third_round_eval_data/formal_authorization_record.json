@@ -1,0 +1,18 @@
+{
+  "schema_version": "third-round-formal-authorization-v1",
+  "status": "authorized",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "formal_run_config_id": "third_round_formal_run_config_20260912_v1",
+  "authorized_by": "当前用户",
+  "authorized_on": "2026-09-13",
+  "scope": {
+    "main_run_id": "third_round_formal_20260912_01",
+    "main_attempts": 840,
+    "reliability_run_id": "third_round_reliability_formal_20260912_01",
+    "reliability_scenario_attempts": 72,
+    "paid_ragas_units": 330
+  },
+  "acknowledgement": "START FORMAL PAID RUN",
+  "note": "Explicit authorization recorded; this command did not start execution."
+}

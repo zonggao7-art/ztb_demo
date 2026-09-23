@@ -1,0 +1,92 @@
+{
+  "verified_at": "2026-09-11T17:51:23.1832137+08:00",
+  "verification_status": "formal_collection_accepted_waiting_scoring_decision",
+  "run_id": "s4_20260911_formal_01",
+  "stage": "s4",
+  "collection_complete": true,
+  "scoring_complete": false,
+  "ragas_called": false,
+  "identity_checks": {
+    "dataset_row_count": 200,
+    "result_row_count": 200,
+    "all_static_fields_match": true,
+    "mismatch_count": 0,
+    "sample_id_unique_count": 200,
+    "index_unique_count": 200,
+    "first_sample_id": "q001",
+    "last_sample_id": "q200"
+  },
+  "collection_checks": {
+    "success_count": 200,
+    "failure_count": 0,
+    "refusal_count": 0,
+    "all_retrieval_stage_s4": true,
+    "all_reranker_outcomes_success": true,
+    "reranker_http_error_count": 0,
+    "all_dynamic_filters_applied": true,
+    "filter_citation_mismatch_count": 0,
+    "trace_contains_candidate_text": false,
+    "score_artifacts_absent": true,
+    "scoring_usage_absent": true
+  },
+  "observed_results": {
+    "answer_latency_p50_s": 2.196181,
+    "answer_latency_p95_s": 2.968875,
+    "reranker_latency_p50_s": 0.806157,
+    "reranker_latency_p95_s": 0.972558,
+    "dynamic_filter_changed_count": 17,
+    "dynamic_filter_unchanged_count": 183,
+    "dynamic_filter_empty_count": 0,
+    "dynamic_filter_removed_total": 53,
+    "dynamic_filter_retained_count_distribution": {
+      "1": 6,
+      "2": 8,
+      "3": 2,
+      "4": 1,
+      "5": 183
+    },
+    "dynamic_filter_threshold_distribution": {
+      "0.4": 200
+    },
+    "removed_ground_truth_count": 0,
+    "exact_chunk_expected_count": 270,
+    "exact_chunk_matched_count": 251,
+    "exact_chunk_micro_recall": 0.9296296296296296,
+    "exact_chunk_macro_recall": 0.9425,
+    "exact_chunk_any_hit_rate": 0.97,
+    "exact_chunk_all_hit_rate": 0.915,
+    "system_total_tokens_mixed_actual_and_estimated": 11381329
+  },
+  "artifacts": {
+    "manifest.json": {
+      "sha256": "6952ED5C41BC64926C9BF5D568F3F1BCDB4173FF534364FF4D5E66745ABE3123",
+      "bytes": 11475
+    },
+    "results.jsonl": {
+      "sha256": "1ADEA11AC9AA4E57DDF5F773243272B6B0608B61AC9BCD736E5F0712ED2CF521",
+      "bytes": 13133506
+    },
+    "summary.json": {
+      "sha256": "F263DA38F1F9DC9753B729B7230AEBECCCAC7CFEE48AE8FF3826AB115439AB5F",
+      "bytes": 22589
+    },
+    "report.md": {
+      "sha256": "1AF04E05015DEE5F5972BB6B157ACF229772525CDE4ECC66E81F0D1F33111AE7",
+      "bytes": 3874
+    },
+    "paired_comparison.json": {
+      "sha256": "D17163D3FD6261331C20A78755E03849E6D9A0031727D877CACB9F987586660B",
+      "bytes": 461400
+    },
+    "paired_comparison.md": {
+      "sha256": "7B59F88AC123BA49D0EE50B197181D375E568192D3D6F0B3B311F0E1A7636962",
+      "bytes": 4188
+    }
+  },
+  "interpretation_limits": [
+    "No Ragas quality metric has been scored yet.",
+    "All 200 questions used the 0.40 high-confidence filter branch; the 0.45 and 0.50 branches remain offline-test evidence only.",
+    "Exact chunk recall is a deterministic diagnostic and must not be substituted for semantic Context Recall or answer quality."
+  ],
+  "disposition": "The 200-question S4 formal collection is accepted as complete. Ragas scoring remains a separate paid human decision."
+}

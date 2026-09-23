@@ -45,7 +45,7 @@ class Citation(BaseModel):
     """单条被引用 chunk 的标准化溯源信息（测评系统直接读取格式）。"""
 
     context_index: int = Field(description="上下文块编号，对应回答中【来源N】的 N（1 起）")
-    chunk_id: Optional[int] = Field(default=None, description="Milvus 主键 id（行级唯一，用于回表验证）")
+    chunk_id: Optional[str] = Field(default=None, description="Milvus 主键（行级唯一，主键取值即 chunk_uid，用于回表验证）")
     chunk_uid: str = Field(description="内容派生稳定标识（跨集合重建不变，同内容重复行共享）")
     doc_name: str = Field(description="所属文档名称")
     chapter: str = Field(description="章节路径，如 '第一章 总则 > 第一条'")
@@ -171,6 +171,8 @@ def parse_citation_markers(answer: str) -> List[int]:
 def format_citations(
     citations: List[Dict[str, Any]],
     max_text_chars: Optional[int] = None,
+    *,
+    include_text: bool = True,
 ) -> str:
     """将标准化引用列表渲染为可读文本块（呈现层使用）。
 
@@ -182,6 +184,7 @@ def format_citations(
     Args:
         citations: Citation.to_dict() 列表（或同构 dict）。
         max_text_chars: 原文片段最大展示字符数；None 表示完整输出。
+        include_text: 是否展开原文；关闭仅影响展示，引用数据仍保留全文。
 
     Returns:
         多行文本块；citations 为空时返回空字符串。
@@ -228,6 +231,9 @@ def format_citations(
         if meta_lines:
             lines.append("  " + "\n  ".join(meta_lines))
 
+        if not include_text:
+            lines.append("")
+            continue
         if max_text_chars and len(text) > max_text_chars:
             lines.append(f"  原文: {text[:max_text_chars]}…")
         else:

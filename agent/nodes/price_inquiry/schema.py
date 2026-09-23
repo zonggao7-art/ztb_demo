@@ -41,10 +41,3 @@ def _get_classification(table_name: str) -> dict[str, list[str]]:
     """获取表列分类（优先使用硬编码 schema）。"""
     return _HARDCODED_SCHEMA.get(table_name, {})
 
-def _semantic_columns(classification: dict[str, list[str]]) -> list[str]:
-    ordered: list[str] = []
-    for key in ("id", "semantic", "time", "budget", "purchaser", "region", "status", "exact"):
-        for col in classification.get(key, []):
-            if col not in ordered:
-                ordered.append(col)
-    return ordered

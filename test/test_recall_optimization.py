@@ -15,15 +15,10 @@ from agent.nodes.price_inquiry import (  # noqa: E402
     HardFilters,
     SearchIntent,
     _HARDCODED_SCHEMA,
-    _MYSQL_SEMANTIC_PER_TABLE_LIMIT,
-    _MYSQL_SEMANTIC_THRESHOLD,
-    _MYSQL_SEMANTIC_TOP_K,
     _build_constraint_conditions,
     _build_full_scan_sql,
     _build_preference_conditions,
     _build_search_term,
-    _build_semantic_query_text,
-    _build_vector_recall_sql,
     _has_preference_filters,
     _looks_like_code,
     _match_company_levels,
@@ -121,21 +116,6 @@ def test_filter_tiering():
     assert _has_preference_filters(relaxed) is True
 
 
-def test_vector_recall_sql_constraint_only():
-    """Milvus 回表仅保留约束性条件，语义召回候选不再被偏好性过滤全歼。"""
-    intent = _intent(purchaser="福建师范大学", project_stage="结果公告")
-    sql_tuple = _build_vector_recall_sql(
-        "bid_project", _HARDCODED_SCHEMA["bid_project"], intent, ["365", "464"]
-    )
-    assert sql_tuple is not None
-    sql, params = sql_tuple
-    where_clause = sql.split("WHERE", 1)[1]
-    assert "purchaser" not in where_clause, f"回表仍带实体名硬过滤: {where_clause}"
-    assert "project_stage" not in where_clause
-    assert "福建师范大学" not in params
-    assert "`id` IN (%s, %s)" in sql
-
-
 def test_company_level_values_in_clause():
     """P0-4 多值等级展开为 IN 匹配。"""
     intent = _intent()
@@ -193,27 +173,6 @@ def test_match_company_levels():
 
 
 # ────────────────────────────────────────────────
-# P1-1：召回池参数 + 查询向量纯净化
-# ────────────────────────────────────────────────
-def test_semantic_pool_enlarged():
-    assert _MYSQL_SEMANTIC_TOP_K >= 64
-    assert _MYSQL_SEMANTIC_PER_TABLE_LIMIT >= 24
-    assert _MYSQL_SEMANTIC_THRESHOLD <= 0.30
-
-
-def test_semantic_query_text_entity_first():
-    intent = _intent()
-    # 实体词优先，疑问句式不参与向量构造
-    text = _build_semantic_query_text(intent)
-    assert "福建师范大学" in text
-    assert "招标过什么项目" not in text
-
-    # 无实体词时回退到原始问题
-    intent2 = SearchIntent(hard_filters=HardFilters(), original_question="最近有什么大项目")
-    assert _build_semantic_query_text(intent2) == "最近有什么大项目"
-
-
-# ────────────────────────────────────────────────
 # P1-2：FULLTEXT "+" 操作符全部清除
 # ────────────────────────────────────────────────
 def test_search_term_no_plus_operator():
@@ -257,7 +216,6 @@ def test_split_overlong_keyword():
 def test_rag_params_relaxed():
     settings = Settings()
     assert settings.retrieval_top_k == 5
-    assert settings.similarity_threshold == 0.45
     assert settings.hybrid_dense_limit == 30
     assert settings.hybrid_sparse_limit == 30
     assert settings.hybrid_fusion_limit == 30

@@ -1,0 +1,55 @@
+{
+  "audited_at": "2026-09-12T00:44:27.5697539+08:00",
+  "audit_status": "all_200_score_rows_written_with_failed_metrics_pending_recovery",
+  "run_id": "s4_20260911_formal_01",
+  "manifest_status": "scoring_incomplete",
+  "scoring_completed_at": "2026-09-12T00:43:33.411515+08:00",
+  "identity_checks": {
+    "score_rows": 200,
+    "unique_sample_ids": 200,
+    "first_sample_id": "q001",
+    "last_sample_id": "q200",
+    "continuous_prefix_matches_results": true
+  },
+  "primary_pass_status": {
+    "successful_metric_count": 768,
+    "failed_metric_count": 32,
+    "rows_with_failed_metrics": 14,
+    "not_attempted_metric_count": 0,
+    "fully_successful_rows": 186
+  },
+  "metric_status": {
+    "context_recall": {"success": 200, "failed": 0, "provisional_mean": 0.9831666666666666},
+    "context_precision": {"success": 189, "failed": 11, "provisional_mean": 0.89933862429939},
+    "answer_correctness": {"success": 189, "failed": 11, "provisional_mean": 0.8225512870777669},
+    "faithfulness": {"success": 190, "failed": 10, "provisional_mean": 0.9546267828816305}
+  },
+  "final_resume_delta": {
+    "new_score_rows": 52,
+    "new_successful_metric_count": 208,
+    "new_failed_metric_count": 0,
+    "continuous_all_success_range": "q149-q200"
+  },
+  "scoring_usage_checkpoint": {
+    "calls": 2689,
+    "input_tokens": 6433379,
+    "output_tokens": 588420,
+    "total_tokens": 7021799,
+    "api_actual_calls": 2657,
+    "rough_estimate_calls": 32,
+    "unknown_outputs": 32,
+    "audit_limit": "Earlier attempts were interrupted mid-batch. Their uncommitted in-flight calls are absent from scoring_usage.json, so provider-billed usage may be higher."
+  },
+  "artifacts": {
+    "manifest.json": {"sha256": "D60A365A37C90AB16AC788DE759FCAD786D4958E4C96490F80E4FA9BF9C37910", "bytes": 11929},
+    "results.jsonl": {"sha256": "1ADEA11AC9AA4E57DDF5F773243272B6B0608B61AC9BCD736E5F0712ED2CF521", "bytes": 13133506},
+    "scores.jsonl": {"sha256": "8270F372CEB906A25E3BBE74B7F3CB27AEA8581CC3D2C5A5F2734C483B2688C7", "bytes": 82851},
+    "scoring_usage.json": {"sha256": "61F235AAE91F7EA3FFCAAE54622874950ED07C9E297895710E94B9710AC5339A", "bytes": 727},
+    "summary.json": {"sha256": "30022E46B75BD878538EF2F4A1D04BF01D1B9ADD3442C49DA048524E08601A79", "bytes": 23474},
+    "report.md": {"sha256": "1209742F691569D8D447FBFAB74A31B84FDE5E360F16F621EED1C624FC2F792C", "bytes": 3888},
+    "paired_comparison.json": {"sha256": "30F700DC27C8FF9CB5590B1A6B7107EE124D6765F5C2DDF7425FDDB86D38676F", "bytes": 471350},
+    "paired_comparison.md": {"sha256": "3D9B5F80E174889E71C8D916C0A4A5B2B3B0E9982ABDEB970E07757A1AF22BAA", "bytes": 4168}
+  },
+  "interpretation_limit": "The four means are provisional valid-subset means. S4 formal scoring is not complete until the 32 failed metrics are successfully recovered and the report is regenerated.",
+  "next_step": "Do not rerun score. With separate human authorization, run recover-scores to retry only the 32 failed metrics."
+}

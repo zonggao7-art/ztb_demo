@@ -402,6 +402,10 @@ def node_price_inquiry(state: AgentState) -> dict:
                 records = verified
 
     # Step 3：输出字段筛选
+    if intent.sub_route == "company_query":
+        from .company_response import company_response
+        return company_response(intent, {**query_result, "records": records})
+
     template = get_template(intent.sub_route, intent.query_type)
     if template and records:
         formatted_records = _apply_output_template(records, intent, template)

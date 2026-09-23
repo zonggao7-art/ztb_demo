@@ -11,15 +11,22 @@
 from __future__ import annotations
 
 import functools
+import asyncio
 import json
 import logging
 import time
+import threading
+from concurrent.futures import ThreadPoolExecutor
+from contextvars import copy_context
+from copy import deepcopy
 from typing import Any, Awaitable, Callable, TypedDict
 
 from ..streaming import EventType
 from ..streaming.context import emit
 
 logger = logging.getLogger(__name__)
+_SYNC_POOL = ThreadPoolExecutor(max_workers=8, thread_name_prefix="tool-sync")
+_SYNC_SLOTS = threading.BoundedSemaphore(8)
 
 try:  # orjson 更快且已在 requirements 中；缺失时退化为标准库
     import orjson as _orjson
@@ -76,14 +83,29 @@ def make_error_result(
 
 def classify_exception(e: Exception) -> tuple[str, str, bool]:
     """异常 → (错误码, 消息, 是否可重试)。"""
+    from agent.execution.context import RunStopped
+    if isinstance(e, RunStopped):
+        return str(e), "工具调用未通过执行约束。", False
     msg = str(e)
     if "知识库尚未初始化" in msg:
         return ERR_KB_NOT_INITIALIZED, "知识库尚未初始化，请先执行入库操作。", False
     if isinstance(e, TimeoutError) or "TimeoutError" in type(e).__name__:
-        return ERR_TIMEOUT, f"工具执行超时: {msg[:200]}", True
+        return ERR_TIMEOUT, "工具执行超时，请稍后重试。", True
     if isinstance(e, (ConnectionError, OSError)) or "pymysql" in type(e).__module__:
-        return ERR_DB_UNAVAILABLE, f"数据库访问失败: {msg[:200]}", True
-    return ERR_INTERNAL, f"工具内部错误: {msg[:200]}", True
+        return ERR_DB_UNAVAILABLE, "数据库访问失败，请稍后重试。", True
+    return ERR_INTERNAL, "工具执行失败，请稍后重试。", False
+
+
+def _limits():
+    from public_kb.config import Settings
+    from ..execution.context import current_run
+    run = current_run()
+    settings = run.settings if run else Settings()
+    timeout = settings.agent_tool_timeout_s
+    if run:
+        run.check()
+        timeout = min(timeout, run.remaining())
+    return settings, timeout
 
 
 def _emit_tool_stage(tool_name: str, status: str, **extra: Any) -> None:
@@ -105,16 +127,48 @@ def wrap_sync_tool(tool_name: str, fn: Callable[..., ToolResult]) -> Callable[..
         start = time.perf_counter()
         _emit_tool_stage(tool_name, "running")
         try:
-            result = fn(*args, **kwargs)
+            settings, timeout = _limits()
+            kwargs.pop("task_id", None)
+            if not _SYNC_SLOTS.acquire(timeout=timeout):
+                raise TimeoutError("tool capacity")
+            context = copy_context()
+            from agent.execution.context import current_run
+            run = current_run()
+            if run:
+                with run.lock:
+                    run.inflight += 1
+
+            def release(_=None):
+                _SYNC_SLOTS.release()
+                if run:
+                    with run.lock:
+                        run.inflight -= 1
+
+            def actual():
+                if run:
+                    run.check()
+                    if fn.__module__ == "agent.tools.price_db":
+                        from .strict_sql import query
+                        return query(tool_name, kwargs)
+                return fn(*args, **kwargs)
+
+            try:
+                future = _SYNC_POOL.submit(context.run, actual)
+            except BaseException:
+                release()
+                raise
+            future.add_done_callback(release)
+            result = future.result(timeout=max(0.0, timeout - (time.perf_counter() - start)))
         except Exception as e:
             code, message, retryable = classify_exception(e)
-            logger.error("[TOOL] %s 执行失败: %s", tool_name, e, exc_info=True)
+            logger.warning("[TOOL] %s failed: %s", tool_name, code)
             result = make_error_result(code, message, retryable=retryable)
         elapsed = time.perf_counter() - start
         result["metadata"]["tool"] = tool_name
         result["metadata"]["elapsed_s"] = round(elapsed, 3)
         _emit_tool_stage(tool_name, "done", ok=result["ok"], elapsed_s=result["metadata"]["elapsed_s"])
-        return render_tool_content(result), result
+        from public_kb.config import Settings
+        return render_tool_content(result, max_chars=Settings().agent_tool_max_content_chars), result
 
     return wrapper
 
@@ -129,16 +183,26 @@ def wrap_async_tool(
         start = time.perf_counter()
         _emit_tool_stage(tool_name, "running")
         try:
-            result = await fn(*args, **kwargs)
+            settings, timeout = _limits()
+            kwargs.pop("task_id", None)
+            async with asyncio.timeout(timeout):
+                from agent.execution.context import current_run
+                from .strict_sql import TABLES, query
+                if current_run() is not None and tool_name in {*TABLES, "search_business_data"}:
+                    from agent.runtime import run_blocking
+                    result = await run_blocking(query, tool_name, kwargs)
+                else:
+                    result = await fn(*args, **kwargs)
         except Exception as e:
             code, message, retryable = classify_exception(e)
-            logger.error("[TOOL] %s(async) 执行失败: %s", tool_name, e, exc_info=True)
+            logger.warning("[TOOL] %s(async) failed: %s", tool_name, code)
             result = make_error_result(code, message, retryable=retryable)
         elapsed = time.perf_counter() - start
         result["metadata"]["tool"] = tool_name
         result["metadata"]["elapsed_s"] = round(elapsed, 3)
         _emit_tool_stage(tool_name, "done", ok=result["ok"], elapsed_s=result["metadata"]["elapsed_s"])
-        return render_tool_content(result), result
+        from public_kb.config import Settings
+        return render_tool_content(result, max_chars=Settings().agent_tool_max_content_chars), result
 
     return wrapper
 
@@ -146,7 +210,7 @@ def wrap_async_tool(
 def _dumps(obj: Any) -> str:
     """JSON 序列化（优先 orjson，中文原样输出）。"""
     if _orjson is not None:
-        return _orjson.dumps(obj).decode("utf-8")
+        return _orjson.dumps(obj, default=str).decode("utf-8")
     return json.dumps(obj, ensure_ascii=False, default=str)
 
 
@@ -156,14 +220,12 @@ def render_tool_content(
     max_rows: int = 10,
     max_chars: int = 4000,
 ) -> str:
-    """ToolResult → LLM 可见精简 JSON。
-
-    行数截断：data.records / data.chunks 超过 max_rows 时保留前 max_rows 行
-    并追加 {"_truncated": N} 提示；字符截断：整体超过 max_chars 时追加省略标记。
-    """
+    """Bounded, parseable JSON; whole records/chunks are omitted, never sliced."""
+    if max_chars < 128 or max_rows < 1:
+        raise ValueError("tool content limits too small")
     view: dict[str, Any] = {
         "ok": result["ok"],
-        "data": dict(result.get("data") or {}),
+        "data": deepcopy(result.get("data") or {}),
     }
     if result.get("error"):
         view["error"] = result["error"]
@@ -176,6 +238,18 @@ def render_tool_content(
             view["data"]["_hint"] = f"共 {len(rows)} 条，仅展示前 {max_rows} 条，完整数据见 artifact"
 
     content = _dumps(view)
-    if len(content) > max_chars:
-        content = content[:max_chars] + f'...["_truncated_by_chars": 原始 {len(content)} 字符]'
-    return content
+    if len(content) <= max_chars:
+        return content
+    view["data"]["_truncated_by_chars"] = True
+    # Remove entire list elements, including full legal texts. Artifact remains
+    # unchanged; callers must not treat artifact-only rows as model-visible.
+    for key in ("records", "chunks", "citations", "sources"):
+        rows = view["data"].get(key)
+        while isinstance(rows, list) and rows and len(_dumps(view)) > max_chars:
+            rows.pop()
+            view["data"]["_truncated"] = view["data"].get("_truncated", 0) + 1
+    if len(_dumps(view)) > max_chars:
+        view["data"] = {"_truncated_by_chars": True, "_hint": "结果超出容量，未展示原始数据"}
+    if len(_dumps(view)) > max_chars:
+        view.pop("error", None)
+    return _dumps(view)

@@ -1,0 +1,12 @@
+{
+  "schema_version": "third-round-ragas-plan-v1",
+  "run_id": "third_round_formal_20260912_01",
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "referee_model": "MiniMax-M3",
+  "referee_base_url": "https://api.minimax.cn/v1",
+  "embedding_model": "BAAI/bge-m3",
+  "embedding_base_url": "https://api.siliconflow.cn/v1",
+  "metric_timeout_s": 600.0,
+  "concurrency": 1,
+  "api_keys_recorded": false
+}

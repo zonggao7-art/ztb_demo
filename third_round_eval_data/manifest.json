@@ -1,0 +1,172 @@
+{
+  "schema_version": "third-round-unified-eval-v1",
+  "dataset_id": "third_round_unified_agent_20260912_reviewed_01",
+  "created_at": "2026-09-12T10:51:27+00:00",
+  "status": "formal_authorized_not_started",
+  "paid_api_called": true,
+  "milvus_called": true,
+  "mysql_access": "read_only_snapshot_and_identity_queries",
+  "scope": {
+    "system": "unified_agent",
+    "history_policy": "stored_for_display_and_audit_but_not_model_input_or_parameter_source",
+    "authorized_tools": [
+      "knowledge_qa",
+      "query_company_registration",
+      "query_company_business_scope",
+      "query_company_penalty",
+      "query_project_award",
+      "query_company_award_history"
+    ],
+    "formal_main_count": 280,
+    "reliability_scenario_count": 24,
+    "file_order": "deterministic_round_robin_by_category"
+  },
+  "latest_smoke": {
+    "initial_run_id": "third_round_smoke_20260912_01",
+    "selected_main_cases": 6,
+    "selected_categories": 6,
+    "authorized_tools_covered": 6,
+    "required_actions": 8,
+    "collected_results": 6,
+    "collection_complete": true,
+    "redline_events": 0,
+    "initial_a2": 0.875,
+    "a2_finding": "two rejected parallel tool proposals in TR-CROSS-005",
+    "a2_fix": "prompt requires exactly one tool call per model response; policy rejection remains unchanged",
+    "a2_retest_run_id": "third_round_smoke_a2_retest_20260912_01",
+    "a2_retest_repeats": 3,
+    "a2_retest_values": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "reliability_run_id": "third_round_reliability_smoke_20260912_01",
+    "reliability_selected_scenarios": 5,
+    "reliability_live_smoke_completed": true,
+    "reliability_live_smoke_decision": "passed",
+    "formal_result": false
+  },
+  "category_counts": {
+    "independent_multi_action": 35,
+    "negative": 60,
+    "rag_anchor": 70,
+    "result_dependent": 35,
+    "single_sql": 40,
+    "sql_rag_cross_capability": 40
+  },
+  "tool_action_counts": {
+    "knowledge_qa": 110,
+    "query_company_award_history": 29,
+    "query_company_business_scope": 41,
+    "query_company_penalty": 43,
+    "query_company_registration": 56,
+    "query_project_award": 54
+  },
+  "rag_gold": {
+    "count": 110,
+    "anchor_count": 70,
+    "cross_tool_count": 40,
+    "query_types": {
+      "single_hop": 55,
+      "multi_hop": 55
+    },
+    "source": "second_round_eval_data/testset_200.jsonl",
+    "runtime_identity": {
+      "collection": "public_kb",
+      "collection_rows": 920,
+      "unique_gold_chunk_count": 118,
+      "gold_chunk_reference_count": 165,
+      "source": "second_round_eval_data/s4_run_plan.json"
+    }
+  },
+  "sql_truth": {
+    "unique_query_count": 204,
+    "database": "ztb_clean",
+    "captured_at": "2026-09-12T10:51:27+00:00",
+    "default_top_k": 20,
+    "database_identity": {
+      "company_info": {
+        "row_count": 38911,
+        "max_id": 38911,
+        "max_created_at": "2026-09-04T05:49:41"
+      },
+      "company_penalty": {
+        "row_count": 1805,
+        "max_id": 1805,
+        "max_created_at": "2026-09-04T05:49:41"
+      },
+      "bid_project": {
+        "row_count": 17742,
+        "max_id": 17742,
+        "max_created_at": "2026-09-04T05:49:46"
+      }
+    }
+  },
+  "review": {
+    "status": "passed",
+    "review_id": "third_round_human_review_20260912_zz",
+    "reviewer": "zz",
+    "reviewed_on": "2026-09-12",
+    "main_cases_human_approved": 280,
+    "rag_gold_human_approved": 110,
+    "sql_truth_human_approved": 204,
+    "reliability_scenarios_human_approved": 24,
+    "rag_gold_inherited_from_s4": 110,
+    "record": "human_review_record.json",
+    "authorization_record": "formal_authorization_record.json",
+    "formal_run_authorized": true,
+    "formal_authorized_by": "当前用户",
+    "formal_authorized_on": "2026-09-13"
+  },
+  "source_hashes": {
+    "second_round_eval_data/testset_200.jsonl": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+    "second_round_eval_data/runs/s4_20260911_formal_01/results.jsonl": "1ADEA11AC9AA4E57DDF5F773243272B6B0608B61AC9BCD736E5F0712ED2CF521",
+    "second_round_eval_data/s4_shadow_analysis.json": "641263883D4BD1B4D49A32E4279D5A78BD13131550ED0098903EE2DD11C83F69",
+    "docs/eval_docs/ReAct系统测评指标构建报告_20260912.md": "4C90F4362220696A43DCF95D7BEE26FF983C470229A48C50BE08AC3AB0FDBE37"
+  },
+  "artifact_hashes": {
+    "main_cases.jsonl": "B0401FB2D20FFDFF994E409C9CBE378538CDE02A0AB03A97C549AD42F90764F7",
+    "rag_gold.jsonl": "20A8A59815D55C8709460638FBA4CE3A797EB3F096D93A8FCBF66B00B27EA430",
+    "sql_truth_snapshot.jsonl": "8F8237A238766F55E31E7740753C1F3D4F12B6A811D3C369DA7BF39697B77443",
+    "reliability_scenarios.jsonl": "8C89EA1C224D0A56501B2FD040CBEBD62DDA8D8420D314C9DAC5DAD921D8E8DB",
+    "dataset_schema.json": "B96BE33F070AB91B1A82B2EF31884111BA4EA0EE8172022ECA1D6C9D84649468",
+    "human_review_record.json": "15A0E578C9424D6CE2120051BD53726F858C58A305CCFC0AD6DFFC71EFF78916",
+    "formal_thresholds.json": "B1C5E43A8753E6911BC144DA29D0566BD34EEDF76E52A6ED272521DA02525B22",
+    "formal_run_config.json": "26334B6C490613CF80CC75248F06F9E3F8096E176CB8EA48B888F049CD1E33C8",
+    "live_data_preflight_20260912_01.json": "016570956FD11E2CB89EB381DDEBBE3A4F2EF576D4CED2B523A68DA33103C53A",
+    "formal_authorization_record.json": "9B157C21F933EB7D78A3A459AF2988C409710F5122CC9BB978214825640575E9",
+    "preparation_test_report_20260912_01.json": "A409D1CF3ADC4C966546BB94FF7410B3772387768F726D86BE5800C84FFAEDFB",
+    "formal_readiness_20260912_01.json": "D557CF7E571E79D7BA09083CAC2EFDF3A6FD3B3F1B380399B3CE27BA5E52A494"
+  },
+  "updated_on": "2026-09-13",
+  "thresholds": {
+    "status": "frozen",
+    "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+    "approved_by": "zz",
+    "approved_on": "2026-09-12",
+    "record": "formal_thresholds.json",
+    "efficiency_first_run": "report_only_not_a_blocking_gate"
+  },
+  "preparation": {
+    "live_data_identity": {
+      "status": "passed",
+      "record": "live_data_preflight_20260912_01.json"
+    },
+    "judge_variance": {
+      "status": "passed",
+      "run_id": "judge_variance_s4plus1_20260912_01",
+      "record": "judge_variance/judge_variance_s4plus1_20260912_01/summary.json"
+    },
+    "formal_run_config": {
+      "status": "frozen_for_authorization",
+      "record": "formal_run_config.json"
+    },
+    "formal_run_started": false
+  },
+  "readiness": {
+    "status": "ready_for_authorization",
+    "readiness_id": "third_round_formal_readiness_20260912_01",
+    "record": "formal_readiness_20260912_01.json",
+    "next_gate": "explicit_human_authorization_to_start_formal_paid_run"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": "third-round-judge-variance-config-v1",
+  "run_id": "judge_variance_20260912_01",
+  "repeats": 2,
+  "metric_timeout_s": 600.0,
+  "concurrency": 1,
+  "referee_model": "MiniMax-M3",
+  "referee_base_url": "https://api.minimax.cn/v1",
+  "embedding_model": "BAAI/bge-m3",
+  "embedding_base_url": "https://api.siliconflow.cn/v1",
+  "scoring_source_sha256": "AC522E80EF2C44057136471D50A32F8881B04A13841F96497994340BCF33BC9D",
+  "judge_variance_source_sha256": "8A038D49AF57F6C0D28529070975F9ADFB7D5FC55416C2633B6FC23DFDF779F4",
+  "api_keys_recorded": false
+}

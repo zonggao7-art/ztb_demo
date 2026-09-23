@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 
-import pytest
 from langchain_core.messages import HumanMessage
 
 from agent.nodes.knowledge_qa_async import node_knowledge_qa_async

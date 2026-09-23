@@ -1,6 +1,14 @@
 # ============================================================
 # Milvus Standalone 向量数据库 — Docker 部署配置
 # 服务地址: localhost:19530  (脚本默认连接此地址)
+#
+# 版本要求（2026-09 整改，见 docs/嵌入模型与混合检索整改工作计划_20260901.md）：
+#   - Milvus 服务端必须 ≥ 2.5（BM25 Function 为 2.5+ 能力；2.4 服务端会
+#     静默丢弃 Function，导致混合检索长期失效）。本文件锁定 2.6 系列。
+#   - 升级执行时请把下方镜像替换为 2.6 系列最新补丁版（Docker Hub 查询
+#     milvusdb/milvus 的 v2.6.x 最新 tag），并按官方要求逐小版本升级
+#     （2.4 → 2.5 → 2.6，每级独立 tar 备份 ./volumes/ 作为回滚点）。
+#   - etcd / MinIO 版本以 Milvus 2.6 官方 standalone compose 为基准核对。
 # ============================================================
 
 
@@ -44,7 +52,7 @@ services:
 
   standalone:
     container_name: milvus-standalone
-    image: milvusdb/milvus:v2.4.0
+    image: milvusdb/milvus:v2.6.23   # 2026-09-01 实机探测的最高 2.6.x 补丁版（v2.6.24+ 当时不存在）
     restart: unless-stopped
     command: ["milvus", "run", "standalone"]
     security_opt:
@@ -71,7 +79,7 @@ services:
 
   attu:
     container_name: milvus-attu
-    image: zilliz/attu:v2.4
+    image: zilliz/attu:v2.6   # 与 Milvus 2.6 配套；执行阶段按官方 releases 对齐
     restart: unless-stopped
     environment:
       MILVUS_URL: standalone:19530

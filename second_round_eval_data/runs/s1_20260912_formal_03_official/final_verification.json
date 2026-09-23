@@ -1,0 +1,211 @@
+{
+  "verified_at": "2026-09-12T06:10:03.330028+00:00",
+  "run_id": "s1_20260912_formal_03_official",
+  "verification_scope": "Read-only consistency verification after the completed formal run; no retrieval, answer-model, referee-model, or scoring-embedding API calls were made.",
+  "paid_api_called_by_verification": false,
+  "overall_passed": true,
+  "checks": {
+    "manifest_status_scoring_complete": true,
+    "run_plan_status_formal_complete": true,
+    "preflight_passed": true,
+    "preflight_made_no_paid_call": true,
+    "dataset_hash_matches_file": true,
+    "run_plan_hash_matches_manifest": true,
+    "preflight_hash_matches_manifest": true,
+    "source_snapshot_hash_matches_manifest": true,
+    "source_snapshot_equals_s4_snapshot": true,
+    "current_source_matches_frozen_snapshot": true,
+    "source_file_count_47": true,
+    "results_count_200": true,
+    "results_in_dataset_order": true,
+    "results_all_success": true,
+    "results_no_refusals": true,
+    "results_no_errors": true,
+    "scores_count_200": true,
+    "scores_in_dataset_order": true,
+    "all_800_metric_scores_success": true,
+    "summary_formal_complete": true,
+    "summary_metric_counts_200_each": true,
+    "comparisons_complete_for_200_pairs": true,
+    "historical_s2_comparison_present": true,
+    "all_baseline_snapshot_artifacts_match": true,
+    "all_checked_local_markdown_links_exist": true
+  },
+  "formal_result": {
+    "collection": {
+      "successful": 200,
+      "planned": 200
+    },
+    "scoring": {
+      "successful_metrics": 800,
+      "planned_metrics": 800
+    },
+    "quality_metrics": {
+      "context_recall": 0.8858049242424242,
+      "context_precision": 0.7568194444015188,
+      "answer_correctness": 0.7507885628969794,
+      "faithfulness": 0.9515573384807665
+    },
+    "latency": {
+      "method": "nearest_rank",
+      "p50_s": 1.177373,
+      "p95_s": 2.046747,
+      "max_s": null,
+      "mean_s": null
+    },
+    "exact_retrieval": {
+      "match_key": "chunk_uid",
+      "sample_count": 200,
+      "expected_chunk_count": 270,
+      "matched_chunk_count": 179,
+      "micro_recall": 0.662962962962963,
+      "macro_recall": 0.68,
+      "any_hit_count": 149,
+      "any_hit_rate": 0.745,
+      "all_hit_count": 123,
+      "all_hit_rate": 0.615,
+      "mean_first_hit_rank": 1.7583892617449663,
+      "duplicate_retrieved_chunk_count": 0,
+      "missed_sample_ids": [
+        "q011",
+        "q013",
+        "q022",
+        "q026",
+        "q031",
+        "q033",
+        "q036",
+        "q043",
+        "q046",
+        "q049",
+        "q052",
+        "q054",
+        "q055",
+        "q061",
+        "q063",
+        "q069",
+        "q073",
+        "q075",
+        "q078",
+        "q079",
+        "q082",
+        "q083",
+        "q084",
+        "q086",
+        "q087",
+        "q106",
+        "q107",
+        "q108",
+        "q109",
+        "q113",
+        "q115",
+        "q117",
+        "q119",
+        "q121",
+        "q125",
+        "q126",
+        "q129",
+        "q131",
+        "q132",
+        "q133",
+        "q137",
+        "q143",
+        "q150",
+        "q151",
+        "q155",
+        "q172",
+        "q184",
+        "q188",
+        "q189",
+        "q192",
+        "q198"
+      ],
+      "partial_sample_ids": [
+        "q014",
+        "q060",
+        "q062",
+        "q074",
+        "q076",
+        "q080",
+        "q094",
+        "q110",
+        "q116",
+        "q120",
+        "q122",
+        "q124",
+        "q130",
+        "q136",
+        "q138",
+        "q140",
+        "q142",
+        "q144",
+        "q146",
+        "q148",
+        "q152",
+        "q154",
+        "q164",
+        "q176",
+        "q182",
+        "q190"
+      ]
+    },
+    "answer_model_token_usage": {
+      "calls": 200,
+      "input_tokens": 1059172,
+      "output_tokens": 22422,
+      "total_tokens": 1081594,
+      "unknown_outputs": 0,
+      "sources": {
+        "api_actual": 200
+      }
+    }
+  },
+  "comparison_checks": {
+    "paired_comparison_official_s1_to_s2.json": {
+      "paired": true,
+      "quality_complete": true,
+      "pair_count": 200,
+      "pair_count_is_200": true,
+      "sha256": "4FE49469CBFC3FEFF379CC5E755AB0187F8E96DB6A3736360F025119A555CBEC"
+    },
+    "paired_comparison_openrouter_s1_to_official_s1.json": {
+      "paired": true,
+      "quality_complete": true,
+      "pair_count": 200,
+      "pair_count_is_200": true,
+      "sha256": "A048DC7200929ED8B7DC9186E7A39D283332BA257363FB6C794E3D957FD6DBBF"
+    }
+  },
+  "historical_s2_comparison": {
+    "paired_comparison.json": {
+      "exists": true,
+      "sha256": "0F6662A0AADE21C9962069176F2224678EB1471C88C30C3715DE1F27C373F41E",
+      "bytes": 201605
+    },
+    "paired_comparison.md": {
+      "exists": true,
+      "sha256": "BC3719D83B8DFE8DD91BE2C2E43B688DC1A02EA6EAA1530BA8C53F6CA7D88802",
+      "bytes": 1854
+    }
+  },
+  "source_verification": {
+    "snapshot_file_count": 47,
+    "current_source_mismatch_count": 0,
+    "current_source_mismatches": []
+  },
+  "baseline_snapshot": {
+    "path": "second_round_eval_data/s1_official_baseline_snapshot.json",
+    "sha256": "199A6976CEF83D6AA83145F71BBE399F0F9FD7B572844D4946DE3FDAD831B2E7",
+    "artifact_count": 17,
+    "failed_artifacts": []
+  },
+  "documentation_links": {
+    "documents_checked": 5,
+    "local_links_checked": 88,
+    "missing_links": []
+  },
+  "known_limitations": [
+    "The corrected S1 uses the final S4-frozen source. Fourteen source files differ from the historical S2 source snapshot, so corrected S1 versus existing S2 is a practical comparison rather than a strict single-source-version causal experiment.",
+    "The historical S1 used a different OpenRouter model identifier and routing path, so old S1 versus corrected S1 does not prove a provider-only causal effect.",
+    "scoring_usage.json excludes any paid calls made inside manually interrupted in-flight batches before their next checkpoint; final scores and query-cost records are unaffected."
+  ]
+}

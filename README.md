@@ -2,6 +2,8 @@
 
 > 政府招投标领域的智能问答助手：结合 MySQL 结构化查询 + Milvus 法律知识库 RAG + DeepSeek 推理，覆盖专业知识问答、价格/中标查询、通用对话和文档问答四大能力。
 
+> 当前默认 unified 入口每轮独立处理：一个主 Agent 逐次选择只读业务工具，简单问题一步结束，复杂问题根据已核验结果继续下一步。聊天记录保留，但不参与下一轮判断。请每次写明查询对象和需求，例如“查询某某有限公司的处罚信息”，不要只说“处罚呢”。
+
 ---
 
 ## 技术栈
@@ -27,11 +29,13 @@ cd ztb_demo
 
 ### 2. 安装依赖
 
-> ⚠️ `setuptools` 必须 **< 70**（pymilvus 2.4.x 依赖 `pkg_resources`，已被新版移除）
+> ReAct 升级已对齐 LangChain 1.2.12 / LangGraph 1.1.10 / pymilvus 3.0.1。旧 `setuptools<70` 约束不再适用。建议使用独立 Python 3.12 环境；已验证的完整依赖见 `requirements.lock.txt`。
 
 ```bash
 pip install -r requirements.txt
 ```
+
+受约束执行层的历史实现与验收状态见 [实施记录](work_docs/ReAct实施记录_20260904.md)。默认进入 `unified` 新架构，不再由顶层 Router 预先区分固定流程与 ReAct；主 Agent 每轮只能申请一个已审核工具，最终答案由程序按工具证据确定性发布。直接运行 `.\.venv-react\Scripts\python -B -m agent --interactive --stream` 即可；临时回退可选 `--execution-mode hybrid` 或 `--execution-mode legacy`。已有环境变量或 `.env` 中的显式配置仍优先，修改后需重启。
 
 ### 3. 配置环境变量
 
@@ -41,21 +45,19 @@ cp .env.example .env
 ```
 
 需要的环境变量（见 [.env.example](.env.example)）：
-- `DEEPSEEK_API_KEY` / `DEEPSEEK_BASE_URL` — 推理 LLM
-- `SILICONFLOW_API_KEY` / `SILICONFLOW_BASE_URL` — Embedding + Rerank
-- `MINERU_API_TOKEN` — PDF 解析
+- `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL` — 对话模型（必填）
+- `EMBEDDING_API_KEY` / `EMBEDDING_BASE_URL` / `EMBEDDING_MODEL` — Embedding（必填）
+- `RERANKER_MODEL` — 精排模型（必填，凭据/端点复用 EMBEDDING_*）
 - `MYSQL_*` — MySQL 连接
 - `MILVUS_HOST` / `MILVUS_PORT` — Milvus 连接
-- `TAVILY_API_KEY`（可选）— 联网检索
 
 ### 4. 获取数据资产
 
 **⚠️ 本仓库不包含数据**（`.gitignore` 已排除）。需要单独向团队获取：
 
 - `DATA/` — 业务数据库原始 SQL 导出
-- `raw_pdfs/`、`new_pdfs/`、`raw_policy/`、`raw_tables/` — 法律 PDF 与原始政策表
-- `cloud_sync/` — 云同步相关数据
-- `*.jsonl`（`testset_*.jsonl`、`text2sql_dataset.jsonl` 等）— 评估测试集
+- `raw_pdfs/`、`raw_tables/` — 法律 PDF 与原始结构化表
+- `*.jsonl`（`testset_*.jsonl` 等）— 评估测试集
 - `milvus/volumes/` — Milvus 向量库快照（如有）
 
 向项目负责人索要，**统一放置到仓库根目录**。

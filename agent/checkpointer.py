@@ -9,12 +9,34 @@ Demo 阶段使用 MemorySaver（进程内存，重启丢失）。
 from __future__ import annotations
 
 import logging
+from contextlib import asynccontextmanager
 from typing import Optional
 
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.checkpoint.base import BaseCheckpointSaver
 
 logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def open_async_checkpointer(backend, connection_string=None):
+    """Own saver connection lifecycle; enter context managers before compiling."""
+    if backend == "memory":
+        yield MemorySaver()
+    elif backend == "sqlite":
+        from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+        async with AsyncSqliteSaver.from_conn_string(connection_string or "checkpoints.db") as saver:
+            await saver.setup()
+            yield saver
+    elif backend == "postgres":
+        from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+        if not connection_string:
+            raise ValueError("PostgreSQL requires connection_string")
+        async with AsyncPostgresSaver.from_conn_string(connection_string) as saver:
+            await saver.setup()
+            yield saver
+    else:
+        raise NotImplementedError("Only memory/sqlite/postgres async backends are supported")
 
 
 def create_checkpointer(
@@ -73,7 +95,7 @@ def create_checkpointer(
             from langgraph.checkpoint.redis import RedisSaver
         except ImportError:
             raise NotImplementedError(
-                "RedisSaver 尚未安装，请执行: pip install langgraph-checkpoint"
+                "RedisSaver 尚未安装，请执行: pip install langgraph-checkpoint-redis"
             )
         if not connection_string:
             connection_string = "redis://localhost:6379"

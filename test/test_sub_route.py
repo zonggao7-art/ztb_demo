@@ -510,16 +510,7 @@ class TestPerformance:
         elapsed = time.perf_counter() - start
         assert elapsed < 5.0, f"company_info 查询过慢：{elapsed:.2f}s"
 
-    
-    def test_fulltext_performance_product_info(self):
-        """product_info FULLTEXT 查询耗时。"""
-        start = time.perf_counter()
-        intent = _make_intent(keywords=["涂料"])
-        _query_tables_single("product_info", intent)
-        elapsed = time.perf_counter() - start
-        assert elapsed < 5.0, f"product_info 查询过慢：{elapsed:.2f}s"
 
-    
     def test_fulltext_performance_bid_project(self):
         """bid_project FULLTEXT 查询耗时。"""
         start = time.perf_counter()

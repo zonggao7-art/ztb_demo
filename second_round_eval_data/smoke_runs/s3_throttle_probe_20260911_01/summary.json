@@ -1,0 +1,33 @@
+{
+  "completed_at": "2026-09-11T00:52:46.225973+00:00",
+  "passed": true,
+  "checks": {
+    "twenty_rows": true,
+    "all_success": true,
+    "no_rate_limit": true,
+    "all_start_intervals_at_least_10s": true,
+    "all_have_reranker_trace": true
+  },
+  "completed_attempts": 20,
+  "min_observed_start_interval_s": 10.000629,
+  "total_throttle_wait_s": 143.544712,
+  "exact_retrieval": {
+    "match_key": "chunk_uid",
+    "sample_count": 20,
+    "expected_chunk_count": 21,
+    "matched_chunk_count": 20,
+    "micro_recall": 0.9523809523809523,
+    "macro_recall": 0.975,
+    "any_hit_count": 20,
+    "any_hit_rate": 1.0,
+    "all_hit_count": 19,
+    "all_hit_rate": 0.95,
+    "mean_first_hit_rank": 1.8,
+    "duplicate_retrieved_chunk_count": 0,
+    "missed_sample_ids": [],
+    "partial_sample_ids": [
+      "q014"
+    ]
+  },
+  "ragas_called": false
+}

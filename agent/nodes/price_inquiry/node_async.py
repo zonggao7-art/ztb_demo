@@ -204,6 +204,10 @@ async def node_price_inquiry_async(state: AgentState) -> dict:
     # Step 2：二级路由分发 — 异步三表并行召回（有界池 + 语句超时）
     route_config = _SUB_ROUTE_MAP.get(intent.sub_route, _SUB_ROUTE_MAP["all"])
     tables = route_config["tables"]
+    if intent.sub_route == "company_query" and not (
+        intent.need_penalty_check or intent.query_type == "penalty_check"
+    ):
+        tables = ["company_info"]
 
     remaining_timeout = max(5, total_timeout - llm_elapsed)
     query_start = time.perf_counter()
@@ -317,6 +321,13 @@ async def node_price_inquiry_async(state: AgentState) -> dict:
                 records = verified
 
     # Step 3：输出字段筛选
+    if intent.sub_route == "company_query":
+        from .company_response import company_response
+        response = company_response(intent, {**query_result, "records": records})
+        finalize({"answer": response["business_result"]["answer"],
+                  "business_result": response["business_result"]})
+        return response
+
     template = get_template(intent.sub_route, intent.query_type)
     if template and records:
         formatted_records = _apply_output_template(records, intent, template)

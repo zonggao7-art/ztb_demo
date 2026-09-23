@@ -1,0 +1,47 @@
+{
+  "status": "passed",
+  "paid_api_called": true,
+  "milvus_called": true,
+  "main_cases": 280,
+  "category_counts": {
+    "independent_multi_action": 35,
+    "negative": 60,
+    "rag_anchor": 70,
+    "result_dependent": 35,
+    "single_sql": 40,
+    "sql_rag_cross_capability": 40
+  },
+  "action_counts": {
+    "knowledge_qa": 110,
+    "query_company_award_history": 29,
+    "query_company_business_scope": 41,
+    "query_company_penalty": 43,
+    "query_company_registration": 56,
+    "query_project_award": 54
+  },
+  "rag_gold": 110,
+  "sql_truth": 204,
+  "reliability_scenarios": 24,
+  "reliability_counts": {
+    "cancellation_cleanup": 4,
+    "concurrency_isolation": 4,
+    "cross_turn_isolation": 8,
+    "dependency_and_budget_fault": 4,
+    "fault_recovery": 4
+  },
+  "history_non_empty_main_cases": 0,
+  "duplicate_main_queries": 0,
+  "human_review_complete": true,
+  "human_review": {
+    "result": "passed",
+    "reviewer": "zz",
+    "reviewed_on": "2026-09-12",
+    "main_cases_human_approved": 280,
+    "rag_gold_human_approved": 110,
+    "sql_truth_human_approved": 204,
+    "reliability_scenarios_human_approved": 24
+  },
+  "thresholds_frozen": true,
+  "threshold_set_id": "third_round_formal_thresholds_20260912_v1",
+  "formal_run_authorized": false
+}

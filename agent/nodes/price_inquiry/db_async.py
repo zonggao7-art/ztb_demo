@@ -122,7 +122,7 @@ def _select_1(conn: Any) -> bool:
 async def health_check() -> bool:
     """启动时验证连接池可用：建池 + 执行 SELECT 1。"""
     try:
-        pool = _get_pool()
+        _get_pool()
     except Exception as e:
         logger.error("[DB_POOL] 连接池初始化失败: %s", e)
         return False

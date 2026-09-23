@@ -70,12 +70,15 @@ def node_fallback(state: AgentState) -> dict:
 
 async def node_fallback_async(state: AgentState) -> dict:
     result = await asyncio.to_thread(node_fallback, state)
-    answer = str(result["business_result"]["answer"])
-    if result["business_result"].get("data", {}).get("failed_branch"):
+    biz_result = result["business_result"]
+    answer = str(biz_result["answer"])
+    data = biz_result.get("data")
+    if isinstance(data, dict) and data.get("failed_branch"):
         emit(EventType.ERROR, {
             "code": "node_failed",
             "message": answer,
             "retryable": True,
         })
-    emit(EventType.FINAL, {"answer": answer, "business_result": {"branch": "fallback"}})
+    else:
+        emit(EventType.FINAL, {"answer": answer, "business_result": {"branch": "fallback"}})
     return result

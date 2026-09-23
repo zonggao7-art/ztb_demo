@@ -1,0 +1,142 @@
+{
+  "schema_version": "unified-eval-v1",
+  "variables": {
+    "turns": "single",
+    "temperature": 0,
+    "tools": [
+      "knowledge_qa",
+      "query_company_registration",
+      "query_company_business_scope",
+      "query_company_penalty",
+      "query_project_award",
+      "query_company_award_history"
+    ],
+    "tool_backend": "fixed_fake"
+  },
+  "cases": [
+    {
+      "id": "single_knowledge",
+      "category": "single_tool",
+      "query": "公开招标的适用条件是什么？",
+      "expected_actions": [{"tool": "knowledge_qa", "args": {"question": "公开招标的适用条件是什么？"}}],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "single_company",
+      "category": "single_tool",
+      "query": "查询甲方科技有限公司的工商信息。",
+      "expected_actions": [{"tool": "query_company_registration", "args": {"company_name": "甲方科技有限公司"}}],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "single_business_scope",
+      "category": "single_tool",
+      "query": "查询甲方科技有限公司的经营范围。",
+      "expected_actions": [{"tool": "query_company_business_scope", "args": {"company_name": "甲方科技有限公司"}}],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "single_penalty",
+      "category": "single_tool",
+      "query": "查询甲方科技有限公司的处罚记录。",
+      "expected_actions": [{"tool": "query_company_penalty", "args": {"company_name": "甲方科技有限公司"}}],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "single_bid",
+      "category": "single_tool",
+      "query": "查询项目AH2024-001的中标记录。",
+      "expected_actions": [{"tool": "query_project_award", "args": {"project_number": "AH2024-001"}}],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "single_company_award_history",
+      "category": "single_tool",
+      "query": "查询甲方科技有限公司的中标历史。",
+      "expected_actions": [{"tool": "query_company_award_history", "args": {"company_name": "甲方科技有限公司"}}],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "multi_same_company",
+      "category": "independent_multi_tool",
+      "query": "查询甲方科技有限公司的工商信息和处罚记录。",
+      "expected_actions": [
+        {"tool": "query_company_registration", "args": {"company_name": "甲方科技有限公司"}},
+        {"tool": "query_company_penalty", "args": {"company_name": "甲方科技有限公司"}}
+      ],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "multi_two_companies",
+      "category": "independent_multi_tool",
+      "query": "分别查询甲方科技有限公司和乙方建设有限公司的处罚记录。",
+      "expected_actions": [
+        {"tool": "query_company_penalty", "args": {"company_name": "甲方科技有限公司"}},
+        {"tool": "query_company_penalty", "args": {"company_name": "乙方建设有限公司"}}
+      ],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "dependent_penalty",
+      "category": "result_dependent",
+      "query": "查询项目AH2024-001的中标记录，再查询中标供应商的处罚记录。",
+      "expected_actions": [
+        {"tool": "query_project_award", "args": {"project_number": "AH2024-001"}},
+        {"tool": "query_company_penalty", "args": {"company_name": "甲方科技有限公司"}}
+      ],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "dependent_company",
+      "category": "result_dependent",
+      "query": "查询项目AH2024-001的中标记录，再查询中标供应商的工商信息。",
+      "expected_actions": [
+        {"tool": "query_project_award", "args": {"project_number": "AH2024-001"}},
+        {"tool": "query_company_registration", "args": {"company_name": "甲方科技有限公司"}}
+      ],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "clarify_company",
+      "category": "clarify_or_unsupported",
+      "query": "查询一家企业的处罚记录。",
+      "expected_actions": [],
+      "expected_status": ["clarify"]
+    },
+    {
+      "id": "unsupported_weather",
+      "category": "clarify_or_unsupported",
+      "query": "明天北京天气怎么样？",
+      "expected_actions": [],
+      "expected_status": ["unsupported"]
+    },
+    {
+      "id": "unsupported_project_name",
+      "category": "clarify_or_unsupported",
+      "query": "查询智慧校园建设项目的中标情况。",
+      "expected_actions": [],
+      "expected_status": ["clarify"]
+    },
+    {
+      "id": "unsupported_purchaser_history",
+      "category": "clarify_or_unsupported",
+      "query": "查询合肥市第一中学的采购和发包历史。",
+      "expected_actions": [],
+      "expected_status": ["unsupported"]
+    },
+    {
+      "id": "empty_penalty",
+      "category": "empty_or_failure",
+      "query": "查询空结果有限公司的处罚记录。",
+      "expected_actions": [{"tool": "query_company_penalty", "args": {"company_name": "空结果有限公司"}}],
+      "expected_status": ["complete"]
+    },
+    {
+      "id": "failed_penalty",
+      "category": "empty_or_failure",
+      "query": "查询故障有限公司的处罚记录。",
+      "expected_actions": [{"tool": "query_company_penalty", "args": {"company_name": "故障有限公司"}, "ok": false}],
+      "expected_status": ["partial"]
+    }
+  ]
+}

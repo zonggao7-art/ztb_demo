@@ -26,6 +26,11 @@ def current_request_id() -> str:
 
 def emit(event_type: EventType, payload: dict[str, Any] | None = None) -> bool:
     """在 graph 节点内发送事件；非流式上下文静默忽略。"""
+    from agent.execution.context import current_run
+    if current_run() is not None:
+        # Hybrid coordinator alone may publish progress. Nested RAG/SQL/model
+        # tokens, citations, errors and final events remain private until verified.
+        return True
     if not _STREAM_ACTIVE.get():
         return False
     get_stream_writer()(

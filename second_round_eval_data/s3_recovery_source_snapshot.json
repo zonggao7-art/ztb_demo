@@ -1,0 +1,199 @@
+{
+  "algorithm": "SHA256",
+  "scope": "S3 RAG execution, evaluation, runtime adapters and dependency locks",
+  "excluded": [
+    ".env",
+    "API keys",
+    "formal run outputs"
+  ],
+  "files": {
+    "agent/nodes/knowledge_qa.py": {
+      "sha256": "2AAB868C044BBFBB5DABB35085C4EBD240396F976A0FCCEE1524829DC8C941B3",
+      "bytes": 3153
+    },
+    "agent/nodes/knowledge_qa_async.py": {
+      "sha256": "E3258CF975E3E8CC79641793816C30D82E54EF561848F643D0D4ABB669E72DFD",
+      "bytes": 5449
+    },
+    "agent/runtime/__init__.py": {
+      "sha256": "D14FCBCA7A66713F3D9250E37191523E15B82FA6934142EBD62A5A7A9482B9AA",
+      "bytes": 2017
+    },
+    "agent/runtime/async_bridge.py": {
+      "sha256": "DD1A9A6D209BB10CE96F5F5D8DEC4FEF1B7879988A7439BA5ECCEB1419669AC1",
+      "bytes": 4056
+    },
+    "agent/runtime/cancellation.py": {
+      "sha256": "824C4095DFCEB3E8F3C713DB643C838785466EF3014A900FB9389044E12CF105",
+      "bytes": 1273
+    },
+    "agent/runtime/concurrency.py": {
+      "sha256": "1AAC2D449613FF39212D848523BF5F276C9EBA3BBD89347904CE762EA371CFD8",
+      "bytes": 3043
+    },
+    "agent/runtime/deadlines.py": {
+      "sha256": "BD1626D036502ACCA1D5B48319D5B995C0AD3C456F6D50A6FE1A6076D8F5E179",
+      "bytes": 2520
+    },
+    "agent/tools/__init__.py": {
+      "sha256": "1ABA625D454F6291FEF1FFA2939708F2D1021E8A5839E2E968FB76A0E1A8EA72",
+      "bytes": 2456
+    },
+    "agent/tools/base.py": {
+      "sha256": "DABD6F8DBF7D71D04B3C255E0641DE6F5A89030DCDF25DA361D17D8DF8FFC23B",
+      "bytes": 10050
+    },
+    "agent/tools/knowledge.py": {
+      "sha256": "8843C7C04715F50B802AE195ADAD41D34BA4D09F6A746E263A6AE6B3CF292B3C",
+      "bytes": 6260
+    },
+    "agent/tools/price_db.py": {
+      "sha256": "CB666FAE7B5592C78C06E105461F06B4C43EB4F5F1B0E8D85E1BC1FFE9850F2F",
+      "bytes": 16505
+    },
+    "agent/tools/registry.py": {
+      "sha256": "F22DBCDCEC7E9FEE4E51CDA18A24ECCC959885AAE0CF6BD05F697497C4DEE3C2",
+      "bytes": 4630
+    },
+    "agent/tools/schemas.py": {
+      "sha256": "0A230BB1EC4621050FD58DCA3CE2ECD425C2C71947A8A10DE575F0ED32F5999C",
+      "bytes": 4336
+    },
+    "agent/tools/strict_sql.py": {
+      "sha256": "65747A127ED384D1050FC2E8CD1C673EC19246446208CF6C7333D2625D1D91E5",
+      "bytes": 9264
+    },
+    "evaluation/rag/__init__.py": {
+      "sha256": "17E0F7CAB744ECC13D2C287670AB584F22AA2DBBFA134C621B9E035B361DEE01",
+      "bytes": 240
+    },
+    "evaluation/rag/collector.py": {
+      "sha256": "403DE6CAB5048EE9A0E1A47FFE716823A86D0F8076FBDA37078DBA7AD4F58870",
+      "bytes": 13491
+    },
+    "evaluation/rag/comparison.py": {
+      "sha256": "ED57EAB5B9B80706F2B7C7400E7A7CECE758302B625BE20DDBE3E8A3F7D89A9F",
+      "bytes": 11148
+    },
+    "evaluation/rag/dataset.py": {
+      "sha256": "41642CC1297EB2345DE52D16F5AE29757C472E9A0D51F4F47F17332CDC300850",
+      "bytes": 3614
+    },
+    "evaluation/rag/diagnostics.py": {
+      "sha256": "395F565358F4DC2FE98917C303A79846A77097BFAFD34F4F107240F231523643",
+      "bytes": 3964
+    },
+    "evaluation/rag/preflight.py": {
+      "sha256": "D8C1753E6D7EB6BAF7A999A83E8A24CCAC0BAF08179FD3D893C201062F483BC6",
+      "bytes": 18267
+    },
+    "evaluation/rag/report.py": {
+      "sha256": "2B6D114B36E6D73BDFB5C54883011EA2CA26CF885E8BAACDC50A9F91BA5FCE00",
+      "bytes": 7793
+    },
+    "evaluation/rag/scoring.py": {
+      "sha256": "62661C05DA0BEAB29498529EDC3FDB5DD47697EAC7230E5D1AADD918ADD0435A",
+      "bytes": 12526
+    },
+    "evaluation/rag/summary.py": {
+      "sha256": "E46CFC0A41E93420B43303074AAB815F30041F197A264471FD42D099D56AA8D0",
+      "bytes": 7438
+    },
+    "evaluation/rag/tokens.py": {
+      "sha256": "87F2FA49354AF92AF7390E55BCEB9B9074468A92F1C0E6BB44AC39466F773000",
+      "bytes": 10287
+    },
+    "public_kb/__init__.py": {
+      "sha256": "767168B5EC1D0F612A00D058D0CAE39EAA0C2CD1AAA7E4EFCE70CB4E04C0D418",
+      "bytes": 761
+    },
+    "public_kb/__main__.py": {
+      "sha256": "3BF8413877FCEBF1E37765E927AC08367FD6FCADDCC993A59302DD8C8EE0C439",
+      "bytes": 10023
+    },
+    "public_kb/book_pipeline.py": {
+      "sha256": "5811CB570944FA97D1A648EF053A2EF6E5C1FD2D29D053F21B4E106D3D8947B7",
+      "bytes": 13663
+    },
+    "public_kb/chunk_ids.py": {
+      "sha256": "AE9B7BE632177A6A7C547B17F31A161244D6F6E1C6FF3DB00D1326787851CEBC",
+      "bytes": 2653
+    },
+    "public_kb/chunker.py": {
+      "sha256": "4A826280A10523BEF23015AA9F1691D39CCB5490FF7E4C07BD5D13023CB7A3B6",
+      "bytes": 14609
+    },
+    "public_kb/citations.py": {
+      "sha256": "2B8FF8C9F212898A18E236B90A2F11F569453AF234FE0A47AB048D1D9107F8D9",
+      "bytes": 17454
+    },
+    "public_kb/config.py": {
+      "sha256": "852BB577D4B402B07D3F3E09955477533AEC29CC8500C228926B90639D544B1F",
+      "bytes": 18236
+    },
+    "public_kb/embedding_service.py": {
+      "sha256": "BB8267F4C5473D1DBCB7F83B05B103C547DE8834D04CE5DE7E1FA262901DFFE7",
+      "bytes": 4233
+    },
+    "public_kb/evaluation_context.py": {
+      "sha256": "92300983F3E2DFE04310DBCAABA6DD1FCC26E9004E238FF8D4E7643BD0B50E5E",
+      "bytes": 5217
+    },
+    "public_kb/exceptions.py": {
+      "sha256": "36A038E5E5D0B340E867DF06FDD89F4EE73FD9CCDD4F2237F18D4DCAB0236F25",
+      "bytes": 186
+    },
+    "public_kb/handoff_validate.py": {
+      "sha256": "B7809F708DBB140DC678D87C1FCB6160C49C3086285D64715C0E2279353B532E",
+      "bytes": 10698
+    },
+    "public_kb/llm_factory.py": {
+      "sha256": "8B948F3481C5B54863686DB087400B2149B348BFA4EAA0D618AF035AAA8A5608",
+      "bytes": 5700
+    },
+    "public_kb/milvus_store.py": {
+      "sha256": "5E8988E0C47CBCD2CCF00AA9707DB1846EBC679AB17A4E503EBA7C1FEE21A074",
+      "bytes": 14849
+    },
+    "public_kb/mineru_parser.py": {
+      "sha256": "3E3B6D5A3269BDD4DAFF5B964AE4D788A60B810B29C838B1D2EF37E204552E53",
+      "bytes": 4030
+    },
+    "public_kb/normalize.py": {
+      "sha256": "7F7BF8E166770A90A33623DAE87D1620FAD5A4C5416554DBFB7D9E8F429CBED0",
+      "bytes": 14008
+    },
+    "public_kb/qa_chain.py": {
+      "sha256": "2E2AA621E4020D580504EE85A8E7C0C0955DD2AEF71D1EA179CFCF8FD92B2623",
+      "bytes": 28721
+    },
+    "public_kb/qa_chain_async.py": {
+      "sha256": "F549EA30EFB8B5D3AFEACD281BD58FC76874A3D2E4EC5EFDE36566408E2F4277",
+      "bytes": 21410
+    },
+    "public_kb/rag_engine.py": {
+      "sha256": "BC9F0CBBB2213ACE291AE4DDC1E8FFC279CB6BBD00074889DB4E96FD5BBF7CA1",
+      "bytes": 18796
+    },
+    "public_kb/reranker.py": {
+      "sha256": "261C22993D1901FF4EAD0926451572EA922271A7057C69324CCA160FF3D596B5",
+      "bytes": 9916
+    },
+    "public_kb/text_cleaner.py": {
+      "sha256": "4BF305A9A968B72DEF0A352CC3E5A93B6CE4D2D004EAA25C6E15C06F8DE38FF9",
+      "bytes": 3122
+    },
+    "requirements-eval.txt": {
+      "sha256": "7861E270B4C82BCF931955247BD2D8E0CB869FC0233756B68D994EEA321D6F85",
+      "bytes": 321
+    },
+    "requirements.lock.txt": {
+      "sha256": "14DEE2F4CECD9520D7BAB664207D1AA5B6001F3E2DDFE0DA915501BD8F2B9C39",
+      "bytes": 1610
+    },
+    "scripts/run_rag_eval.py": {
+      "sha256": "C98646428F89D7985F4B4F7F4DFCF75DB5C8794CC0DED80E16FBF5DE6286A3EB",
+      "bytes": 59061
+    }
+  }
+}

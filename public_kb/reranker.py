@@ -2,13 +2,14 @@
 异步 Reranker 客户端（阶段 2）— httpx.AsyncClient 版 SiliconFlow /rerank。
 
 与同步实现 public_kb.qa_chain._SiliconFlowReranker 对齐：
-  - 请求体 / 响应结构 / 降级策略完全一致（业务语义零退化）
-  - 失败时回退"原始顺序 + relevance_score=0.5"，绝不抛错打断主链路
+  - 请求体 / 响应结构完全一致（业务语义零退化）
+  - base_url 复用 EMBEDDING_BASE_URL（同一服务提供方），缺失即抛错
+  - 失败时异常上抛（2026-09 整改 D3 零降级：移除"原始顺序 + 0.5 假分数"回退）
 
 差异（手册 §阶段2 步骤 2）：
   - requests.post → httpx.AsyncClient（连接池复用，避免每请求新建连接）
   - 并发受 agent.runtime "rerank" 全局信号量约束
-  - 超时/限流/5xx 统一走指数退避重试
+  - 超时/限流/5xx 统一走指数退避同配置重试（口径 B：重发同一请求，不降级）
 """
 
 from __future__ import annotations
@@ -20,9 +21,6 @@ from typing import Any, Dict, List, Optional
 import httpx
 
 logger = logging.getLogger(__name__)
-
-# 与同步版保持一致的兜底 base_url
-_DEFAULT_BASE_URL = "https://api.siliconflow.cn/v1"
 
 # 可重试的瞬时错误：网络传输层异常 / 超时 / 限流与服务端临时故障
 _RETRYABLE_STATUS = {429, 500, 502, 503, 504}
@@ -89,7 +87,12 @@ class AsyncSiliconFlowReranker:
         """
         self._model = model
         self._api_key = api_key
-        self._base_url = (base_url or "").rstrip("/") or _DEFAULT_BASE_URL
+        # 端点必填无兜底（D6）：缺失即抛错，不回退硬编码默认地址
+        self._base_url = (base_url or "").rstrip("/")
+        if not self._base_url:
+            raise ValueError(
+                "Reranker base_url 缺失（复用 EMBEDDING_BASE_URL，.env 必填，无兜底）"
+            )
         self._timeout_s = timeout_s
         self._max_retries = max(1, int(max_retries))
         self._semaphore = _acquire_rerank_semaphore(max(1, int(concurrency)))
@@ -130,25 +133,19 @@ class AsyncSiliconFlowReranker:
 
         Returns:
             [{"index": int, "relevance_score": float}, ...] 按分数降序。
-            任何失败都降级为"原始顺序 + 0.5 分"，不抛错。
+
+        Raises:
+            重试耗尽后异常原样上抛（零降级：不回退假分数）。
         """
         if not documents:
             return []
 
         async with self._semaphore:
-            try:
-                data = await self._post_with_retry(query, documents, top_k)
-                results = data.get("results", [])
-                return sorted(
-                    results, key=lambda x: x.get("relevance_score", 0), reverse=True
-                )
-            except Exception as e:
-                logger.warning("Reranker API 调用失败: %s，回退到原始排序", e)
-                # 降级：返回原始顺序（与同步版完全一致）
-                return [
-                    {"index": i, "relevance_score": 0.5}
-                    for i in range(min(top_k, len(documents)))
-                ]
+            data = await self._post_with_retry(query, documents, top_k)
+            results = data.get("results", [])
+            return sorted(
+                results, key=lambda x: x.get("relevance_score", 0), reverse=True
+            )
 
     async def aclose(self) -> None:
         """关闭底层 HTTP 连接池。"""
@@ -165,7 +162,7 @@ class AsyncSiliconFlowReranker:
     async def _post_with_retry(
         self, query: str, documents: List[str], top_k: int,
     ) -> Dict[str, Any]:
-        """带指数退避的 POST；瞬时错误重试，其余直接上抛由 rerank 兜底降级。"""
+        """带指数退避的 POST；瞬时错误同配置重试（口径 B），耗尽后异常上抛。"""
         from tenacity import (
             AsyncRetrying,
             retry_if_exception,

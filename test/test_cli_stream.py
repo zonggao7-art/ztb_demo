@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import pytest
-
 from agent.__main__ import _render_stream_event
 from agent.streaming import EventType, make_event
 

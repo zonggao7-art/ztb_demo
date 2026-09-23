@@ -409,37 +409,3 @@ def _build_full_scan_sql(
     )
     return sql, tuple(hard_params)
 
-def _build_vector_recall_sql(
-    table: str,
-    classification: dict[str, list[str]],
-    intent: SearchIntent,
-    source_ids: list[str],
-) -> Optional[tuple[str, tuple[Any, ...]]]:
-    """P1-3：对 Milvus 召回出的主键做回表查询。
-
-    P0-2：回表仅保留约束性条件。语义召回的目的正是找到“文本相近但
-    字段值不完全相等”的行，若叠加偏好性硬过滤（行业/等级/实体名精确匹配）
-    会将召回候选全歼，使混合检索失去海选价值。
-    """
-    if not source_ids:
-        return None
-
-    semantic_cols = classification.get("semantic", [])[:4]
-    if not semantic_cols:
-        return None
-
-    id_col = classification["id"][0] if classification.get("id") else semantic_cols[0]
-    # SELECT * 全字段回表（修复 P0-1 缺列缺陷）+ 计算列
-    select_fields = ["*", f"`{id_col}` AS `_id_`", "0 AS `_score_`"]
-
-    hard_conds, hard_params = _build_constraint_conditions(table, classification, intent)
-    placeholders = ", ".join(["%s"] * len(source_ids))
-    hard_conds.append(f"`{id_col}` IN ({placeholders})")
-    params: list[Any] = list(hard_params) + list(source_ids)
-    sql = (
-        f"SELECT {', '.join(select_fields)} "
-        f"FROM `{table}` "
-        f"WHERE {' AND '.join(hard_conds)} "
-        f"LIMIT 100"
-    )
-    return sql, tuple(params)

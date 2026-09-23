@@ -31,8 +31,8 @@ SEARCH_PUBLIC_KB_DESC = (
 
 KNOWLEDGE_QA_DESC = (
     "招投标专业知识问答（一步到位）：基于权威法规知识库生成完整回答，"
-    "内含拒答判断与【来源N】标准化引用。适用于需要直接给出成品回答的法规咨询场景；"
-    "若你希望自己组织答案请改用 search_public_kb。"
+    "内含拒答判断与【来源N】标准化引用。适用于招标方式、评标规则、投标流程、"
+    "履约验收和法律责任等专业法规咨询。调用方必须原样复用经校验的回答。"
 )
 
 
@@ -76,7 +76,8 @@ async def _search_public_kb_async_impl(question: str, top_k: int | None = None) 
     bad = _validate_question(question)
     if bad:
         return _invalid(bad)
-    rag = _get_rag()
+    from ..runtime import run_blocking
+    rag = await run_blocking(_get_rag)
     if top_k is None:
         top_k = Settings().agent_tool_default_top_k
     chunks = await rag.retrieve_async(question.strip(), top_k=top_k)
@@ -98,6 +99,7 @@ def _knowledge_qa_impl(question: str) -> dict:
     return make_tool_result(
         data={
             "answer": result.get("answer", ""),
+            "is_refusal": (result.get("citation_validation") or {}).get("is_refusal", False),
             "sources": result.get("sources", []),
             "citations": result.get("citations", []),
             "citation_validation": result.get("citation_validation"),
@@ -113,11 +115,13 @@ async def _knowledge_qa_async_impl(question: str) -> dict:
     bad = _validate_question(question)
     if bad:
         return _invalid(bad)
-    rag = _get_rag()
+    from ..runtime import run_blocking
+    rag = await run_blocking(_get_rag)
     result = await rag.aquery(question.strip())
     return make_tool_result(
         data={
             "answer": result.get("answer", ""),
+            "is_refusal": (result.get("citation_validation") or {}).get("is_refusal", False),
             "sources": result.get("sources", []),
             "citations": result.get("citations", []),
             "citation_validation": result.get("citation_validation"),

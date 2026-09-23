@@ -62,8 +62,8 @@ pip install -r requirements.txt
 向项目 owner 要以下目录/文件，放到仓库根目录：
 
 ```
-DATA/  raw_pdfs/  new_pdfs/  raw_policy/  raw_tables/
-cloud_sync/  *.jsonl
+DATA/  raw_pdfs/  raw_tables/
+*.jsonl
 ```
 
 验证：

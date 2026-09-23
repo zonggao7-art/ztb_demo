@@ -1,0 +1,37 @@
+{
+  "run_id": "s1_20260910_formal_02",
+  "stage": "s1",
+  "planned_count": 200,
+  "dataset_sha256": "D0960557FED978D2CA1D7B47BBAD77A513BAA65F24F6F49C6FF62F880823E87A",
+  "git": {
+    "commit": "f0513ee542d18078419705573ebbcbefb1dab0e7",
+    "working_tree_dirty": true
+  },
+  "known_reproducibility_limit": "S1 manifest records working_tree_dirty=true; this snapshot freezes result evidence but cannot reconstruct the exact uncommitted source tree used for S1.",
+  "artifacts": {
+    "manifest.json": {
+      "sha256": "567E61A69C1E83C7B1039BCB95DB2FFE94A90CEDF4F3F828B25CF5D8FA7B75B4",
+      "bytes": 2269
+    },
+    "results.jsonl": {
+      "sha256": "8B0B1F5324BA9602518194416756AC8BA0114484916425588DF34CD2518A9E71",
+      "bytes": 12516322
+    },
+    "scores.jsonl": {
+      "sha256": "253212FE4E79668129FC9F9DA9145EF5A188D10DA1A4F6D43A8D719DBEC65015",
+      "bytes": 73171
+    },
+    "scoring_usage.json": {
+      "sha256": "52CD4AF0A2A8B39C4C33B8BC8A53AB7C57F4DD9F41D5AD907D2C11C361688DC6",
+      "bytes": 667
+    },
+    "summary.json": {
+      "sha256": "8BAB3F9AD69C96D52F66302790286FCA5FB753D1CD6B8084845D444B6D2F003F",
+      "bytes": 2534
+    },
+    "report.md": {
+      "sha256": "FEDA7E46F6B957F71FD95B4B225B32976F94EEEFECAFDDA71C48334B90297BB6",
+      "bytes": 1594
+    }
+  }
+}

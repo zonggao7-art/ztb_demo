@@ -2,7 +2,7 @@
 """异步 RAG 链路测试（阶段 2）— 全离线 mock Embedding/Milvus/Reranker/LLM。
 
 覆盖手册 §阶段2 测试要求：
-  - build_async_qa_chain：token + citations 结构、拒答路径、降级路径
+  - build_async_qa_chain：token + citations 结构、拒答路径、失败上抛（零降级）
   - AsyncRAGPipeline.stream_answer：token 增量
   - PublicKnowledgeRAG.aquery / astream：事件序列与结果结构
   - node_knowledge_qa_async：business_result 契约与异常兜底
@@ -49,7 +49,7 @@ class _FakeHit:
         self.score = score
 
 
-def _hit(text: str, chunk_id: int, score: float = 0.9,
+def _hit(text: str, chunk_id: str, score: float = 0.9,
          doc: str = "中华人民共和国招标投标法", chapter: str = "第一章 总则") -> _FakeHit:
     return _FakeHit(
         {
@@ -156,12 +156,6 @@ def _make_settings() -> Settings:
     return Settings()
 
 
-def _make_docs_from_hits(hits: List[_FakeHit]) -> List[Tuple[Document, float]]:
-    from public_kb.qa_chain import _entity_to_doc
-
-    return [(_entity_to_doc(h.entity, h.score), h.score) for h in hits]
-
-
 # ============================================================
 #  build_async_qa_chain / AsyncRAGPipeline
 # ============================================================
@@ -170,9 +164,9 @@ def test_async_chain_happy_path():
     """混合检索命中 → 回答 + 引用 + 校验报告结构完整且全部通过。"""
     from public_kb.qa_chain_async import build_async_qa_chain
 
-    hits = [_hit("招标方式包括公开招标和邀请招标。", 101),
-            _hit("公开招标是主要采购方式。", 102),
-            _hit("邀请招标需经批准。", 103)]
+    hits = [_hit("招标方式包括公开招标和邀请招标。", "101"),
+            _hit("公开招标是主要采购方式。", "102"),
+            _hit("邀请招标需经批准。", "103")]
     collection = _FakeCollection(hits)
     chain = build_async_qa_chain(
         vector_store=_FakeVectorStore([]),
@@ -188,7 +182,7 @@ def test_async_chain_happy_path():
     assert result["answer"] == _ANSWER
     assert len(result["citations"]) == 3
     c1 = result["citations"][0]
-    assert c1["chunk_id"] == 101
+    assert c1["chunk_id"] == "101"
     assert c1["context_index"] == 1
     assert c1["doc_name"] != ""
     assert c1["text"].startswith("招标方式")
@@ -243,11 +237,11 @@ def test_refusal_semantics_identical_to_sync():
     assert r_sync["citation_validation"] == r_async["citation_validation"]
 
 
-def test_async_chain_dense_fallback_when_no_sparse_field():
-    """旧 schema 无稀疏字段 → 自动降级为稠密+Reranker 模式。"""
+def test_async_chain_no_sparse_field_raises():
+    """旧 schema 无稀疏字段 → 首次检索 fail-fast 抛错（D3 零降级，2026-09 整改）。"""
     from public_kb.qa_chain_async import build_async_qa_chain
 
-    hits = [_hit("评标委员会由招标人代表和技术专家组成。", 201)]
+    hits = [_hit("评标委员会由招标人代表和技术专家组成。", "201")]
     collection = _FakeCollection(hits, has_sparse=False)
     chain = build_async_qa_chain(
         vector_store=_FakeVectorStore([]),
@@ -257,18 +251,17 @@ def test_async_chain_dense_fallback_when_no_sparse_field():
         embeddings=_FakeEmbeddings(),
         reranker=_StubReranker(),
     )
-    result = asyncio.run(chain.ainvoke("评标委员会怎么组成？"))
+    with pytest.raises(RuntimeError, match="sparse_vector"):
+        asyncio.run(chain.ainvoke("评标委员会怎么组成？"))
     assert collection.hybrid_calls == 0
-    assert collection.search_calls == 1
-    assert len(result["citations"]) == 1
-    assert result["citation_validation"]["all_passed"] is True
+    assert collection.search_calls == 0  # 不存在稠密降级路径
 
 
-def test_async_chain_falls_back_to_dense_on_hybrid_error():
-    """hybrid_search 抛错 → 与同步版一致回退稠密降级检索，不抛错。"""
+def test_async_chain_raises_on_hybrid_error():
+    """hybrid_search 抛错 → 异常直接上抛，不回退稠密降级检索（D3）。"""
     from public_kb.qa_chain_async import build_async_qa_chain
 
-    hits = [_hit("投标人不得相互串通投标报价。", 301)]
+    hits = [_hit("投标人不得相互串通投标报价。", "301")]
     collection = _FakeCollection(hits)
     collection.hybrid_error = RuntimeError("milvus boom")
     chain = build_async_qa_chain(
@@ -279,17 +272,15 @@ def test_async_chain_falls_back_to_dense_on_hybrid_error():
         embeddings=_FakeEmbeddings(),
         reranker=_StubReranker(),
     )
-    result = asyncio.run(chain.ainvoke("串标有什么后果？"))
-    assert collection.hybrid_calls >= 1  # 含 output_fields 回退重试
-    assert collection.search_calls == 1  # 已回退到方案 A
-    assert len(result["citations"]) == 1
+    with pytest.raises(RuntimeError, match="milvus boom"):
+        asyncio.run(chain.ainvoke("串标有什么后果？"))
 
 
 def test_async_chain_low_scores_trigger_refusal():
     """rerank 分数低于动态阈值（top<0.5 → threshold 0.50）→ 拒答。"""
     from public_kb.qa_chain_async import build_async_qa_chain
 
-    hits = [_hit("无关内容一。", 401), _hit("无关内容二。", 402)]
+    hits = [_hit("无关内容一。", "401"), _hit("无关内容二。", "402")]
     low_scores = [{"index": 0, "relevance_score": 0.42},
                   {"index": 1, "relevance_score": 0.41}]
     chain = build_async_qa_chain(
@@ -308,7 +299,7 @@ def test_stream_answer_yields_token_deltas():
     """stream_answer 拼接结果与非流式回答一致。"""
     from public_kb.qa_chain_async import AsyncRAGPipeline
 
-    hits = [_hit("招标方式包括公开招标和邀请招标。", 101)]
+    hits = [_hit("招标方式包括公开招标和邀请招标。", "101")]
     pipeline = AsyncRAGPipeline(
         _FakeVectorStore([]), _FakeLLM(), _make_settings(),
         collection=_FakeCollection(hits), embeddings=_FakeEmbeddings(),
@@ -327,7 +318,7 @@ def test_embedding_and_describe_run_in_parallel():
     from public_kb.qa_chain_async import AsyncRAGPipeline
 
     emb = _FakeEmbeddings()
-    hits = [_hit("内容。", 501)]
+    hits = [_hit("内容。", "501")]
     pipeline = AsyncRAGPipeline(
         _FakeVectorStore([]), _FakeLLM(), _make_settings(),
         collection=_FakeCollection(hits), embeddings=emb,
@@ -367,15 +358,13 @@ def _make_rag_with_fakes(hits: List[_FakeHit], has_sparse: bool = True):
 
 
 def test_rag_aquery_result_shape():
-    rag = _make_rag_with_fakes([_hit("招标方式包括公开招标和邀请招标。", 101)])
+    rag = _make_rag_with_fakes([_hit("招标方式包括公开招标和邀请招标。", "101")])
     result = asyncio.run(rag.aquery("招标方式有哪些？"))
     assert set(result.keys()) == {"answer", "sources", "citations", "citation_validation"}
     assert result["answer"] == _ANSWER
 
 
 def test_rag_aquery_uninitialized_raises_runtimeerror():
-    from public_kb.rag_engine import PublicKnowledgeRAG
-
     rag = _make_rag_with_fakes([])
     rag._qa_chain = None
     with pytest.raises(RuntimeError, match="尚未初始化"):
@@ -384,7 +373,7 @@ def test_rag_aquery_uninitialized_raises_runtimeerror():
 
 def test_rag_astream_event_sequence():
     """事件序列：stage → retrieval → token* → citations → final；引用晚于正文。"""
-    rag = _make_rag_with_fakes([_hit("招标方式包括公开招标和邀请招标。", 101)])
+    rag = _make_rag_with_fakes([_hit("招标方式包括公开招标和邀请招标。", "101")])
 
     async def _collect():
         events = []
@@ -435,7 +424,7 @@ def test_node_knowledge_qa_async_success(monkeypatch):
         "answer": _ANSWER,
         "sources": [{"doc": "x", "chapter": "y", "chunk_index": 0,
                      "content_snippet": "...", "score": 0.9}],
-        "citations": [{"context_index": 1, "chunk_id": 101}],
+        "citations": [{"context_index": 1, "chunk_id": "101"}],
         "citation_validation": {"all_passed": True},
     }
 
@@ -451,7 +440,7 @@ def test_node_knowledge_qa_async_success(monkeypatch):
     biz = out["business_result"]
     assert biz["branch"] == "knowledge_qa"
     assert biz["answer"] == _ANSWER
-    assert biz["data"]["citations"][0]["chunk_id"] == 101
+    assert biz["data"]["citations"][0]["chunk_id"] == "101"
     assert isinstance(out["messages"][0], AIMessage)
     assert out["messages"][0].content == _ANSWER
 
@@ -462,7 +451,8 @@ def test_node_knowledge_qa_async_runtime_error(monkeypatch):
 
     class _BrokenRAG:
         async def aquery(self, question):
-            raise RuntimeError("知识库尚未初始化，请先调用 init_knowledge_base() 入库。")
+            from public_kb.exceptions import KnowledgeBaseNotReadyError
+            raise KnowledgeBaseNotReadyError("知识库尚未初始化，请先调用 init_knowledge_base() 入库。")
 
     monkeypatch.setattr(sync_mod, "_rag_engine", _BrokenRAG())
 
@@ -489,9 +479,6 @@ def test_graph_registers_async_knowledge_qa_node():
     import agent.graph as graph_mod
 
     captured = {}
-
-    def _fake_compile(self=None, **kwargs):  # noqa: ARG001
-        raise NotImplementedError
 
     # 直接检查 build_graph 内部注册逻辑：用 StateGraph 真实构建但拦截 compile
     with patch.object(graph_mod.StateGraph, "compile", autospec=True) as mock_compile:

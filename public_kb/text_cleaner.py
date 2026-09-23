@@ -19,6 +19,8 @@ class TextCleaner:
 
     # 匹配独立的纯数字行（页码）
     _PAGE_NUMBER_RE = re.compile(r"^\s*\d{1,4}\s*$")
+    # 防御性剥离上游可能注入的页码或其他 HTML 注释；溯源信息只能进 metadata。
+    _HTML_COMMENT_RE = re.compile(r"<!--[\s\S]*?-->")
 
     @staticmethod
     def clean(raw_markdown: str) -> str:
@@ -30,6 +32,7 @@ class TextCleaner:
         Returns:
             清洗后的干净 Markdown 字符串。
         """
+        raw_markdown = TextCleaner._HTML_COMMENT_RE.sub("", raw_markdown)
         lines: list[str] = raw_markdown.split("\n")
 
         # ── 步骤 1: 检测并移除重复出现的页眉行 ──

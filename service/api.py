@@ -4,7 +4,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import time
-from contextlib import asynccontextmanager
+from contextlib import aclosing, asynccontextmanager
 from collections.abc import AsyncIterator
 from uuid import uuid4
 
@@ -16,7 +16,6 @@ from agent.streaming import (
     EventType,
     format_heartbeat,
     format_sse,
-    make_event,
 )
 from agent.streaming.protocol import normalize_custom_event
 from .schemas import ChatRequest
@@ -28,8 +27,11 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     app.state.agent = AgentGraph(async_enabled=True)
     logger.info("AgentGraph initialized for streaming service")
-    yield
-    app.state.agent = None
+    try:
+        yield
+    finally:
+        await app.state.agent.aclose()
+        app.state.agent = None
 
 
 app = FastAPI(title="Bidding Assistant Streaming API", lifespan=lifespan)
@@ -42,21 +44,35 @@ async def _merge_event_streams(
     heartbeat: AsyncIterator[bytes],
 ) -> AsyncIterator[bytes]:
     """以 primary 为主通道；primary 终止时停止消费心跳。"""
-    heartbeat_task = asyncio.create_task(_drain_heartbeat(heartbeat))
+    queue: asyncio.Queue = asyncio.Queue(maxsize=1)
+
+    async def pump(source, *, is_primary=False):
+        try:
+            async with aclosing(source):
+                async for chunk in source:
+                    await queue.put(chunk)
+        except Exception as exc:
+            await queue.put(exc)
+        else:
+            if is_primary:
+                await queue.put(None)
+
+    tasks = [
+        asyncio.create_task(pump(primary, is_primary=True)),
+        asyncio.create_task(pump(heartbeat)),
+    ]
     try:
-        async for chunk in primary:
+        while True:
+            chunk = await queue.get()
+            if chunk is None:
+                return
+            if isinstance(chunk, Exception):
+                raise chunk
             yield chunk
     finally:
-        heartbeat_task.cancel()
-        try:
-            await heartbeat_task
-        except asyncio.CancelledError:
-            pass
-
-
-async def _drain_heartbeat(heartbeat: AsyncIterator[bytes]):
-    async for chunk in heartbeat:
-        raise RuntimeError("heartbeat must be consumed by merge helper")
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
 
 
 async def chat_stream(req: ChatRequest):
@@ -69,16 +85,19 @@ async def chat_stream(req: ChatRequest):
     async def event_bytes():
         nonlocal last_event_type
         try:
-            async for raw_event in agent.astream(
+            async with aclosing(agent.astream(
                 req.question,
                 thread_id=req.thread_id,
                 deadline_s=req.deadline_s,
-            ):
-                event = normalize_custom_event(raw_event, request_id)
-                last_event_type = event.type.value
-                yield format_sse(event)
-                if event.type in _TERMINAL_TYPES:
-                    break
+            )) as events:
+                async for raw_event in events:
+                    event = normalize_custom_event(raw_event, request_id)
+                    last_event_type = event.type.value
+                    if event.type in _TERMINAL_TYPES:
+                        terminated.set()
+                    yield format_sse(event)
+                    if event.type in _TERMINAL_TYPES:
+                        break
             if not terminated.is_set():
                 terminated.set()
         except asyncio.CancelledError:
@@ -96,6 +115,8 @@ async def chat_stream(req: ChatRequest):
     async def heartbeat_bytes():
         while not terminated.is_set():
             await asyncio.sleep(idle_seconds)
+            if terminated.is_set():
+                return
             yield format_heartbeat(request_id)
 
     return StreamingResponse(

@@ -18,6 +18,7 @@ dist/
 build/
 .eggs/
 .venv/
+.venv-react/
 venv/
 ENV/
 
@@ -25,6 +26,7 @@ ENV/
 .idea/
 .vscode/
 .qoder/
+.workbuddy/
 *.swp
 *.swo
 *~
@@ -40,7 +42,6 @@ ehthumbs.db
 $RECYCLE.BIN/
 
 # ===== 本地运行时状态 =====
-.cloud_sync_watermark.json
 *.pid
 *.log
 logs/
@@ -58,11 +59,13 @@ htmlcov/
 # ===== 数据资产 — 团队成员各自获取，不入仓 =====
 DATA/
 raw_pdfs/
-new_pdfs/
-raw_policy/
 raw_tables/
-cloud_sync/
 *.jsonl
+*.jsonl.bak
+
+# ===== 本地文档 — 不上传 GitHub =====
+/docs/
+/项目启动说明.md
 
 # ===== 本地备份 =====
 backup.sql
@@ -71,6 +74,7 @@ backup.sql
 
 # ===== MySQL 容器数据（保留 docker-compose.yml 和 init/01-schema.sql） =====
 docker/mysql/mysql_data/
+docker/mysql/mysql_data_backup_*/
 docker/mysql/*.log
 
 # ===== Milvus 容器数据（保留 docker-compose.yml 和启动脚本） =====
