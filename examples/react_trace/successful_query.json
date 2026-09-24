@@ -1,0 +1,367 @@
+{
+  "description": "2026-09-24 19:04（北京时间）的成功查询。按实际后端 SSE 整理，保留全部工具回执、阶段事件及发布结果；来源片段仅导出索引与定位元数据，不复制知识库原文。",
+  "captured_at": "2026-09-24T19:04:45+08:00",
+  "question": "请查询中国移动通信集团福建有限公司的中标历史，从查询结果中选取一个项目，再查询该项目的中标详情，列出项目编号、采购人、中标供应商、中标金额和日期。另外，请检索法规知识库，解释“邀请招标”的含义。  我只有公司名称，没有项目编号。如果查询结果没有可用的项目编号，请说明情况，不要猜测或编造。",
+  "mode": "unified",
+  "transport_request_id": "24f2551d910948a9a7472ffd57ad7059",
+  "stage_events": [
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "agent_start"
+      },
+      "ts": 1790247885.5587432
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "tool_call",
+        "tool": "query_company_award_history",
+        "status": "running",
+        "step_id": "s1"
+      },
+      "ts": 1790247886.188775
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "tool_call",
+        "tool": "query_company_award_history",
+        "status": "done",
+        "step_id": "s1",
+        "ok": true
+      },
+      "ts": 1790247886.2001712
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "tool_call",
+        "tool": "query_project_award",
+        "status": "running",
+        "step_id": "s2"
+      },
+      "ts": 1790247887.2681522
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "tool_call",
+        "tool": "query_project_award",
+        "status": "done",
+        "step_id": "s2",
+        "ok": true
+      },
+      "ts": 1790247887.2773955
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "tool_call",
+        "tool": "knowledge_qa",
+        "status": "running",
+        "step_id": "s3"
+      },
+      "ts": 1790247888.190897
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "tool_call",
+        "tool": "knowledge_qa",
+        "status": "done",
+        "step_id": "s3",
+        "ok": true
+      },
+      "ts": 1790247891.9831383
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "agent_finish",
+        "status": "complete"
+      },
+      "ts": 1790247892.8242507
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "validation_start"
+      },
+      "ts": 1790247892.8252559
+    },
+    {
+      "type": "stage",
+      "request_id": "24f2551d910948a9a7472ffd57ad7059",
+      "payload": {
+        "stage": "validation_done"
+      },
+      "ts": 1790247892.8268037
+    }
+  ],
+  "actions": [
+    {
+      "step_id": "s1",
+      "tool": "query_company_award_history",
+      "args": {
+        "company_name": "中国移动通信集团福建有限公司"
+      },
+      "ok": true,
+      "code": "ok",
+      "empty": false,
+      "exact_scope": true,
+      "outcome": "tool_result"
+    },
+    {
+      "step_id": "s2",
+      "tool": "query_project_award",
+      "args": {
+        "project_number": "[350001]FJGGZY[GK]2024010"
+      },
+      "ok": true,
+      "code": "ok",
+      "empty": false,
+      "exact_scope": true,
+      "outcome": "tool_result"
+    },
+    {
+      "step_id": "s3",
+      "tool": "knowledge_qa",
+      "args": {
+        "question": "解释“邀请招标”的含义"
+      },
+      "ok": true,
+      "code": "ok",
+      "empty": false,
+      "exact_scope": false,
+      "outcome": "tool_result"
+    }
+  ],
+  "records": [
+    {
+      "step_id": "s1",
+      "record_ref": "r_337b646ee1efa452c822",
+      "project_number": "[350001]FJGGZY[GK]2024010",
+      "project_name": "福州大学电信运营商宽带服务",
+      "purchaser": "福州大学",
+      "successful_bidder": "中国移动通信集团福建有限公司",
+      "winning_amount": "659880.00",
+      "winning_date": "2024-08-21"
+    },
+    {
+      "step_id": "s2",
+      "record_ref": "r_87d251995f89dec3de8f",
+      "project_number": "[350001]FJGGZY[GK]2024010",
+      "project_name": "福州大学电信运营商宽带服务",
+      "purchaser": "福州大学",
+      "successful_bidder": "中国移动通信集团福建有限公司",
+      "winning_amount": "659880.00",
+      "winning_date": "2024-08-21"
+    }
+  ],
+  "answer": "s1 · 企业中标历史 · 中国移动通信集团福建有限公司\n项目编号：\\[350001\\]FJGGZY\\[GK\\]2024010；项目名称：福州大学电信运营商宽带服务；采购人：福州大学；中标供应商：中国移动通信集团福建有限公司；中标金额原始值：659880\\.00；中标日期：2024-08-21\n金额单位：尚未核定，不作换算或比较。\n\ns2 · 项目中标情况 · \\[350001\\]FJGGZY\\[GK\\]2024010\n项目编号：\\[350001\\]FJGGZY\\[GK\\]2024010；项目名称：福州大学电信运营商宽带服务；采购人：福州大学；中标供应商：中国移动通信集团福建有限公司；中标金额原始值：659880\\.00；中标日期：2024-08-21\n金额单位：尚未核定，不作换算或比较。\n\ns3 · 法规知识\n邀请招标，是指采购人依法从符合相应资格条件的供应商中随机抽取3家以上供应商，并以投标邀请书的方式邀请其参加投标的采购方式【来源1】；也称选择性招标、限制性招标，简称邀标【来源5】。\n\n在招标投标法语境下，邀请招标是招标人以发送投标邀请书的方式邀请特定的法人或其他组织参加投标竞争，并从中选择中标人的方式；采用该方式的，应当向3个以上具备承担招标项目能力、资信良好的特定法人或其他组织发出投标邀请书【来源2】。\n\n以上仅为已收录数据与法规原文的核验线索；不自动认定违法、无风险或具备投标资格。\n仅展示本次检索样本，不代表完整总体，不据此作总量或资格结论。",
+  "citation_index": [
+    {
+      "context_index": 1,
+      "chunk_id": "ck-d07459de319156fff75087e667d84d0f",
+      "chunk_uid": "ck-d07459de319156fff75087e667d84d0f",
+      "doc_name": "中华人民共和国招标投标法律法规全书：含相关政策",
+      "chapter": "二、 政府采购 > 政府采购货物和服务招标投标管理办法",
+      "chunk_index": 331,
+      "score": 0.7698,
+      "metadata": {
+        "content_type": "mixed",
+        "page_end": 428,
+        "page_number": 427,
+        "page_ordinal": 0,
+        "page_start": 426,
+        "structural_id": "中华人民共和国招标投标法律法规全书：含相关政策|p426|0"
+      }
+    },
+    {
+      "context_index": 2,
+      "chunk_id": "ck-7466ecd74215b2fa58fca96de6a2a025",
+      "chunk_uid": "ck-7466ecd74215b2fa58fca96de6a2a025",
+      "doc_name": "招标投标法律解读与风险防范实务",
+      "chapter": "第一章 招标投标基础知识 > 第四节 招标的分类",
+      "chunk_index": 17,
+      "score": 0.7125,
+      "metadata": {
+        "content_type": "text",
+        "page_end": 55,
+        "page_number": 55,
+        "page_ordinal": 0,
+        "page_start": 54,
+        "structural_id": "招标投标法律解读与风险防范实务|p54|0"
+      }
+    },
+    {
+      "context_index": 3,
+      "chunk_id": "ck-843661caed5433e8b167ca1c3b1abcdb",
+      "chunk_uid": "ck-843661caed5433e8b167ca1c3b1abcdb",
+      "doc_name": "招标投标法律解读与风险防范实务",
+      "chapter": "第一章 招标投标基础知识 > 第一节 招标投标概述 > 二、对“招标投标”概念的理解",
+      "chunk_index": 1,
+      "score": 0.6521,
+      "metadata": {
+        "content_type": "text",
+        "page_end": 18,
+        "page_number": 18,
+        "page_ordinal": 0,
+        "page_start": 17,
+        "structural_id": "招标投标法律解读与风险防范实务|p17|0"
+      }
+    },
+    {
+      "context_index": 4,
+      "chunk_id": "ck-98e68568ecaea321e260a97c5fbd1f46",
+      "chunk_uid": "ck-98e68568ecaea321e260a97c5fbd1f46",
+      "doc_name": "招标投标法律解读与风险防范实务",
+      "chapter": "第一章 招标投标基础知识 > 第五节 招标投标的程序及法律性质",
+      "chunk_index": 23,
+      "score": 0.6239,
+      "metadata": {
+        "content_type": "text",
+        "page_end": 68,
+        "page_number": 68,
+        "page_ordinal": 0,
+        "page_start": 67,
+        "structural_id": "招标投标法律解读与风险防范实务|p67|0"
+      }
+    },
+    {
+      "context_index": 5,
+      "chunk_id": "ck-19e229259af60d66911a4299f831e8d9",
+      "chunk_uid": "ck-19e229259af60d66911a4299f831e8d9",
+      "doc_name": "政府采购、工程招标、投标与评标1200问（第3版）",
+      "chapter": "第一章 政府采购 > 第二节 招标性政府采购的方式与程序",
+      "chunk_index": 9,
+      "score": 0.5874,
+      "metadata": {
+        "content_type": "qa_pair",
+        "page_end": 34,
+        "page_number": 33,
+        "page_ordinal": 0,
+        "page_start": 32,
+        "structural_id": "政府采购、工程招标、投标与评标1200问（第3版）|p32|0"
+      }
+    }
+  ],
+  "citation_validation": {
+    "all_passed": true,
+    "is_refusal": false,
+    "context_chunks": 5,
+    "cited_markers": [
+      1,
+      2,
+      5
+    ],
+    "uncited_chunks": [
+      3,
+      4
+    ],
+    "unknown_markers": [],
+    "rules": [
+      {
+        "rule_id": "R1_chunk_id_present",
+        "name": "chunk_id 完整性",
+        "description": "每条引用必须携带 Milvus 行级 chunk_id",
+        "enabled": true,
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "rule_id": "R2_chunk_uid_present",
+        "name": "chunk_uid 完整性",
+        "description": "每条引用必须携带内容派生稳定标识 chunk_uid",
+        "enabled": true,
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "rule_id": "R3_source_location_present",
+        "name": "数据源位置可定位",
+        "description": "doc_name/chapter 必须非空且非占位值",
+        "enabled": true,
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "rule_id": "R4_full_text_present",
+        "name": "原文片段完整",
+        "description": "每条引用必须携带非空完整原文",
+        "enabled": true,
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "rule_id": "R5_context_fully_cited",
+        "name": "上下文无遗漏引用",
+        "description": "所有用于生成回答的 chunk 均可完整溯源，无遗漏、无凭空引用",
+        "enabled": true,
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "rule_id": "R6_no_unknown_markers",
+        "name": "引用标记有效性",
+        "description": "回答中【来源N】标记必须全部解析到有效引用，无错误关联",
+        "enabled": true,
+        "passed": true,
+        "detail": ""
+      },
+      {
+        "rule_id": "R7_all_context_marked",
+        "name": "上下文全部被标记引用",
+        "description": "严格模式：上下文 chunk 必须全部被回答【来源N】标记引用",
+        "enabled": false,
+        "passed": true,
+        "detail": "未被回答标记引用的上下文块: [3, 4]"
+      }
+    ]
+  },
+  "finish_action": {
+    "status": "complete",
+    "missing_fields": []
+  },
+  "execution": {
+    "request_id": "5293348be0b04bdcac0b0f625ebb7168",
+    "mode": "unified",
+    "policy_version": "agent-loop-v2",
+    "model": "deepseek-flash",
+    "model_calls": 5,
+    "tool_attempts": 3,
+    "tool_executions": 3,
+    "attempted_tools": [
+      "query_company_award_history",
+      "query_project_award",
+      "knowledge_qa"
+    ],
+    "executed_tools": [
+      "query_company_award_history",
+      "query_project_award",
+      "knowledge_qa"
+    ],
+    "failure_code": null,
+    "inflight": 0,
+    "react_fallback": false,
+    "actual_branch": "complete",
+    "elapsed_s": 7.266,
+    "reason_code": "AGENT_FINISH",
+    "tools": [
+      "query_company_award_history",
+      "query_project_award",
+      "knowledge_qa"
+    ]
+  },
+  "execution_status": "complete"
+}
